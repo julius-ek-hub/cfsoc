@@ -29,7 +29,7 @@
     "start_win": "Set NODE_ENV=production && node server/index.js",
     "dev": "Set NODE_ENV=developement && nodemon server/index.js",
     "devclient": "react-scripts start",
-    "build": "react-scripts build && cp -a build/. server/view/",
+    "build": "react-scripts build && cp -r ./build/. ./server/view",
     "build_win": "react-scripts build && xcopy build\\* server\\view /i /s /y"
   },
   "browserslist": {
