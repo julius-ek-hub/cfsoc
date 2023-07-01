@@ -4,10 +4,11 @@ const useFetch = () => {
   const { update } = useLoading();
 
   const fech = async (endpoint, props, loading) => {
+    const { protocol, port, hostname } = window.location;
     try {
       update(true, loading);
       const raw = await fetch(
-        `http://${window.location.hostname}:4999/api/schedules/${
+        `${protocol}//${hostname + (port ? ":4999" : "")}/api/schedules/${
           endpoint || ""
         }`,
         props
