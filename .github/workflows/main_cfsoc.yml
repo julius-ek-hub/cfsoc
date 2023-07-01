@@ -38,6 +38,7 @@ jobs:
             server
             package.json
             build
+            node_modules
 
   deploy:
     runs-on: ubuntu-latest
