@@ -21,10 +21,14 @@ jobs:
         with:
           node-version: "18.x"
 
-      - name: npm install, build, and test
+      - name: npm install, build
         run: |
           npm install
           npm run build --if-present
+
+      - name: Remove client modules after build
+        run: |
+          npm uninstall @emotion/react @emotion/styled @fontsource/roboto @mui/icons-material @mui/material @mui/x-date-pickers @reduxjs/toolkit dayjs formik react react-dom react-redux react-router-dom react-scripts yup
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
