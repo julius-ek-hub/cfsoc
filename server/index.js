@@ -1,9 +1,13 @@
 require("dotenv").config();
 
+const compression = require("compression");
 const express = require("express");
 const helmet = require("helmet");
-const compression = require("compression");
 const path = require("path");
+
+const cors = require("./mware/cors");
+const db = require("./mware/db");
+const auth = require("./auth");
 
 const schedules = require("./schedules");
 const expo = require("./expo");
@@ -15,14 +19,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(compression());
 app.use(helmet());
-
-app.use("/api/schedules", schedules);
+app.use(cors);
+app.use(db);
+app.use("/api/schedules", [schedules]);
+app.use("/expocitydubai", [expo]);
+app.use("/auth", auth);
 
 app.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "view", "index.html"));
 });
-
-app.use("/api/expo", expo);
 
 const PORT = process.env.PORT || 4999;
 

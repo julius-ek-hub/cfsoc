@@ -13,7 +13,6 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import Settings from "./Settings";
-import Login from "./common/utils/Login";
 
 import router from "./router";
 
@@ -21,9 +20,10 @@ import common_settings from "./common/store/settings";
 import loading from "./common/store/loading";
 import schedule_settings from "./schedule/store/settings";
 import schedules from "./schedule/store/schedules";
+import splunk from "./splunk/store/splunk";
 
 const common_store = configureStore({
-  reducer: { common_settings, loading, schedule_settings, schedules },
+  reducer: { common_settings, loading, schedule_settings, schedules, splunk },
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -33,7 +33,6 @@ root.render(
       <Settings>
         <Box sx={{ display: "flex", height: "100vh", flexDirection: "column" }}>
           <RouterProvider router={router} />
-          <Login />
         </Box>
       </Settings>
     </Provider>

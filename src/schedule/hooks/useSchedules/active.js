@@ -51,7 +51,7 @@ const useActiveSchedule = () => {
       }`
     );
 
-    updateSuggestions({ [`suggestions['${uname}']`]: json });
+    updateSuggestions({ [`suggestions@${uname}`]: json });
     set_active_by(uname);
   };
 
@@ -137,7 +137,7 @@ const useActiveSchedule = () => {
 
     updateSuggestions({ locked: json.locked });
     updateSuggestions({
-      [`suggestions['${active_by}'].approved`]: json.approved,
+      [`suggestions@${active_by}@approved`]: json.approved,
     });
   };
 

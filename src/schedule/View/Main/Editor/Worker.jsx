@@ -173,17 +173,17 @@ const Worker = ({ onClose, selected }) => {
         const updates = {};
         const dateIndex = each.dateIndex;
         const ind = ass.findIndex((a) => a.staff === each.staff);
-        const mainKey = `suggestions['${active_by}'].assiduity[${ind}].dates[${dateIndex}]`;
+        const mainKey = `suggestions@${active_by}@assiduity@${ind}@dates@${dateIndex}`;
         const _newStatus = statuses[state.status];
         const _newComments = state.comments;
         const _newShift = s[state.shift];
 
         if (state.comments[uname] !== each.comments[uname])
-          updates[`${mainKey}.comments`] = _newComments;
+          updates[`${mainKey}@comments`] = _newComments;
         if (state.shift !== each.shiftIndex && same_shift)
           updates.shift = { assIndex: ind, dateIndex, shift: _newShift };
         if (_newStatus !== each.status)
-          updates[`${mainKey}.status`] = _newStatus;
+          updates[`${mainKey}@status`] = _newStatus;
 
         return Object.keys(updates).length > 0 ? updates : undefined;
       })

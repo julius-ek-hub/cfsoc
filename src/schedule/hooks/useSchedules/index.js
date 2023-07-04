@@ -8,7 +8,6 @@ import {
 } from "../../store/schedules";
 
 import useFetch from "../../../common/hooks/useFetch";
-import useLoading from "../../../common/hooks/useLoading";
 
 const useSchedules = () => {
   const { schedules, shifts, statuses } = useSelector(
@@ -16,7 +15,6 @@ const useSchedules = () => {
   );
   const dispatch = useDispatch();
   const { get, post } = useFetch();
-  const { update } = useLoading();
 
   const addShift = (shift) => dispatch(ash(shift));
   const addStatus = (status) => dispatch(ass(status));

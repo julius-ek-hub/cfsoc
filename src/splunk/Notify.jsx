@@ -5,39 +5,89 @@ import Form from "../common/utils/form/controlled/Form";
 import SubmitButton from "../common/utils/form/controlled/SubmitButton";
 import AutoComplete from "../common/utils/form/controlled/AutoComplete";
 
-import useCommonSettings from "../common/hooks/useSettings";
+import { useFormikContext } from "formik";
 
-const Notify = () => {
-  const { staffs: st } = useCommonSettings();
-  const staffs = Object.keys(st);
-  const telephones = [];
+import useAlerts from "./hooks/useAlerts";
+import useLoading from "../common/hooks/useLoading";
+
+import Loading from "./Loading";
+import { useEffect } from "react";
+import { FormLabel } from "@mui/material";
+
+const SaveButton = () => {
+  const { notify } = useAlerts();
+  const emails = notify.filter((n) => n.type === "email");
+  const sms = notify.filter((n) => n.type === "sms");
+
+  const activeSMS = sms.filter((s) => s.active).map((s) => s.contact);
+  const activeEmails = emails.filter((e) => e.active).map((s) => s.contact);
+
+  const { values, setFieldValue } = useFormikContext();
+
+  useEffect(() => {
+    setFieldValue("sms", activeSMS);
+    setFieldValue("emails", activeEmails);
+  }, [notify]);
+
+  const sameEmails =
+    values.emails.sort().join("") === activeEmails.sort().join("");
+  const sameSMS = values.sms.sort().join("") === activeSMS.sort().join("");
+
+  if (sameEmails && sameSMS) return null;
 
   return (
-    <Box borderLeft={(t) => `1px solid ${t.palette.divider}`} pl={2}>
+    <SubmitButton variant="contained" sx={{ mt: 2 }}>
+      Save
+    </SubmitButton>
+  );
+};
+
+const Notify = () => {
+  const { loading } = useLoading();
+  const { notify, updateNotify } = useAlerts();
+  const emails = notify.filter((n) => n.type === "email");
+  const sms = notify.filter((n) => n.type === "sms");
+  const fixedSMS = sms.filter((s) => s.fixed).map((s) => s.contact);
+  const fixedEmails = emails.filter((e) => e.fixed).map((e) => e.contact);
+
+  return (
+    <Box
+      borderLeft={(t) => `1px solid ${t.palette.divider}`}
+      pl={2}
+      width={500}
+      position="relative"
+    >
+      <Loading loading={loading.notify} />
       <Form
-        onSubmit={console.log}
+        onSubmit={(values) => updateNotify([...values.sms, ...values.emails])}
         initialValues={{
-          staffs: [],
-          telephones: [],
+          emails: [],
+          sms: [],
         }}
       >
-        <Box width={350}>
+        <Box>
           <Typography variant="h6">Send notifications to: </Typography>
+          <FormLabel>Emails</FormLabel>
           <AutoComplete
-            name="staffs"
-            options={staffs}
-            label="Staffs"
+            limitTags={2}
+            fixed={fixedEmails}
+            name="emails"
+            options={emails.map((e) => e.contact)}
+            size="small"
+            placeholder="Click so select"
+            sx={{ mb: 2 }}
+          />
+          <FormLabel>SMS</FormLabel>
+          <AutoComplete
+            name="sms"
+            limitTags={2}
+            fixed={fixedSMS}
+            placeholder="Click so select"
+            options={sms.map((s) => s.contact)}
+            getOptionLabel={(option) => "+971" + option}
             size="small"
           />
-          <AutoComplete
-            name="telephones"
-            options={telephones}
-            label="Telephones"
-            size="small"
-          />
-          <SubmitButton variant="contained" sx={{ mt: 2 }}>
-            Save
-          </SubmitButton>
+          <SaveButton />
         </Box>
       </Form>
     </Box>

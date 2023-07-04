@@ -17,7 +17,7 @@ const TextField = (props) => {
   const hasError = Boolean(touched[name] && error);
 
   const onlyNumbers = (e) => {
-    if (type === "number" && !e.code?.match(/Digit[0-9]|(Backspace)/i))
+    if (type === "number" && !e.code?.match(/Digit[0-9]|(Backspace)|(Arrow*)/i))
       e.preventDefault();
   };
 

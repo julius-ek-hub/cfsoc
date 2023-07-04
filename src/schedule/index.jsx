@@ -12,7 +12,7 @@ import useCommonSettings from "../common/hooks/useSettings";
 
 const Schedule = () => {
   const { initializeSchedule } = useSettings();
-  const { user } = useCommonSettings();
+  const { user, staffs } = useCommonSettings();
   const { loadSchedules } = useSchedules();
 
   const initialize = async () => {
@@ -25,7 +25,8 @@ const Schedule = () => {
   }, []);
 
   return (
-    user && (
+    user &&
+    staffs && (
       <>
         <Nav app="Schedules" />
         <Box display="flex" width="100%" flexGrow={1} overflow="hidden">

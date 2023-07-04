@@ -1,6 +1,6 @@
 const { generateAssiduity } = require("../utils/generator");
 const { getSchedule, updateSchedule } = require("../db/schedules");
-const { getStaff } = require("../db/staffs");
+const { getStaff } = require("../../auth/db");
 const { getShifs } = require("../db/dates");
 
 module.exports = async (req, res) => {

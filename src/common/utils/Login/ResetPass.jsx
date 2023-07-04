@@ -24,7 +24,7 @@ const scheme = Yup.object({
 
 const ResetPass = ({ onCancel, username }) => {
   const { update } = useCommonSettings();
-  const { post } = useFetch();
+  const { post } = useFetch("/auth");
   const { update: ul } = useLoading();
   return (
     <Form
@@ -34,7 +34,7 @@ const ResetPass = ({ onCancel, username }) => {
       onSubmit={async (val, f) => {
         try {
           ul(true);
-          const { json } = await post("/auth/create-pass", {
+          const { json } = await post("/create-pass", {
             username,
             password: val.p1,
           });

@@ -2,6 +2,8 @@ const { getDates, get_max_days } = require("../db/dates");
 const { next_or_current } = require("../utils/common");
 const n = require("../utils/next");
 
+// Not in use
+
 module.exports = async (req, res, next) => {
   try {
     const md = (await get_max_days()) || 15;

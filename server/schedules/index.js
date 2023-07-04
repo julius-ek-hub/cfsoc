@@ -1,14 +1,6 @@
 const express = require("express");
 
-const db = require("./mware/db");
-const next = require("./mware/next");
 const anySchedule = require("./routes/any");
-const {
-  getStaffs,
-  addStaff,
-  updateStaff,
-  deleteStaff,
-} = require("./routes/staffs");
 const getNext = require("./routes/next");
 const getCurrent = require("./routes/current");
 const likeHandler = require("./routes/like");
@@ -18,9 +10,7 @@ const startHandler = require("./routes/start");
 const copy = require("./routes/copy");
 const download = require("./routes/download");
 const email = require("./routes/email");
-const auth = require("./routes/auth");
-const cors = require("./mware/cors");
-const try_catch = require("./mware/try_catch");
+const try_catch = require("../mware/try_catch");
 const { updateSuggestion, deleteSuggetion } = require("./routes/suggestions");
 const {
   getDates,
@@ -33,11 +23,6 @@ const { getStatuses, saveStatus, updateStatus } = require("./routes/statuses");
 
 const Router = express.Router();
 
-Router.use(cors);
-Router.use(db);
-Router.use(next);
-
-Router.use("/auth", try_catch(auth));
 Router.get("/dates", try_catch(getDates));
 Router.get("/download", try_catch(download));
 Router.post("/email", try_catch(email));
@@ -54,11 +39,6 @@ Router.post("/max_days", try_catch(setMaxDays));
 
 Router.post("/suggestions", try_catch(updateSuggestion));
 Router.delete("/suggestions", try_catch(deleteSuggetion));
-
-Router.get("/staffs", try_catch(getStaffs));
-Router.post("/staffs", try_catch(addStaff));
-Router.patch("/staffs", try_catch(updateStaff));
-Router.delete("/staffs", try_catch(deleteStaff));
 
 Router.get("/generate", try_catch(copy));
 Router.post("/start", try_catch(startHandler));

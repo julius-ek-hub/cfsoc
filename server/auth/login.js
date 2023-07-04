@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { objectExcept, env } = require("../../utils/common");
-const { getStaff } = require("../../db/staffs");
+const { objectExcept, env } = require("../utils/common");
+const { getStaff } = require("./db");
 
 module.exports = async (req, res) => {
   const { username, password } = req.body;

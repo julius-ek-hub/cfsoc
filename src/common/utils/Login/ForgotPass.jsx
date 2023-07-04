@@ -28,7 +28,7 @@ const ForgotPass = ({ onCancel, onSuccess }) => {
   const [success, setSuccess] = useState(false);
   const [form, setForm] = useState(null);
   const [resending, setResending] = useState(false);
-  const { post } = useFetch();
+  const { post } = useFetch("/auth");
   const { update } = useLoading();
 
   const resendOTP = () => {
@@ -58,7 +58,7 @@ const ForgotPass = ({ onCancel, onSuccess }) => {
         setResending(false);
         try {
           update(true);
-          const { json } = await post("/auth/verify-user", {
+          const { json } = await post("/verify-user", {
             username: v.username,
           });
           if (json.error) {

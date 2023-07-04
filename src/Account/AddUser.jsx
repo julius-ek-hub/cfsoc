@@ -40,7 +40,7 @@ const AddUser = ({ ClickComponent, edit }) => {
   const [admin, setAdmin] = useState(
     typeof edit?.admin === "boolean" ? edit.admin : false
   );
-  const { post, patch } = useFetch();
+  const { post, patch } = useFetch("/auth");
   const { update } = useLoading();
   const { staffs, update: us, uname } = useCommonSettings();
 

@@ -83,7 +83,14 @@ const schedulesSlice = createSlice({
               });
             continue;
           }
-          eval(`state.active.${key} = p[key]`);
+
+          const key_arr = key.split("@").map((k) => (isNaN(k) ? k : Number(k)));
+          const without_last = key_arr.slice(0, key_arr.length - 1);
+          const target = without_last.reduce(
+            (prev, curr) => prev[curr],
+            state.active
+          );
+          target[key_arr[key_arr.length - 1]] = p[key];
         }
       });
       state.history.push(state.active);

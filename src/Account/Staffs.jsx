@@ -43,7 +43,7 @@ const columns = [
 
 const Tr = ({ row }) => {
   const [open, setOpen] = useState(false);
-  const { dlete } = useFetch();
+  const { dlete } = useFetch("/auth");
   const { update: ul } = useLoading();
   const { update: us, staffs, uname, admin } = useCommonSettings();
 

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const sendMail = require("../../utils/mail");
-const { env } = require("../../utils/common");
-const { getStaff } = require("../../db/staffs");
+const sendMail = require("../utils/mail");
+const { env } = require("../utils/common");
+const { getStaff } = require("./db");
 
 const verifyUser = async (req, res) => {
   const { username } = req.body;
@@ -11,7 +11,7 @@ const verifyUser = async (req, res) => {
   try {
     const otp = Math.random().toString(36).toUpperCase().slice(2, 6);
     await sendMail({
-      subject: "OTP - SOC Schedule",
+      subject: "OTP - CFSOC",
       text: otp,
       to: user.email,
     });

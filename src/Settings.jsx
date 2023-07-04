@@ -9,6 +9,7 @@ import theme_conf from "./common/theme";
 import useSettings from "./common/hooks/useSettings";
 
 import FullScreenLoading from "./common/utils/Loading/FullScreen";
+import Login from "./common/utils/Login";
 
 export default function Settings({ children }) {
   const { initializeCommonSettings, theme } = useSettings();
@@ -25,6 +26,7 @@ export default function Settings({ children }) {
     <ThemeProvider theme={theme_conf(t)}>
       <CssBaseline enableColorScheme />
       {children}
+      <Login />
       <FullScreenLoading />
     </ThemeProvider>
   );

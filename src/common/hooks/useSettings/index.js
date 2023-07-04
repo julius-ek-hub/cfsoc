@@ -7,36 +7,29 @@ import useFetch from "../useFetch";
 import { u as uc } from "../../utils/utils";
 
 const useCommonSettings = () => {
-  const { user, theme, staffs, alarm } = useSelector(
+  const { user, theme, staffs } = useSelector(
     ({ common_settings }) => common_settings
   );
   const dispatch = useDispatch();
   const { get: lget, set, remove } = useLocalStorage();
-  const { get } = useFetch();
+  const { get } = useFetch("/auth");
 
-  const update = (key, value) => {
+  const update = (key, value, localSave = true) => {
     dispatch(u({ key, value }));
-    value ? set(key, value) : remove(key);
+    value && localSave ? set(key, value) : remove(key);
   };
 
   const getStaffs = async () => {
-    if (staffs) return;
     const { json } = await get("/staffs", "staffs");
-    !json.error && update("staffs", json);
+    !json.error && update("staffs", json, false);
   };
 
   const logout = async () => {
-    [
-      "user",
-      "x-auth-token",
-      "max_days",
-      "show_profile",
-      "theme",
-      "view",
-      "alarm",
-    ].map((k) => {
-      update(k, k === "theme" ? "system" : undefined);
-    });
+    ["user", "x-auth-token", "max_days", "show_profile", "theme", "view"].map(
+      (k) => {
+        update(k, k === "theme" ? "system" : undefined);
+      }
+    );
   };
 
   const initializeCommonSettings = async () => {
@@ -53,7 +46,6 @@ const useCommonSettings = () => {
     theme,
     user,
     staffs,
-    alarm,
     uname: user?.username,
     admin: Boolean(user?.admin),
     guest: (user?.username || "guest") === "guest",

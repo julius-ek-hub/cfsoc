@@ -1,16 +1,10 @@
 import * as React from "react";
-import Checkbox from "@mui/material/Checkbox";
+
 import TextField from "@mui/material/TextField";
+import Chip from "@mui/material/Chip";
 import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 import { useFormikContext } from "formik";
-
-import { u } from "../../utils";
-
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 /**
  * @param {AutocompleteProps} props
@@ -19,14 +13,24 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export default function AutoComplete(props) {
   const { errors, touched, values, handleChange } = useFormikContext();
 
-  const { name, options, label, placeholder, helperText, size } = props;
+  const {
+    name,
+    options,
+    multiple = true,
+    label,
+    placeholder,
+    helperText,
+    size,
+    sx,
+    fixed,
+    getOptionLabel,
+    ...rest
+  } = props;
 
   const error = errors[name];
   const value = values[name];
 
   const hasError = Boolean(touched[name] && error);
-
-  const _name = (opt) => opt.split(".").map(u).join(" ");
 
   const onChange = (e, value) => {
     handleChange({ target: { value, name } });
@@ -34,25 +38,20 @@ export default function AutoComplete(props) {
 
   return (
     <Autocomplete
-      multiple
+      multiple={multiple}
       options={options}
-      disableCloseOnSelect
+      disableCloseOnSelect={multiple}
       value={value}
       fullWidth
+      filterSelectedOptions
       onChange={onChange}
-      getOptionLabel={_name}
-      sx={{ mt: 1 }}
-      renderOption={(props, option, { selected }) => (
-        <li {...props}>
-          <Checkbox
-            icon={icon}
-            checkedIcon={checkedIcon}
-            style={{ marginRight: 8 }}
-            checked={selected}
-          />
-          {_name(option)}
-        </li>
-      )}
+      sx={{ mt: 1, ...sx }}
+      getOptionLabel={getOptionLabel}
+      renderOption={(props, option) => {
+        return (
+          <li {...props}>{getOptionLabel ? getOptionLabel(option) : option}</li>
+        );
+      }}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -64,6 +63,17 @@ export default function AutoComplete(props) {
           size={size}
         />
       )}
+      {...(fixed && {
+        renderTags: (tagValue, getTagProps) =>
+          tagValue.map((option, index) => (
+            <Chip
+              label={getOptionLabel ? getOptionLabel(option) : option}
+              {...getTagProps({ index })}
+              disabled={fixed.indexOf(option) !== -1}
+            />
+          )),
+      })}
+      {...rest}
     />
   );
 }

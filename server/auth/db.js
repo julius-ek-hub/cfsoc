@@ -1,4 +1,4 @@
-const Staff = require("../models/staff");
+const Staff = require("./model");
 
 const getStaff = async (filter, select = "") => {
   const staffs = await Staff.find(filter, select).select(select).lean();

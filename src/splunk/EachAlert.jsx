@@ -13,7 +13,7 @@ import IconButton from "../common/utils/IconButton";
 
 import { alert_titles } from "./utils";
 
-const EachAlert = ({ row, selected, onSelect }) => {
+const EachAlert = ({ alert, selected, onSelect }) => {
   const [open, setOpen] = useState(false);
 
   const Tc = (props) => (
@@ -37,23 +37,12 @@ const EachAlert = ({ row, selected, onSelect }) => {
           />
         </Tc>
         <Tc>
-          <Checkbox checked={selected} onChange={() => onSelect(row.name)} />
+          <Checkbox checked={selected} onChange={() => onSelect(alert._id)} />
         </Tc>
         {alert_titles.map((column) => {
-          const value = row[column.id];
-          return (
-            <Tc key={column.id} align={column.align}>
-              {column.format && typeof value === "number"
-                ? column.format(value)
-                : value}
-            </Tc>
-          );
+          const value = alert[column.id];
+          return <Tc key={column.id}>{value}</Tc>;
         })}
-        <Tc>
-          <Button size="small" variant="outlined">
-            Acknowledge
-          </Button>
-        </Tc>
       </TableRow>
       <TableRow>
         <TableCell

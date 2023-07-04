@@ -1,25 +1,69 @@
 export const alert_titles = [
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "code", label: "ISO\u00a0Code", minWidth: 100 },
+  { label: "Time", minWidth: 100, id: "time" },
   {
-    id: "population",
-    label: "Population",
-    minWidth: 170,
+    label: "Source IP",
+    id: "source_ip",
+    minWidth: 60,
     align: "right",
-    format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "size",
-    label: "Size\u00a0(km\u00b2)",
-    minWidth: 170,
+    label: "Title",
+    id: "title",
+    minWidth: 200,
     align: "right",
-    format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "density",
-    label: "Density",
-    minWidth: 170,
+    label: "Security Domain",
+    minWidth: 40,
     align: "right",
-    format: (value) => value.toFixed(2),
+    id: "security_domain",
   },
+  {
+    label: "Urgency",
+    minWidth: 20,
+    align: "right",
+    id: "urgency",
+  },
+  {
+    label: "Status",
+    minWidth: 20,
+    align: "right",
+    id: "status",
+  },
+  {
+    label: "Owner",
+    minWidth: 20,
+    align: "right",
+    id: "owner",
+  },
+];
+
+export function createData(
+  time,
+  source_ip,
+  title,
+  security_domain,
+  urgency,
+  status,
+  owner
+) {
+  return { time, source_ip, title, security_domain, urgency, status, owner };
+}
+
+export const rows = [
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
+  createData("India", "IN", 1324171354, 3287263, "India", "IN", 1324171354),
 ];

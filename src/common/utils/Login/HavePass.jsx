@@ -26,7 +26,7 @@ const HavePass = ({ onNoPass }) => {
   const [username, setUsername] = useState(null);
   const { update } = useCommonSettings();
   const { update: ul } = useLoading();
-  const { post } = useFetch();
+  const { post } = useFetch("/auth");
   return (
     <Form
       description="Login"
@@ -36,7 +36,7 @@ const HavePass = ({ onNoPass }) => {
         setUsername(v.username);
         try {
           ul(true);
-          const { json } = await post("/auth/login", {
+          const { json } = await post("/login", {
             username: v.username.toLowerCase(),
             password: v.password,
           });

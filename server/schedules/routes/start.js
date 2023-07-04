@@ -1,6 +1,6 @@
 const { saveNew } = require("../db/schedules");
 const { getDates, getShifs, get_max_days } = require("../db/dates");
-const { getStaff } = require("../db/staffs");
+const { getStaff } = require("../../auth/db");
 const { getStatus, saveStatus } = require("../db/statuses");
 
 const { generateAssiduity, generateDateRange } = require("../utils/generator");
