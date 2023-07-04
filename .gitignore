@@ -10,7 +10,7 @@
 
 # production
 /build
-/server/view
+/server/view/*
 .env
 
 # misc

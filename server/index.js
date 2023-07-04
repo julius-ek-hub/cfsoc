@@ -21,8 +21,8 @@ app.use(compression());
 app.use(helmet());
 app.use(cors);
 app.use(db);
-app.use("/api/schedules", [schedules]);
-app.use("/expocitydubai", [expo]);
+app.use("/api/schedules", schedules);
+app.use("/expocitydubai", expo);
 app.use("/auth", auth);
 
 app.get("/*", function (req, res) {
