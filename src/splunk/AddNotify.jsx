@@ -29,7 +29,7 @@ const AddNotify = () => {
     <Box
       borderLeft={(t) => `1px solid ${t.palette.divider}`}
       pl={2}
-      width={300}
+      flexGrow={1}
       position="relative"
     >
       <Loading loading={loading.add_notify} abs />

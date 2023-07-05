@@ -78,14 +78,6 @@ const HavePass = ({ onNoPass }) => {
       </Box>
       <Box mt={2} display="flex" gap={2}>
         <SubmitButton variant="contained">Login</SubmitButton>
-        <Button
-          onClick={() => {
-            update("user", { username: "guest" });
-            update("x-auth-token", undefined);
-          }}
-        >
-          Or proceed as Guest
-        </Button>
       </Box>
     </Form>
   );

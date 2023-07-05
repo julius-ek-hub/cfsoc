@@ -60,7 +60,7 @@ const Search = () => {
   };
 
   return (
-    <Box display="flex" gap={4} flexWrap="wrap">
+    <Box display="flex" gap={4} flexWrap="wrap" flexGrow={1} maxWidth="35%">
       <Form
         onSubmit={handleSubmit}
         initialValues={{
@@ -74,7 +74,7 @@ const Search = () => {
           time: dtime && time.includes(dtime) ? dtime : time[0],
         }}
       >
-        <Box width={350}>
+        <Box width="45%">
           <Typography variant="h6">Search Alerts: </Typography>
           <AutoComplete
             name="status"
@@ -98,7 +98,7 @@ const Search = () => {
             limitTags={2}
           />
         </Box>
-        <Box width={350}>
+        <Box width="45%">
           <AutoComplete
             name="title"
             options={titles}

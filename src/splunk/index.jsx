@@ -25,8 +25,8 @@ const Splunk = () => {
   const { user, staffs } = useCommonSettings();
 
   useLayoutEffect(() => {
-    init();
-  }, []);
+    user && init();
+  }, [user]);
 
   const toggleOpen = () => {
     updateClient("show_splunk_info", !show_splunk_info);
@@ -47,19 +47,25 @@ const Splunk = () => {
         }}
       >
         <Box display="flex" my={2} justifyContent="space-between">
-          <Typography variant="h4" fontWeight=" bold">
+          <Typography
+            variant="h4"
+            fontWeight=" bold"
+            sx={{ wordBreak: "normal" }}
+          >
             Splunk Webhook
           </Typography>
-          <Box>
+          <Box whiteSpace="nowrap">
             <audio
               src="/alert.mp3"
               id="splunk-alert-audio"
               hidden
               muted={!alarm}
+              autoPlay
             />
             <IconButton
               Icon={ArrowForwardIosIcon}
               size="small"
+              sx={{ mr: 2 }}
               iprop={{
                 sx: {
                   transform: `rotate(${show_splunk_info ? 90 : 180}deg)`,
@@ -79,7 +85,11 @@ const Splunk = () => {
         </Box>
 
         <Box>
-          <Collapse in={show_splunk_info}>
+          <Collapse
+            in={
+              typeof show_splunk_info === "boolean" ? show_splunk_info : false
+            }
+          >
             <Box display="flex" gap={4} flexWrap="wrap" pb={2}>
               <Severities />
               <Search />

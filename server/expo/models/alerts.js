@@ -11,6 +11,7 @@ const alertsSchema = new mongoose.Schema({
   notified: { type: Boolean, default: false },
   acknowledged: { type: Boolean, default: false },
   received: { type: Boolean, default: false },
+  _time: { type: Date, default: Date.now },
 });
 
 alertsSchema.set("toObject", { virtuals: true });

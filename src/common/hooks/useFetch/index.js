@@ -9,7 +9,7 @@ const useFetch = (baseURL = "/api/schedules") => {
     const authToken = gl("x-auth-token");
     const { protocol, port, hostname } = window.location;
     const proto = `${protocol}//`;
-    const por = port ? `:${port}` : "";
+    const por = port ? `:${4999}` : "";
     const path = `${baseURL}${endpoint || ""}`;
     const auth = "";
     // const auth = authToken ? `?auth=${authToken}` : "";

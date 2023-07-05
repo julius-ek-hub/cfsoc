@@ -125,7 +125,7 @@ const Alerts = () => {
           />
         </>
       )}
-      {!loading.alerts && alert.length === 0 && <NoAlerts />}
+      {!loading.alerts && alerts.length === 0 && <NoAlerts />}
     </Paper>
   );
 };

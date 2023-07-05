@@ -13,16 +13,18 @@ import {
 
 import useFetch from "../../common/hooks/useFetch";
 import useLocalStorage from "../../common/hooks/useLocalStorage";
+import usePushNotification from "../../common/hooks/usePushNotification";
 
 const useAlerts = () => {
   const { alerts, notify, alarm, show_splunk_info } = useSelector(
     ({ splunk }) => splunk
   );
   const dispatch = useDispatch();
-  const [sp, setSp] = useSearchParams();
+  // const [sp, setSp] = useSearchParams();
   const { get, post, patch } = useFetch("/expocitydubai");
   const l = useLocation();
   const ls = useLocalStorage();
+  const { registerServiceWorker } = usePushNotification();
 
   const addAlert = (alert) => dispatch(aa(alert));
   const deleteAlert = (__id) => dispatch(da(__id));
@@ -82,6 +84,7 @@ const useAlerts = () => {
     updateClient("show_splunk_info", Boolean(show_splunk_info));
     await loadAlerts();
     await loadNotify();
+    registerServiceWorker();
   };
 
   return {

@@ -28,13 +28,11 @@ const common_store = configureStore({
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <StrictMode>
-    <Provider store={common_store}>
-      <Settings>
-        <Box sx={{ display: "flex", height: "100vh", flexDirection: "column" }}>
-          <RouterProvider router={router} />
-        </Box>
-      </Settings>
-    </Provider>
-  </StrictMode>
+  <Provider store={common_store}>
+    <Settings>
+      <Box sx={{ display: "flex", height: "100vh", flexDirection: "column" }}>
+        <RouterProvider router={router} />
+      </Box>
+    </Settings>
+  </Provider>
 );

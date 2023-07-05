@@ -6,7 +6,11 @@ const FullScreenLoading = () => {
   const { loading } = useLoading();
 
   return (
-    <Backdrop open={Boolean(loading.full)} unmountOnExit sx={{ zIndex: 10000 }}>
+    <Backdrop
+      open={Boolean(loading.full || loading.user)}
+      unmountOnExit
+      sx={{ zIndex: 10000 }}
+    >
       <CircularProgress />
     </Backdrop>
   );

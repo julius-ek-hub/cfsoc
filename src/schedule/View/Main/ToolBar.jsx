@@ -78,7 +78,7 @@ const ToolBar = () => {
   } = useActiveSchedule();
 
   const { update, show_profile } = useSettings();
-  const { uname, guest, admin, getName } = useCommonSettings();
+  const { uname, admin, getName, user } = useCommonSettings();
 
   const menuButton = (
     <IconButton
@@ -136,7 +136,7 @@ const ToolBar = () => {
     </Confirm>
   );
 
-  const saveButton = !guest && !locked && (
+  const saveButton = user && !locked && (
     <IconButton Icon={SaveIcon} onClick={saveSchedule} title="Save" />
   );
 
@@ -183,7 +183,7 @@ const ToolBar = () => {
     />
   );
 
-  const likeButton = !guest && (
+  const likeButton = user && (
     <IconButton
       Icon={liked_this ? FavoriteIcon : FavoriteBorderIcon}
       title={
@@ -197,7 +197,7 @@ const ToolBar = () => {
       onClick={update_like}
     />
   );
-  const send = !guest && <EmailSchedule />;
+  const send = user && <EmailSchedule />;
   const lock = admin && (
     <Confirm
       ok_color={locked ? "primary" : "error"}
@@ -227,10 +227,10 @@ const ToolBar = () => {
     </Confirm>
   );
 
-  const undo = !guest && historyLevel > 0 && (
+  const undo = user && historyLevel > 0 && (
     <IconButton Icon={UndoIcon} title="Undo" onClick={() => setHistory(-1)} />
   );
-  const redo = !guest && historyLevel < history.length - 1 && (
+  const redo = user && historyLevel < history.length - 1 && (
     <IconButton Icon={RedoIcon} title="Redo" onClick={() => setHistory(1)} />
   );
 

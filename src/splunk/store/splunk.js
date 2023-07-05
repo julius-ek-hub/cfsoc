@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const splunkSlice = createSlice({
   name: "splunk",
-  initialState: { alerts: [], notify: [], alarm: true, show_splunk_info: true },
+  initialState: { alerts: [], notify: [], alarm: true },
   reducers: {
     updateClient(state, { payload }) {
       state[payload.key] = payload.value;

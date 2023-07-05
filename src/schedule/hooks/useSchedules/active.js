@@ -23,7 +23,7 @@ const useActiveSchedule = () => {
   );
   const dispatch = useDispatch();
   const { get, post, dlete } = useFetch();
-  const { uname, admin, guest } = useCommonSettings();
+  const { uname, admin, user } = useCommonSettings();
   const { date: date_param } = useParams();
   const [sp, setSp] = useSearchParams();
 
@@ -44,7 +44,7 @@ const useActiveSchedule = () => {
   const setSelected = (v) => dispatch(ss(v));
 
   const generateSchedule = async (copy) => {
-    if (guest) return;
+    if (!user) return;
     const { json } = await get(
       `/generate?from=${active.from}&to=${active.to}&by=${uname}${
         copy ? `&copy=${active_by}` : ""
@@ -62,7 +62,7 @@ const useActiveSchedule = () => {
         sug.votes.includes(uname)
       ) &&
       !active.locked &&
-      !guest &&
+      user &&
       next_or_current(active.from, active.to).editable
     );
   };
@@ -85,7 +85,7 @@ const useActiveSchedule = () => {
   };
 
   const saveSchedule = async () => {
-    if (guest) return;
+    if (!user) return;
     await post("/suggestions", {
       $new: active.suggestions[active_by],
       from: active.from,
@@ -108,7 +108,7 @@ const useActiveSchedule = () => {
   };
 
   const update_like = async () => {
-    if (active_by === uname || guest || active?.suggestions[uname]) return;
+    if (active_by === uname || !user || active?.suggestions[uname]) return;
     const { json } = await post("/like", {
       from: active.from,
       to: active.to,

@@ -8,19 +8,16 @@ import UserInfo from "../../../../../common/utils/UserInfo";
 
 function SettingsMenu() {
   const { max_days } = useSettings();
-  const { uname, guest } = useCommonSettings();
-  if (!uname) return null;
+  const { user } = useCommonSettings();
+  if (!user) return null;
 
   return (
     <>
       <UserInfo />
-      {!guest && (
-        <>
-          {max_days && <Settings />}
-          <Shifts />
-          <ShiftsStatuses />
-        </>
-      )}
+
+      {max_days && <Settings />}
+      <Shifts />
+      <ShiftsStatuses />
     </>
   );
 }

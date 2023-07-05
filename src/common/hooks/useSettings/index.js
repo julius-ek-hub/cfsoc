@@ -7,7 +7,7 @@ import useFetch from "../useFetch";
 import { u as uc } from "../../utils/utils";
 
 const useCommonSettings = () => {
-  const { user, theme, staffs } = useSelector(
+  const { user, theme, staffs, push_notification } = useSelector(
     ({ common_settings }) => common_settings
   );
   const dispatch = useDispatch();
@@ -24,6 +24,11 @@ const useCommonSettings = () => {
     !json.error && update("staffs", json, false);
   };
 
+  const getUser = async () => {
+    const { json } = await get("/user?token=" + lget("x-auth-token"), "user");
+    !json.error && update("user", json, false);
+  };
+
   const logout = async () => {
     ["user", "x-auth-token", "max_days", "show_profile", "theme", "view"].map(
       (k) => {
@@ -34,11 +39,12 @@ const useCommonSettings = () => {
 
   const initializeCommonSettings = async () => {
     const t = lget("theme");
-    const u = lget("user");
     const a = lget("alarm");
+    const pn = lget("push_notification");
     update("theme", t || "system");
-    update("user", u);
     update("alarm", a);
+    update("push_notification", pn, false);
+    await getUser();
     await getStaffs();
   };
 
@@ -48,9 +54,8 @@ const useCommonSettings = () => {
     staffs,
     uname: user?.username,
     admin: Boolean(user?.admin),
-    guest: (user?.username || "guest") === "guest",
     getName(username = user?.username) {
-      if (!username || !staffs) return "guest";
+      if (!username || !staffs) return "";
       return (
         staffs[username] || {
           name: username,
@@ -63,6 +68,7 @@ const useCommonSettings = () => {
     update,
     logout,
     initializeCommonSettings,
+    push_notification,
   };
 };
 

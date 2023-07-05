@@ -6,16 +6,19 @@ import ForgotPass from "./ForgotPass";
 import HavePass from "./HavePass";
 
 import useCommonSettings from "../../hooks/useSettings";
+import useLoading from "../../hooks/useLoading";
 
 const Login = () => {
   const [havePass, setHavePass] = useState(true);
   const { user } = useCommonSettings();
-
+  const { loading } = useLoading();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setOpen(!Boolean(user));
   }, [user]);
+
+  if (loading.user) return null;
 
   return (
     <Dialog

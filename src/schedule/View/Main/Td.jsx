@@ -23,7 +23,7 @@ import {
 
 const Td = ({ date, shift_swap, comments, id }) => {
   const [open, setOpen] = useState(false);
-  const { guest, uname, getName } = useCommonSettings();
+  const { uname, getName, user } = useCommonSettings();
   const { active } = useActiveSchedule();
   const { statuses } = useSchedules();
   const [selected, setSel] = useState([]);
@@ -36,10 +36,10 @@ const Td = ({ date, shift_swap, comments, id }) => {
     setSel([]);
   };
 
-  const can_select = !shift_swap && !guest && !active.locked;
+  const can_select = !shift_swap && user && !active.locked;
   const status = statuses.find((s) => s.name === date.status);
 
-  const com = has_comments(comments) && !guest;
+  const com = has_comments(comments) && user;
 
   const sh = `${itt(date.shift.from)} - ${itt(date.shift.to)}`;
 

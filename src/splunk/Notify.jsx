@@ -54,8 +54,9 @@ const Notify = () => {
     <Box
       borderLeft={(t) => `1px solid ${t.palette.divider}`}
       pl={2}
-      width={500}
+      flexGrow={1}
       position="relative"
+      maxWidth={"30%"}
     >
       <Loading loading={loading.notify} />
       <Form
@@ -77,7 +78,7 @@ const Notify = () => {
             placeholder="Click so select"
             sx={{ mb: 2 }}
           />
-          <FormLabel>SMS</FormLabel>
+          <FormLabel>Telephones</FormLabel>
           <AutoComplete
             name="sms"
             limitTags={2}

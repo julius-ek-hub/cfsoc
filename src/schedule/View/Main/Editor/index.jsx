@@ -14,7 +14,7 @@ import useCommonSettings from "../../../../common/hooks/useSettings";
 const Editor = (_props) => {
   const { selected } = useActiveSchedule();
   const [open, setOpen] = useState(false);
-  const { uname } = useCommonSettings();
+  const { uname, user } = useCommonSettings();
 
   const handleClose = () => setOpen(false);
 
@@ -29,7 +29,7 @@ const Editor = (_props) => {
               title="Edit selected cells"
               Icon={MoreVertIcon}
               onClick={(e) => {
-                if (uname === "guest") return;
+                if (!user) return;
                 props.onClick(e);
                 setOpen(true);
               }}

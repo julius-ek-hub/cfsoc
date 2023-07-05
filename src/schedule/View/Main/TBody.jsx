@@ -14,17 +14,17 @@ import useSchedules from "../../hooks/useSchedules";
 import useSelection from "../../hooks/useSelection";
 import useCommonSettings from "../../../common/hooks/useSettings";
 
-import { u, staffs_in_shift } from "../../utils/utils";
+import { staffs_in_shift } from "../../utils/utils";
 
 const TBody = () => {
   const { active_assiduity, active, active_by } = useActiveSchedule();
   const { shifts } = useSchedules();
   const { init } = useSelection();
-  const { admin, guest, getName } = useCommonSettings();
+  const { admin, user, getName } = useCommonSettings();
 
   useEffect(() => {
-    !guest && !active.locked && init();
-  }, [guest, active_by]);
+    user && !active.locked && init();
+  }, [user, active_by]);
 
   let max_row = 2;
 

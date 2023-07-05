@@ -1,17 +1,17 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-import IconButton from "../IconButton";
 import AppSelect from "./AppSelect";
 import Theme from "./Theme";
 import OpenProfile from "./OpenProfile";
 import useCommonSettings from "../../hooks/useSettings";
 
 const Nav = ({ app = "All Apps" }) => {
-  const { getName } = useCommonSettings();
+  const { getName, user } = useCommonSettings();
+
+  if (!user) return null;
 
   return (
     <Box

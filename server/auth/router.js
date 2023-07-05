@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 const { deleteNotify } = require("../expo/db/notify");
 const {
   getStaff: gs,
@@ -5,10 +7,29 @@ const {
   updateStaff: us,
   deleteStaff: ds,
 } = require("./db");
+const { env } = require("../utils/common");
 
 const getStaffs = async (req, res) => {
   const staffs = await gs();
   res.json(staffs);
+};
+
+const getUser = async (req, res) => {
+  const { token } = req.query;
+  const loginError = {
+    error: "Login failed",
+    errorCode: 400,
+    stack: "",
+  };
+
+  if (!token) return res.json(loginError);
+  try {
+    const { username } = jwt.verify(token, env("JWT_KEY"));
+    const user = await gs({ username }, "-hash -__v");
+    res.json(user[username]);
+  } catch (error) {
+    res.json(loginError);
+  }
 };
 const addStaff = async (req, res) => {
   let { email, ...rest } = req.body;
@@ -45,4 +66,4 @@ const deleteStaff = async (req, res) => {
   res.json({ ...deleted });
 };
 
-module.exports = { addStaff, getStaffs, updateStaff, deleteStaff };
+module.exports = { addStaff, getStaffs, updateStaff, deleteStaff, getUser };

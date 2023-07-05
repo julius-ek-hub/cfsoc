@@ -4,6 +4,7 @@ const {
   deleteAlert: da,
   updateAlert: ua,
 } = require("../db/alerts");
+const { sendNotification } = require("../../webpush/db");
 
 const getAlerts = async (req, res) => {
   const alerts = await ga();
@@ -20,6 +21,7 @@ const getUnreceivedAlerts = async (req, res) => {
 
 const saveAlert = async (req, res) => {
   const add = await sa(req.body);
+  await sendNotification(add);
   res.json(add);
 };
 
