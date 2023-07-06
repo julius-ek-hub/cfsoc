@@ -22,6 +22,7 @@ const Schedule = () => {
 
   useEffect(() => {
     initialize();
+    document.querySelector("title").textContent = "CFSOC Monthly Schedules";
   }, []);
 
   return (

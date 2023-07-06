@@ -28,4 +28,5 @@ module.exports = {
   updateAlert,
   deleteAlert,
   saveAlert,
+  Alert,
 };

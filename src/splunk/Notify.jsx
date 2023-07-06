@@ -54,9 +54,7 @@ const Notify = () => {
     <Box
       borderLeft={(t) => `1px solid ${t.palette.divider}`}
       pl={2}
-      flexGrow={1}
       position="relative"
-      maxWidth={"30%"}
     >
       <Loading loading={loading.notify} />
       <Form
@@ -74,6 +72,9 @@ const Notify = () => {
             fixed={fixedEmails}
             name="emails"
             options={emails.map((e) => e.contact)}
+            getOptionLabel={(option) =>
+              fixedEmails.includes(option) ? "DevEmail" : option
+            }
             size="small"
             placeholder="Click so select"
             sx={{ mb: 2 }}
@@ -85,7 +86,9 @@ const Notify = () => {
             fixed={fixedSMS}
             placeholder="Click so select"
             options={sms.map((s) => s.contact)}
-            getOptionLabel={(option) => "+971" + option}
+            getOptionLabel={(option) =>
+              fixedSMS.includes(option) ? "SOC Mobile" : "+971" + option
+            }
             size="small"
           />
           <SaveButton />

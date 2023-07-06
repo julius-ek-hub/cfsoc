@@ -14,6 +14,7 @@ import {
 import useFetch from "../../common/hooks/useFetch";
 import useLocalStorage from "../../common/hooks/useLocalStorage";
 import usePushNotification from "../../common/hooks/usePushNotification";
+import useCommonSettings from "../../common/hooks/useSettings";
 
 const useAlerts = () => {
   const { alerts, notify, alarm, show_splunk_info } = useSelector(
@@ -25,6 +26,7 @@ const useAlerts = () => {
   const l = useLocation();
   const ls = useLocalStorage();
   const { registerServiceWorker } = usePushNotification();
+  const { uname } = useCommonSettings();
 
   const addAlert = (alert) => dispatch(aa(alert));
   const deleteAlert = (__id) => dispatch(da(__id));
@@ -68,7 +70,9 @@ const useAlerts = () => {
 
   const checkUnreceivedAlerts = async () => {
     const { json } = await get(
-      "/api/splunk-alerts/unreceived" + l.search,
+      `/api/splunk-alerts/unreceived${
+        l.search + (l.search ? "&" : "?")
+      }device=${navigator.userAgent.toLocaleLowerCase()}`,
       "unreceived_alerts"
     );
     if (!json.error && json.length > 0) {

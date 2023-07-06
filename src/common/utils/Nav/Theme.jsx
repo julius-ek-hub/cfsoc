@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
@@ -14,13 +14,21 @@ import Menu from "../Menu";
 import useCommonSettings from "../../hooks/useSettings";
 
 import { u } from "../utils";
+import useDimension from "../../hooks/useDimensions";
 
 const Theme = () => {
   const [open, setOpen] = useState(false);
   const { update, theme } = useCommonSettings();
+  const { t } = useDimension();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  useLayoutEffect(() => {
+    document
+      .querySelector("meta[name=theme-color]")
+      .setAttribute("content", t.palette.background.paper);
+  }, [t]);
 
   const Bt = ({ type, Icon, name, ...rest }) => (
     <Button

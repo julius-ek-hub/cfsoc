@@ -8,7 +8,7 @@ const Severities = () => {
       <Typography variant="h6" mb={1}>
         Ugency
       </Typography>
-      <Stack width={200} color="common.white" gap={0.1}>
+      <Stack color="common.white" gap={0.1}>
         <Box
           display="flex"
           justifyContent="space-between"

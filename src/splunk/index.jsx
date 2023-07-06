@@ -19,13 +19,16 @@ import Alerts from "./Alerts";
 
 import useCommonSettings from "../common/hooks/useSettings";
 import useAlerts from "./hooks/useAlerts";
+import useDimension from "../common/hooks/useDimensions";
 
 const Splunk = () => {
   const { alarm, init, show_splunk_info, updateClient } = useAlerts();
   const { user, staffs } = useCommonSettings();
+  const { up } = useDimension();
 
   useLayoutEffect(() => {
     user && init();
+    document.querySelector("title").textContent = "Splunk Webhook";
   }, [user]);
 
   const toggleOpen = () => {
@@ -60,7 +63,6 @@ const Splunk = () => {
               id="splunk-alert-audio"
               hidden
               muted={!alarm}
-              autoPlay
             />
             <IconButton
               Icon={ArrowForwardIosIcon}
@@ -90,7 +92,32 @@ const Splunk = () => {
               typeof show_splunk_info === "boolean" ? show_splunk_info : false
             }
           >
-            <Box display="flex" gap={4} flexWrap="wrap" pb={2}>
+            <Box
+              display="flex"
+              gap={4}
+              flexWrap="wrap"
+              pb={2}
+              sx={{
+                "&>div": {
+                  ...(up.xsm && {
+                    width: "100%",
+                  }),
+                  ...(up.md && {
+                    "&:nth-of-type(1)": { width: "20%" },
+                    "&:nth-of-type(2)": { width: "70%" },
+                    "&:nth-of-type(3)": { width: "70%" },
+                    "&:nth-of-type(4)": { width: "20%" },
+                  }),
+                  ...(up.lg && {
+                    width: 200,
+                    "&:nth-of-type(1)": { width: 200 },
+                    "&:nth-of-type(2)": { width: 400, flexGrow: 1 },
+                    "&:nth-of-type(3)": { width: 500 },
+                    "&:nth-of-type(4)": { width: 300 },
+                  }),
+                },
+              }}
+            >
               <Severities />
               <Search />
               <Notify />

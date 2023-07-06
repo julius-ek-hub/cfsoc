@@ -6,7 +6,7 @@ const {
   getAlerts,
   saveAlert,
   deleteAlert,
-  updateAlert,
+  //   updateAlert,
   getUnreceivedAlerts,
 } = require("./routes/alerts");
 const {

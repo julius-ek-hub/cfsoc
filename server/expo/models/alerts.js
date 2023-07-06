@@ -10,7 +10,7 @@ const alertsSchema = new mongoose.Schema({
   owner: String,
   notified: { type: Boolean, default: false },
   acknowledged: { type: Boolean, default: false },
-  received: { type: Boolean, default: false },
+  received: [String],
   _time: { type: Date, default: Date.now },
 });
 

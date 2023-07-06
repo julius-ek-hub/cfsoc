@@ -3,6 +3,7 @@ const {
   saveAlert: sa,
   deleteAlert: da,
   updateAlert: ua,
+  Alert,
 } = require("../db/alerts");
 const { sendNotification } = require("../../webpush/db");
 
@@ -12,9 +13,13 @@ const getAlerts = async (req, res) => {
 };
 
 const getUnreceivedAlerts = async (req, res) => {
-  const alerts = await ga({ received: false });
+  const { device } = req.query;
+  const alerts = await ga({ received: { $nin: [device] } });
   await Promise.all(
-    alerts.map(async ({ _id }) => await ua(_id, { received: true }))
+    alerts.map(
+      async ({ _id }) =>
+        await Alert.findByIdAndUpdate(_id, { $push: { received: device } })
+    )
   );
   res.json(alerts);
 };

@@ -11,10 +11,12 @@ import SubmitButton from "../common/utils/form/controlled/SubmitButton";
 import AutoComplete from "../common/utils/form/controlled/AutoComplete";
 
 import useCommonSettings from "../common/hooks/useSettings";
+import useDimension from "../common/hooks/useDimensions";
 
 const Search = () => {
   const { staffs: st } = useCommonSettings();
   const [sp, setSp] = useSearchParams();
+  const { up } = useDimension();
   const statuses = ["Aknowledged", "Unacknowledged"];
   const owner = ["unassigned", ...Object.values(st).map((st) => st.name)];
 
@@ -60,7 +62,7 @@ const Search = () => {
   };
 
   return (
-    <Box display="flex" gap={4} flexWrap="wrap" flexGrow={1} maxWidth="35%">
+    <Box display="flex" gap={4} flexWrap="wrap">
       <Form
         onSubmit={handleSubmit}
         initialValues={{
@@ -74,7 +76,7 @@ const Search = () => {
           time: dtime && time.includes(dtime) ? dtime : time[0],
         }}
       >
-        <Box width="45%">
+        <Box width={up.md ? "40%" : "100%"} flexGrow={1}>
           <Typography variant="h6">Search Alerts: </Typography>
           <AutoComplete
             name="status"
@@ -98,7 +100,7 @@ const Search = () => {
             limitTags={2}
           />
         </Box>
-        <Box width="45%">
+        <Box width={up.md ? "50%" : "100%"} flexGrow={1}>
           <AutoComplete
             name="title"
             options={titles}
