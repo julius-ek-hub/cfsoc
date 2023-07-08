@@ -15,7 +15,7 @@ const useFetch = (baseURL = "/api/schedules") => {
     // const auth = authToken ? `?auth=${authToken}` : "";
     const url = proto + hostname + por + path + auth;
     try {
-      update(true, loading);
+      loading !== "no" && update(true, loading);
       const raw = await fetch(url, {
         ...props,
         headers: {
@@ -31,7 +31,7 @@ const useFetch = (baseURL = "/api/schedules") => {
         raw: undefined,
       };
     } finally {
-      update(false, loading);
+      loading !== "no" && update(false, loading);
     }
   };
 

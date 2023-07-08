@@ -1,11 +1,11 @@
 const {
   getAlerts: ga,
   saveAlert: sa,
-  deleteAlert: da,
   updateAlert: ua,
   Alert,
 } = require("../db/alerts");
-const { sendNotification } = require("../../webpush/db");
+
+const { sendNotification } = require("../utils/notify");
 
 const getAlerts = async (req, res) => {
   const alerts = await ga();
@@ -14,7 +14,7 @@ const getAlerts = async (req, res) => {
 
 const getUnreceivedAlerts = async (req, res) => {
   const { device } = req.query;
-  const alerts = await ga({ received: { $nin: [device] } });
+  const alerts = await ga({ received: { $ne: device } });
   await Promise.all(
     alerts.map(
       async ({ _id }) =>
@@ -31,20 +31,18 @@ const saveAlert = async (req, res) => {
 };
 
 const updateAlert = async (req, res) => {
-  const { _id, update } = req.body;
-  const add = await ua(_id, update);
-  res.json(add);
-};
-
-const deleteAlert = async (req, res) => {
-  const deleted = await da(req.body_id);
-  res.json({ ...deleted });
+  const { _ids, update } = req.body;
+  const change = await Promise.allSettled(
+    _ids.map(async (_id) => {
+      return await ua(_id, update);
+    })
+  );
+  res.json(change.map((c) => c.value));
 };
 
 module.exports = {
   saveAlert,
   getAlerts,
-  deleteAlert,
   updateAlert,
   getUnreceivedAlerts,
 };

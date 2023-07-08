@@ -1,8 +1,7 @@
 import { ReactNode } from "react";
+import Text from "@mui/material/Typography";
 
 import { Formik, FormikConfig } from "formik";
-
-import Text from "../../Text";
 
 /**
  * @param {FormikConfig & {title: ReactNode, description: ReactNode}} props

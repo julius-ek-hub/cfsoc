@@ -5,6 +5,7 @@ const notifySchema = new mongoose.Schema({
   contact: String,
   active: Boolean,
   fixed: Boolean,
+  staff: String,
 });
 
 notifySchema.set("toObject", { virtuals: true });

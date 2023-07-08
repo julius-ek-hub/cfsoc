@@ -157,7 +157,7 @@ const Tr = ({ row }) => {
 };
 
 const Staffs = () => {
-  const { user, staffs: st } = useCommonSettings();
+  const { user, staffs: st, admin } = useCommonSettings();
   if (!user || !st) return null;
 
   const staffs = Object.values(st);
@@ -168,7 +168,7 @@ const Staffs = () => {
         All Staffs
       </Typography>
       <Paper elevation={0} sx={{ overflow: "auto", maxWidth: "100%" }}>
-        <AddUser />
+        {admin && <AddUser />}
         <TableContainer>
           <Table stickyHeader size="small">
             <TableHead>

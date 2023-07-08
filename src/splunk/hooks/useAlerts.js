@@ -3,21 +3,17 @@ import { useLocation, useSearchParams } from "react-router-dom";
 
 import {
   addAlert as aa,
-  addNotify as an,
-  deleteAlert as da,
-  deleteNotify as dn,
   updateAlert as ua,
-  updateNotify as un,
   updateClient as uc,
+  setAccount as sa,
 } from "../store/splunk";
 
 import useFetch from "../../common/hooks/useFetch";
 import useLocalStorage from "../../common/hooks/useLocalStorage";
-import usePushNotification from "../../common/hooks/usePushNotification";
 import useCommonSettings from "../../common/hooks/useSettings";
 
 const useAlerts = () => {
-  const { alerts, notify, alarm, show_splunk_info } = useSelector(
+  const { alerts, show_splunk_info, account, interacted } = useSelector(
     ({ splunk }) => splunk
   );
   const dispatch = useDispatch();
@@ -25,14 +21,16 @@ const useAlerts = () => {
   const { get, post, patch } = useFetch("/expocitydubai");
   const l = useLocation();
   const ls = useLocalStorage();
-  const { registerServiceWorker } = usePushNotification();
   const { uname } = useCommonSettings();
 
+  const push_registered = (account.push_notification || []).find(
+    (p) => p.device === window.navigator.userAgent.toLocaleLowerCase()
+  );
+
+  const alarm = (account.enabled_notifications || []).includes("sound");
+
   const addAlert = (alert) => dispatch(aa(alert));
-  const deleteAlert = (__id) => dispatch(da(__id));
-  const updateAlert = (__id, value) => dispatch(ua({ __id, value }));
-  const deleteNotify = (contact) => dispatch(dn(contact));
-  const addNotify = (contact) => dispatch(an(contact));
+  const setAccount = (acc) => dispatch(sa(acc));
   const updateClient = (key, value) => {
     dispatch(uc({ key, value }));
     value ? ls.set(key, value) : ls.remove(key);
@@ -43,29 +41,33 @@ const useAlerts = () => {
     !json.error && addAlert(json);
   };
 
-  const loadNotify = async () => {
-    const { json } = await get("/api/splunk-alerts/notify", "notify");
-    !json.error && addNotify(json);
+  const loadAccount = async () => {
+    const { json } = await get("/api/splunk-alerts/account?username=" + uname);
+    !json.error && setAccount(json);
   };
 
-  const updateNotify = async (contacts) => {
+  const updateAlert = async (_ids, update) => {
+    const { json } = await patch("/api/splunk-alerts/", { _ids, update });
+    !json.error && dispatch(ua({ _ids, update }));
+  };
+
+  const updateNotify = async (body) => {
+    updateClient("interacted", true);
     const { json } = await patch(
       "/api/splunk-alerts/notify",
-      contacts,
+      { ...body, username: uname },
       "notify"
     );
-    !json.error && dispatch(un(json));
+    !json.error && setAccount(json);
   };
-
-  const newNotify = async (contact) => {
-    const { json } = await post(
-      "/api/splunk-alerts/notify",
-      contact,
-      "add_notify"
+  const enableNotification = async (on, update) => {
+    updateClient("interacted", true);
+    const { json } = await patch(
+      "/api/splunk-alerts/enable-notify",
+      { on, update, username: uname },
+      "notify"
     );
-    if (json.error) return { error: json.error };
-    addNotify(json);
-    return {};
+    !json.error && setAccount(json);
   };
 
   const checkUnreceivedAlerts = async () => {
@@ -73,7 +75,7 @@ const useAlerts = () => {
       `/api/splunk-alerts/unreceived${
         l.search + (l.search ? "&" : "?")
       }device=${navigator.userAgent.toLocaleLowerCase()}`,
-      "unreceived_alerts"
+      "no"
     );
     if (!json.error && json.length > 0) {
       addAlert(json);
@@ -81,33 +83,57 @@ const useAlerts = () => {
     }
   };
 
+  async function subscribeForPushNotifications() {
+    updateClient("interacted", true);
+    try {
+      const register = await navigator.serviceWorker.register("./worker.js", {
+        scope: "/",
+      });
+
+      const publicVapidKey =
+        "BIaHciU-RpHaVUjPhRxcqBIuEQu8aTv_q7StQ4FmEBP6-0qg9WhowTE6IUOcuANuNdS0ssXc-K-YYV-q9OSQLY8";
+
+      const subscription = await register.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: publicVapidKey,
+      });
+
+      if (push_registered) return;
+
+      const { json } = await post(
+        `/api/splunk-alerts/push-subscribe?device=${navigator.userAgent.toLocaleLowerCase()}&username=${uname}`,
+        subscription
+      );
+
+      !json.error && setAccount(json);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const init = async () => {
-    const a = ls.get("alarm");
-    const show_splunk_info = ls.get("show_splunk_info");
-    updateClient("alarm", a);
-    updateClient("show_splunk_info", Boolean(show_splunk_info));
+    updateClient("alarm", ls.get("alarm"));
+    updateClient("show_splunk_info", Boolean(ls.get("show_splunk_info")));
+    await loadAccount();
     await loadAlerts();
-    await loadNotify();
-    registerServiceWorker();
   };
 
   return {
     alerts,
-    notify,
     alarm,
     show_splunk_info,
+    account,
+    push_registered,
+    interacted: Boolean(!alarm || (alarm && interacted)),
+    enableNotification,
     checkUnreceivedAlerts,
+    subscribeForPushNotifications,
     loadAlerts,
     updateClient,
     init,
-    deleteAlert,
     updateNotify,
     addAlert,
-    addNotify,
-    newNotify,
     updateAlert,
-    loadNotify,
-    loadNotify,
   };
 };
 

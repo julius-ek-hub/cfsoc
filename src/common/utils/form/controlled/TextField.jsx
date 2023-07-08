@@ -30,7 +30,6 @@ const TextField = (props) => {
       type={type === "number" ? "text" : type}
       onKeyDown={onlyNumbers}
       onChange={handleChange}
-      onPasteCapture={console.log}
       placeholder={props.placeholder || props.label}
       helperText={error || helperText}
       {...rest}

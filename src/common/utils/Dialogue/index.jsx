@@ -34,7 +34,9 @@ function Dialog(props) {
       {title && <DialogTitle>{title}</DialogTitle>}
       <DialogContent>
         {typeof children === "string" ? (
-          <DialogContentText>{children}</DialogContentText>
+          <DialogContentText sx={{ wordBreak: "normal" }}>
+            {children}
+          </DialogContentText>
         ) : (
           children
         )}

@@ -6,20 +6,17 @@ import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import NotificationsOffIcon from "@mui/icons-material/NotificationsOff";
-
 import Search from "./Search";
 import Notify from "./Notify";
 import Nav from "../common/utils/Nav";
 import Severities from "./Severities";
-import AddNotify from "./AddNotify";
 import IconButton from "../common/utils/IconButton";
 import Alerts from "./Alerts";
 
 import useCommonSettings from "../common/hooks/useSettings";
 import useAlerts from "./hooks/useAlerts";
 import useDimension from "../common/hooks/useDimensions";
+import Interact from "./Interact";
 
 const Splunk = () => {
   const { alarm, init, show_splunk_info, updateClient } = useAlerts();
@@ -76,13 +73,6 @@ const Splunk = () => {
               }}
               onClick={toggleOpen}
             />
-            <IconButton
-              Icon={alarm ? NotificationsActiveIcon : NotificationsOffIcon}
-              iprop={{ fontSize: "large" }}
-              onClick={() => {
-                updateClient("alarm", alarm ? undefined : "ok");
-              }}
-            />
           </Box>
         </Box>
 
@@ -106,14 +96,14 @@ const Splunk = () => {
                     "&:nth-of-type(1)": { width: "20%" },
                     "&:nth-of-type(2)": { width: "70%" },
                     "&:nth-of-type(3)": { width: "70%" },
-                    "&:nth-of-type(4)": { width: "20%" },
                   }),
                   ...(up.lg && {
-                    width: 200,
                     "&:nth-of-type(1)": { width: 200 },
                     "&:nth-of-type(2)": { width: 400, flexGrow: 1 },
-                    "&:nth-of-type(3)": { width: 500 },
-                    "&:nth-of-type(4)": { width: 300 },
+                    "&:nth-of-type(3)": {
+                      width: 500,
+                      flexGrow: 1,
+                    },
                   }),
                 },
               }}
@@ -121,12 +111,12 @@ const Splunk = () => {
               <Severities />
               <Search />
               <Notify />
-              <AddNotify />
             </Box>
           </Collapse>
         </Box>
         <Alerts />
       </Box>
+      <Interact />
     </Box>
   );
 };

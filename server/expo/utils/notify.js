@@ -1,7 +1,41 @@
+const webpush = require("web-push");
 const db = require("../../mware/db");
-const { sleep } = require("../../utils/common");
+const { sleep, env } = require("../../utils/common");
 const { getAlerts, updateAlert } = require("../db/alerts");
+const Account = require("../models/accounts");
 const sendEmailNotifications = require("./mail");
+
+const sendNotification = async (alert) => {
+  webpush.setVapidDetails(
+    "mailto:test@test.com",
+    env("PUBLIC_VAPID_KEY"),
+    env("PRIVATE_VAPID_KEY")
+  );
+
+  const acc = await Account.find().select("push_notification");
+
+  const push_notification = acc
+    .map((ac) => ac.push_notification)
+    .filter((pn) => pn.length > 0)
+    .flat()
+    .filter((pn) => pn.active);
+
+  const devices = [];
+
+  await Promise.allSettled(
+    push_notification.map(async (pn) => {
+      if (!devices.includes(pn.device)) {
+        const payload = JSON.stringify({
+          title: "Splunk Alert - " + alert.urgency,
+          body: alert.title,
+        });
+
+        await webpush.sendNotification(pn, payload).catch(async (e) => {});
+        devices.push(pn.device);
+      }
+    })
+  );
+};
 
 const checkUnacknowledgedAlerts = async () => {
   const res = {
@@ -26,4 +60,4 @@ const checkUnacknowledgedAlerts = async () => {
   });
 };
 
-module.exports = checkUnacknowledgedAlerts;
+module.exports = { checkUnacknowledgedAlerts, sendNotification };

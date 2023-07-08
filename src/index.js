@@ -18,12 +18,20 @@ import router from "./router";
 
 import common_settings from "./common/store/settings";
 import loading from "./common/store/loading";
+import toasts from "./common/store/toasts";
 import schedule_settings from "./schedule/store/settings";
 import schedules from "./schedule/store/schedules";
 import splunk from "./splunk/store/splunk";
 
 const common_store = configureStore({
-  reducer: { common_settings, loading, schedule_settings, schedules, splunk },
+  reducer: {
+    common_settings,
+    loading,
+    schedule_settings,
+    schedules,
+    splunk,
+    toasts,
+  },
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

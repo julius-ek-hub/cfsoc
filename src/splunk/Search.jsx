@@ -12,45 +12,17 @@ import AutoComplete from "../common/utils/form/controlled/AutoComplete";
 
 import useCommonSettings from "../common/hooks/useSettings";
 import useDimension from "../common/hooks/useDimensions";
+import useToasts from "../common/hooks/useToast";
+
+import { search_security_domains, search_titles, search_times } from "./utils";
 
 const Search = () => {
   const { staffs: st } = useCommonSettings();
   const [sp, setSp] = useSearchParams();
   const { up } = useDimension();
+  const { push } = useToasts();
   const statuses = ["Aknowledged", "Unacknowledged"];
   const owner = ["unassigned", ...Object.values(st).map((st) => st.name)];
-
-  const security_domain = [
-    "Access",
-    "Endpoint",
-    "Network",
-    "Network Security",
-    "Thread",
-    "Identity",
-    "Audit",
-    "Health",
-  ];
-  const titles = [
-    "2017___ep-pri__sep-allowed-risk-file___sp1",
-    "35063___auth-pri__high-amount-of-files-being-read-from-file-share___sp2",
-    "6002___auth-pri___attempted-access-to-disabled/expired-account___sp2",
-    "99001_Host_not_Sending_logs_for_more_than_24hrs",
-    "99002_VPN_Connection_from_countries_of_interest",
-    "MS ATP Alert",
-    "Password_Never_Expire",
-  ];
-
-  const time = [
-    "Last 15 mins",
-    "Last 30 mins",
-    "Last 4 hours",
-    "Last 24 hours",
-    "This week",
-    "This month",
-    "Last 30 days",
-    "This year",
-    "All time",
-  ];
 
   const dtime = sp.get("ago");
 
@@ -59,6 +31,7 @@ const Search = () => {
       Object.entries(values).filter(([k, v]) => v)
     );
     setSp(queries);
+    push(queries);
   };
 
   return (
@@ -70,10 +43,10 @@ const Search = () => {
           owner: sp.getAll("owner").filter((sd) => owner.includes(sd)),
           security_domain: sp
             .getAll("security_domain")
-            .filter((sd) => security_domain.includes(sd)),
-          title: sp.getAll("title").filter((sd) => titles.includes(sd)),
+            .filter((sd) => search_security_domains.includes(sd)),
+          title: sp.getAll("title").filter((sd) => search_titles.includes(sd)),
           search: sp.get("search") || "",
-          time: dtime && time.includes(dtime) ? dtime : time[0],
+          time: dtime && search_times.includes(dtime) ? dtime : search_times[3],
         }}
       >
         <Box width={up.md ? "40%" : "100%"} flexGrow={1}>
@@ -94,7 +67,7 @@ const Search = () => {
           />
           <AutoComplete
             name="security_domain"
-            options={security_domain}
+            options={search_security_domains}
             label="security Domain"
             size="small"
             limitTags={2}
@@ -103,7 +76,7 @@ const Search = () => {
         <Box width={up.md ? "50%" : "100%"} flexGrow={1}>
           <AutoComplete
             name="title"
-            options={titles}
+            options={search_titles}
             label="Title"
             size="small"
             limitTags={2}
@@ -117,7 +90,7 @@ const Search = () => {
           />
           <AutoComplete
             name="time"
-            options={time}
+            options={search_times}
             label="Time"
             size="small"
             multiple={false}

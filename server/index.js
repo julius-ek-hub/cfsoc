@@ -8,7 +8,6 @@ const path = require("path");
 const cors = require("./mware/cors");
 const db = require("./mware/db");
 const auth = require("./auth");
-const webpush = require("./webpush");
 
 const schedules = require("./schedules");
 const expo = require("./expo");
@@ -25,7 +24,6 @@ app.use(db);
 app.use("/api/schedules", schedules);
 app.use("/expocitydubai", expo);
 app.use("/auth", auth);
-app.use("/push-notification", webpush);
 
 app.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "view", "index.html"));

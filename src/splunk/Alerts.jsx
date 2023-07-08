@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -11,26 +12,30 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import Checkbox from "@mui/material/Checkbox";
 import Divider from "@mui/material/Divider";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 
 import EachAlert from "./EachAlert";
 import NoAlerts from "./NoAlerts";
 import Loading from "./Loading";
+import IconButton from "../common/utils/IconButton";
 
 import useLoading from "../common/hooks/useLoading";
 import useAlerts from "./hooks/useAlerts";
 
 import { alert_titles } from "./utils";
+import useCommonSettings from "../common/hooks/useSettings";
 
 const Alerts = () => {
   const [page, setPage] = useState(0);
+  const intRef = useRef();
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [selected, setSelected] = useState([]);
-  const { alerts, checkUnreceivedAlerts } = useAlerts();
+  const { alerts, checkUnreceivedAlerts, updateAlert } = useAlerts();
   const { loading } = useLoading();
+  const { uname } = useCommonSettings();
+
+  const unacknowledged = alerts
+    .filter((a) => a.status !== "acknowledged")
+    .map((a) => a._id);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -41,20 +46,9 @@ const Alerts = () => {
     setPage(0);
   };
 
-  const handleSelectSingle = (_id) => {
-    let _sel = [...selected];
-    if (_sel.includes(_id)) _sel = _sel.filter((s) => s !== _id);
-    else _sel.push(_id);
-    setSelected(_sel);
-  };
-  const handleMultipleSelect = () => {
-    if (selected.length === alerts.length) return setSelected([]);
-    setSelected([...alerts].map((a) => a._id));
-  };
-
   useEffect(() => {
-    const check_unreceived_alerts = setInterval(checkUnreceivedAlerts, 5000);
-    return () => clearInterval(check_unreceived_alerts);
+    intRef.current = setInterval(checkUnreceivedAlerts, 5000);
+    return () => clearInterval(intRef.current);
   }, []);
 
   return (
@@ -67,14 +61,6 @@ const Alerts = () => {
         <>
           <Divider />
           <TableContainer>
-            {selected.length > 0 && (
-              <Box mt={1}>
-                <Button size="small">Acknowledge</Button>
-                <Button size="small" color="error">
-                  Deleted
-                </Button>
-              </Box>
-            )}
             <Table stickyHeader size="small">
               <TableHead>
                 <TableRow>
@@ -85,10 +71,18 @@ const Alerts = () => {
                     />
                   </TableCell>
                   <TableCell width={50}>
-                    <Checkbox
-                      onChange={handleMultipleSelect}
-                      checked={selected.length === alerts.length}
-                    />
+                    {unacknowledged.length > 0 && (
+                      <IconButton
+                        Icon={DoneAllIcon}
+                        title="Acknowledge All"
+                        onClick={() => {
+                          updateAlert(unacknowledged, {
+                            owner: uname,
+                            status: "acknowledged",
+                          });
+                        }}
+                      />
+                    )}
                   </TableCell>
                   {alert_titles.map((column) => (
                     <TableCell
@@ -104,12 +98,7 @@ const Alerts = () => {
                 {alerts
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((alert) => (
-                    <EachAlert
-                      alert={alert}
-                      key={alert._id}
-                      selected={selected.includes(alert._id)}
-                      onSelect={handleSelectSingle}
-                    />
+                    <EachAlert alert={alert} key={alert._id} />
                   ))}
               </TableBody>
             </Table>

@@ -10,6 +10,7 @@ import useSettings from "./common/hooks/useSettings";
 
 import FullScreenLoading from "./common/utils/Loading/FullScreen";
 import Login from "./common/utils/Login";
+import Toast from "./common/utils/Toast";
 
 export default function Settings({ children }) {
   const { initializeCommonSettings, theme } = useSettings();
@@ -28,6 +29,7 @@ export default function Settings({ children }) {
       {children}
       <Login />
       <FullScreenLoading />
+      <Toast />
     </ThemeProvider>
   );
 }
