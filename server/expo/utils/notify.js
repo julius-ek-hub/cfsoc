@@ -12,7 +12,9 @@ const sendNotification = async (alert) => {
     env("PRIVATE_VAPID_KEY")
   );
 
-  const acc = await Account.find().select("push_notification");
+  const acc = await Account.find({ enabled_notifications: "push" }).select(
+    "push_notification"
+  );
 
   const push_notification = acc
     .map((ac) => ac.push_notification)
