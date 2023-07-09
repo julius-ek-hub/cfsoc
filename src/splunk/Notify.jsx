@@ -108,8 +108,11 @@ const Notify = () => {
               }
             />
           </Typography>
-          <Typography color="success.main">
-            * Disable Notifications before leaving your shift.
+          <Typography
+            color="success.main"
+            sx={{ wordBreak: "normal", fontWeight: "bold" }}
+          >
+            * Disable All Notifications before leaving your shift.
           </Typography>
           <Typography variant="h6">
             Conditional:{" "}

@@ -13,8 +13,14 @@ const Card = ({
   description = "",
   creator = "Julus",
   status,
+  disabled,
   icon,
 }) => {
+  const Launch = ({ disabled }) => (
+    <Button variant="contained" size="small" sx={{ px: 4 }} disabled={disabled}>
+      Launch
+    </Button>
+  );
   return (
     <Box
       sx={{
@@ -50,11 +56,13 @@ const Card = ({
         {description.length > 100 && "..."}
       </Middle>
       <Box>
-        <Link to={to}>
-          <Button variant="contained" size="small" sx={{ px: 4 }}>
-            Launch
-          </Button>
-        </Link>
+        {disabled ? (
+          <Launch disabled />
+        ) : (
+          <Link to={to}>
+            <Launch />
+          </Link>
+        )}
       </Box>
     </Box>
   );
