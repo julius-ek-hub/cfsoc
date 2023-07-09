@@ -43,24 +43,26 @@ export function getBrowserType(useragent) {
     return regexp.test(useragent);
   };
 
+  const pf = " - " + useragent.split("__")[2];
+
   if (test(/opr\//i) || !!window.opr) {
-    return "Opera";
+    return "Opera" + pf;
   } else if (test(/edg/i)) {
-    return "Microsoft Edge";
+    return "Microsoft Edge" + pf;
   } else if (test(/chrome|chromium|crios/i)) {
-    return "Google Chrome";
+    return "Google Chrome" + pf;
   } else if (test(/firefox|fxios/i)) {
-    return "Mozilla Firefox";
+    return "Mozilla Firefox" + pf;
   } else if (test(/safari/i)) {
-    return "Apple Safari";
+    return "Apple Safari" + pf;
   } else if (test(/trident/i)) {
-    return "Microsoft Internet Explorer";
+    return "Microsoft Internet Explorer" + pf;
   } else if (test(/ucbrowser/i)) {
-    return "UC Browser";
+    return "UC Browser" + pf;
   } else if (test(/samsungbrowser/i)) {
-    return "Samsung Browser";
+    return "Samsung Browser" + pf;
   } else {
-    return "Unknown browser";
+    return "Unknown browser" + pf;
   }
 }
 

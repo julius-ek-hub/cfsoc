@@ -27,8 +27,8 @@ function TransitionDown(props) {
 }
 
 export default function Toast() {
-  const [toast, setToast] = React.useState(undefined);
-  const { toasts, push, shift } = useToasts();
+  const [toast, setToast] = React.useState({ undefined });
+  const { toasts, shift } = useToasts();
 
   const doSetToast = async () => {
     setToast(undefined);
@@ -48,8 +48,13 @@ export default function Toast() {
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
       TransitionComponent={TransitionLeft}
     >
-      <Alert onClose={shift} severity="success" variant="filled" elevation={6}>
-        I love snacks
+      <Alert
+        onClose={shift}
+        severity={toast?.severity || "info"}
+        variant="filled"
+        elevation={6}
+      >
+        {toast?.message}
       </Alert>
     </Snackbar>
   );

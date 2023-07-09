@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useSearchParams } from "react-router-dom";
 
@@ -11,6 +13,7 @@ import {
 import useFetch from "../../common/hooks/useFetch";
 import useLocalStorage from "../../common/hooks/useLocalStorage";
 import useCommonSettings from "../../common/hooks/useSettings";
+import useToast from "../../common/hooks//useToast";
 
 const useAlerts = () => {
   const { alerts, show_splunk_info, account, interacted } = useSelector(
@@ -22,9 +25,10 @@ const useAlerts = () => {
   const l = useLocation();
   const ls = useLocalStorage();
   const { uname } = useCommonSettings();
+  const { push } = useToast();
 
   const push_registered = (account.push_notification || []).find(
-    (p) => p.device === window.navigator.userAgent.toLocaleLowerCase()
+    (p) => p.device === ls.get("device_id")
   );
 
   const alarm = (account.enabled_notifications || []).includes("sound");
@@ -48,7 +52,10 @@ const useAlerts = () => {
 
   const updateAlert = async (_ids, update) => {
     const { json } = await patch("/api/splunk-alerts/", { _ids, update });
-    !json.error && dispatch(ua({ _ids, update }));
+    if (!json.error) {
+      dispatch(ua({ _ids, update }));
+      push({ message: "Alert changes saved!", severity: "success" });
+    }
   };
 
   const updateNotify = async (body) => {
@@ -58,7 +65,10 @@ const useAlerts = () => {
       { ...body, username: uname },
       "notify"
     );
-    !json.error && setAccount(json);
+    if (!json.error) {
+      setAccount(json);
+      push({ message: "Notification changes saved!", severity: "success" });
+    }
   };
   const enableNotification = async (on, update) => {
     updateClient("interacted", true);
@@ -67,7 +77,10 @@ const useAlerts = () => {
       { on, update, username: uname },
       "notify"
     );
-    !json.error && setAccount(json);
+    if (!json.error) {
+      setAccount(json);
+      push({ message: "Notification changes saved!", severity: "success" });
+    }
   };
 
   const checkUnreceivedAlerts = async () => {
@@ -78,8 +91,8 @@ const useAlerts = () => {
       "no"
     );
     if (!json.error && json.length > 0) {
-      addAlert(json);
       document.querySelector("#splunk-alert-audio").play().catch(console.warn);
+      push({ message: "New Alert" });
     }
   };
 
@@ -100,10 +113,16 @@ const useAlerts = () => {
 
       if (push_registered) return;
 
+      const device_id = `${navigator.userAgent.toLocaleLowerCase()}__${uuidv4()}__${
+        navigator.platform || ""
+      }`;
+
       const { json } = await post(
-        `/api/splunk-alerts/push-subscribe?device=${navigator.userAgent.toLocaleLowerCase()}&username=${uname}`,
+        `/api/splunk-alerts/push-subscribe?device=${device_id}&username=${uname}`,
         subscription
       );
+
+      ls.set("device_id", device_id);
 
       !json.error && setAccount(json);
     } catch (error) {

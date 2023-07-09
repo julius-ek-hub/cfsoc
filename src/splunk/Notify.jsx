@@ -21,6 +21,7 @@ import useDimension from "../common/hooks/useDimensions";
 import Button from "@mui/material/Button";
 
 import { getBrowserType } from "./utils";
+import useLocalStorage from "../common/hooks/useLocalStorage";
 
 const schema = Yup.object({
   email: Yup.array(Yup.string().email("Invalid email")),
@@ -65,6 +66,7 @@ const Notify = () => {
     alarm,
   } = useAlerts();
   const { up } = useDimension();
+  const ls = useLocalStorage();
   const emails = account.emails_sms?.filter((n) => n.type === "email") || [];
   const sms = account.emails_sms?.filter((n) => n.type === "sms") || [];
   const push = account.push_notification || [];
@@ -182,38 +184,34 @@ const Notify = () => {
           <AutoComplete
             disabled={!enabled.includes("push")}
             name="push"
-            sx={{ mb: 3 }}
+            sx={{ mb: 1 }}
             limitTags={2}
             onChange={(e, value, formik) =>
               updateNotification("push", value, formik)
             }
-            helperText={
-              <>
-                Push notifications can also be sent to your device through the
-                browser that was used to subscribe.{" "}
-                {!push_registered && (
-                  <>
-                    <Button
-                      size="small"
-                      sx={{ p: 0, minWidth: 0 }}
-                      onClick={subscribeForPushNotifications}
-                    >
-                      Click here
-                    </Button>{" "}
-                    to subscribe with this browser.
-                  </>
-                )}
-              </>
-            }
             placeholder="Click so select"
             getOptionLabel={(p) =>
-              p === window.navigator.userAgent.toLocaleLowerCase()
-                ? "This browser"
-                : getBrowserType(p)
+              p === ls.get("device_id") ? "This browser" : getBrowserType(p)
             }
             options={push.map((s) => s.device)}
             size="small"
           />
+          <FormHelperText sx={{ ml: 1.3 }}>
+            Push notifications can also be sent to your device through the
+            browser that was used to subscribe.{" "}
+            {!push_registered && (
+              <>
+                <Button
+                  size="small"
+                  sx={{ p: 0, minWidth: 0 }}
+                  onClick={subscribeForPushNotifications}
+                >
+                  Click here
+                </Button>{" "}
+                to subscribe with this browser.
+              </>
+            )}
+          </FormHelperText>
           <FormLabel>
             System Sound{" "}
             <Switch

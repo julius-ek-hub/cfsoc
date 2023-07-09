@@ -12,7 +12,6 @@ import AutoComplete from "../common/utils/form/controlled/AutoComplete";
 
 import useCommonSettings from "../common/hooks/useSettings";
 import useDimension from "../common/hooks/useDimensions";
-import useToasts from "../common/hooks/useToast";
 
 import { search_security_domains, search_titles, search_times } from "./utils";
 
@@ -20,7 +19,6 @@ const Search = () => {
   const { staffs: st } = useCommonSettings();
   const [sp, setSp] = useSearchParams();
   const { up } = useDimension();
-  const { push } = useToasts();
   const statuses = ["Aknowledged", "Unacknowledged"];
   const owner = ["unassigned", ...Object.values(st).map((st) => st.name)];
 
@@ -31,7 +29,6 @@ const Search = () => {
       Object.entries(values).filter(([k, v]) => v)
     );
     setSp(queries);
-    push(queries);
   };
 
   return (
