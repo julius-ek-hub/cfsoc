@@ -62,7 +62,7 @@ export default function AppSelect() {
       )}
     >
       <MyLink to="/">All Apps</MyLink>
-      <MyLink to="/schedules/current" disabled>
+      <MyLink to="/schedules/current">
         CFSOC Schedule
       </MyLink>
       <MyLink to="/splunk">Splunk Webhook</MyLink>

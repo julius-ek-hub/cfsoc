@@ -1,4 +1,4 @@
-import { useRef, useState, Fragment } from "react";
+import { useRef, useState } from "react";
 
 import { alpha } from "@mui/material/styles";
 
@@ -46,6 +46,7 @@ const Td = ({ date, shift_swap, comments, id }) => {
   return (
     <Menu
       open={open}
+      dialog
       onClose={handleClose}
       Clickable={(props) => (
         <TableCell
