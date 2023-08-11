@@ -25,9 +25,8 @@ app.use("/api/schedules", schedules);
 app.use("/expocitydubai", expo);
 app.use("/auth", auth);
 
-app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "view", "index.html"));
-});
+app.get("/*", (req, res) =>  res.sendFile(path.join(__dirname, "view", "index.html"))
+);
 
 const PORT = process.env.PORT || 4999;
 

@@ -91,6 +91,7 @@ const useAlerts = () => {
       "no"
     );
     if (!json.error && json.length > 0) {
+      addAlert(json);
       document.querySelector("#splunk-alert-audio").play().catch(console.warn);
       push({ message: "New Alert" });
     }

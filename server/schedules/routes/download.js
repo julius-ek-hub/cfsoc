@@ -7,6 +7,6 @@ module.exports = async (req, res) => {
   const dr = schedule_date_range_ui(from, to);
   const date = `${dr[0]} - ${dr[1]}`;
   const wb = await xlsx(req.query);
-  wb.xlsx.writeFile(`./download/SOC Schedule ${date}.xlsx`);
+  wb.xlsx.writeFile(`../download/SOC Schedule ${date}.xlsx`);
   res.json({});
 };
