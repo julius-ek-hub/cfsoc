@@ -13,19 +13,23 @@ import {
 } from "../../store/schedules";
 import useCommonSettings from "../../../common/hooks/useSettings";
 
+import useLoading from "../../../common/hooks/useLoading";
 import useFetch from "../../../common/hooks/useFetch";
+import useToasts from "../../../common/hooks/useToast";
 
-import { next_or_current } from "../../utils/utils";
+import { next_or_current, schedule_date_range_ui } from "../../utils/utils";
 
 const useActiveSchedule = () => {
   const { active, selected, historyLevel, history, active_by } = useSelector(
     ({ schedules }) => schedules
   );
   const dispatch = useDispatch();
-  const { get, post, dlete } = useFetch();
+  const { get, post, dlete, serverURL } = useFetch();
   const { uname, admin, user } = useCommonSettings();
   const { date: date_param } = useParams();
   const [sp, setSp] = useSearchParams();
+  const { update } = useLoading();
+  const { push } = useToasts();
 
   let active_assiduity = [];
   if (Object.keys(active?.suggestions || {}).length > 0 && active_by) {
@@ -73,10 +77,34 @@ const useActiveSchedule = () => {
     dispatch(setActive(json));
     set_active_by(sp.get("by") || "sys");
   };
+
   const downloadSchedule = async (by) => {
-    const { json } = await get(
-      `/download?from=${active.from}&to=${active.to}&by=${by.join("_")}`
-    );
+    try {
+      update(true);
+      const from = active.from;
+      const to = active.to;
+      const endpoint = "/api/schedules/download";
+      const params = `?from=${from}&to=${to}&by=${by.join("_")}`;
+      const f = await fetch(serverURL(endpoint + params));
+      const blob = await f.blob();
+
+      const dr = schedule_date_range_ui(from, to);
+      const filename = `SOC Schedule ${dr[0]} - ${dr[1]}.xlsx`;
+      const download_url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = download_url;
+      anchor.download = filename;
+      anchor.hidden = true;
+      document.body.appendChild(anchor);
+      anchor.click();
+      window.URL.revokeObjectURL(download_url);
+      document.body.removeChild(anchor);
+      push({ message: `${filename} downloaded`, severity: "success" });
+    } catch (error) {
+      push({ message: "Download failed", severity: "error" });
+    } finally {
+      update(false);
+    }
   };
 
   const emailSchedule = async (body) => {

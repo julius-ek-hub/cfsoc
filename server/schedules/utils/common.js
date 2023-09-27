@@ -123,6 +123,13 @@ const accepted_schedule = (assiduity) => {
   return third[0][0];
 };
 
+const arr_to_obj = (arr, key) => {
+  return arr.reduce((prev, curr) => {
+    prev[curr[key]] = curr;
+    return prev;
+  }, {});
+};
+
 module.exports = {
   objectExcept,
   sort_schedule_dates,
@@ -139,4 +146,5 @@ module.exports = {
   schedule_date_range_ui_edit,
   create_th,
   env,
+  arr_to_obj,
 };

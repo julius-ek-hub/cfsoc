@@ -85,6 +85,42 @@ const TBody = () => {
             </Fragment>
           );
         })}
+
+        <TableRow>
+          <RowNum num={++max_row} />
+          <TableCell align="left" sx={{ p: 0 }}>
+            <EmptyCell
+              sx={{
+                alignItems: "start",
+                pl: 2,
+                fontWeight: "bold",
+                bgcolor: "primary.main",
+                color: "common.white",
+              }}
+            >
+              Staff Count
+            </EmptyCell>
+          </TableCell>
+          {active_assiduity[0].dates.map(({ date }) => (
+            <TableCell align="left" sx={{ p: 0 }} key={date}>
+              <EmptyCell
+                sx={{
+                  pl: 1,
+                  fontWeight: "bold",
+                  bgcolor: "primary.main",
+                  color: "common.white",
+                }}
+              >
+                {
+                  active_assiduity.filter((ac) =>
+                    ac.dates.find((d) => d.date === date && d.status === "work")
+                  ).length
+                }
+              </EmptyCell>
+            </TableCell>
+          ))}
+        </TableRow>
+
         {admin && (
           <TableRow>
             <RowNum num={++max_row} />

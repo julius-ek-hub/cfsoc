@@ -8,7 +8,9 @@ const overlaySlice = createSlice({
       state.toasts.shift();
     },
     push(state, { payload }) {
-      state.toasts.push(payload);
+      (Array.isArray(payload) ? payload : [payload]).map((pl) =>
+        state.toasts.push(pl)
+      );
     },
   },
 });

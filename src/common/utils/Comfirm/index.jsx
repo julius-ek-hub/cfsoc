@@ -6,9 +6,11 @@ import Dialog from "../Dialogue";
 
 export default function Confirm({
   Clickable,
+  onClose,
   onConfirm,
   ok_color,
   ok_text,
+  close_on_ok = true,
   sx,
   title,
   ...rest
@@ -17,11 +19,14 @@ export default function Confirm({
 
   const handleOpen = () => setOpen(true);
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    onClose?.call();
+    setOpen(false);
+  };
 
   const handleAccpet = () => {
-    handleClose();
-    onConfirm();
+    onConfirm?.call({}, () => setOpen(false));
+    close_on_ok && handleClose();
   };
 
   return (
@@ -30,7 +35,8 @@ export default function Confirm({
       <Dialog
         open={open}
         onClose={handleClose}
-        sx={{ ".MuiPaper-root": { width: 400 }, ...sx }}
+        onXClose={handleClose}
+        // sx={{ ".MuiPaper-root": { width: 400 }, ...sx }}
         title={title || "Confirm!"}
         {...rest}
         action={

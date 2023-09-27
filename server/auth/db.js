@@ -1,11 +1,9 @@
+const { arr_to_obj } = require("../schedules/utils/common");
 const Staff = require("./model");
 
 const getStaff = async (filter, select = "") => {
   const staffs = await Staff.find(filter, select).select(select).lean();
-  return staffs.reduce((p, c) => {
-    p[c.username] = c;
-    return p;
-  }, {});
+  return arr_to_obj(staffs, "username");
 };
 
 const updateStaff = async (filter, update) => {

@@ -22,6 +22,7 @@ import toasts from "./common/store/toasts";
 import schedule_settings from "./schedule/store/settings";
 import schedules from "./schedule/store/schedules";
 import splunk from "./splunk/store/splunk";
+import ucm from "./Mitre/store/ucm";
 
 const common_store = configureStore({
   reducer: {
@@ -31,6 +32,7 @@ const common_store = configureStore({
     schedules,
     splunk,
     toasts,
+    ucm,
   },
 });
 

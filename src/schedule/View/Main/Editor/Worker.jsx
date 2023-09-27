@@ -117,13 +117,15 @@ const Worker = ({ onClose, selected }) => {
   const { uname } = useCommonSettings();
   const { active_by, active, updateSuggestions } = useActiveSchedule();
   const { unselectAll } = useSelection();
-  let shifts = [...s];
-  const statuses = ss.map((s) => s.name);
+  const statuses = ["None", ...ss.map((s) => s.name)];
 
-  shifts = shifts.map(
-    ({ from, to, label }) =>
-      itt(from) + " - " + itt(to) + (label ? " (" + label + ")" : "")
-  );
+  let shifts = [
+    "None",
+    ...s.map(
+      ({ from, to, label }) =>
+        itt(from) + " - " + itt(to) + (label ? " (" + label + ")" : "")
+    ),
+  ];
 
   const ass = active.suggestions[active_by].assiduity;
 
@@ -158,8 +160,8 @@ const Worker = ({ onClose, selected }) => {
   if (all.length > 1) selected_staff = "Selected staffs";
 
   const [state, _setState] = useState({
-    status: statuses.indexOf(all[0]?.status),
-    shift: all[0]?.shiftIndex,
+    status: 0,
+    shift: 0,
     comments,
   });
 
@@ -176,13 +178,13 @@ const Worker = ({ onClose, selected }) => {
         const mainKey = `suggestions@${active_by}@assiduity@${ind}@dates@${dateIndex}`;
         const _newStatus = statuses[state.status];
         const _newComments = state.comments;
-        const _newShift = s[state.shift];
+        const _newShift = s[state.shift - 1];
 
         if (state.comments[uname] !== each.comments[uname])
           updates[`${mainKey}@comments`] = _newComments;
-        if (state.shift !== each.shiftIndex && same_shift)
+        if (state.shift !== each.shiftIndex && same_shift && state.shift !== 0)
           updates.shift = { assIndex: ind, dateIndex, shift: _newShift };
-        if (_newStatus !== each.status)
+        if (_newStatus !== each.status && state.status !== 0)
           updates[`${mainKey}@status`] = _newStatus;
 
         return Object.keys(updates).length > 0 ? updates : undefined;

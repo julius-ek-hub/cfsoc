@@ -49,11 +49,12 @@ export default function AppSelect() {
       onClose={handleClose}
       Clickable={(props) => (
         <Button
+          disabled
           sx={{ fontWeight: "bold", ml: 4 }}
           endIcon={<ArrowDropDownIcon />}
           {...props}
           onClick={(e) => {
-            handleOpen();
+            // handleOpen();
             props.onClick(e);
           }}
         >
@@ -62,10 +63,9 @@ export default function AppSelect() {
       )}
     >
       <MyLink to="/">All Apps</MyLink>
-      <MyLink to="/schedules/current">
-        CFSOC Schedule
-      </MyLink>
+      <MyLink to="/schedules/current">CFSOC Schedule</MyLink>
       <MyLink to="/splunk">Splunk Webhook</MyLink>
+      <MyLink to="/use-case-management">Use Case Management</MyLink>
     </Menu>
   );
 }

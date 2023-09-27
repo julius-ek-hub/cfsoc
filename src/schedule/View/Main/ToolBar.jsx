@@ -26,7 +26,6 @@ import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 
 import IconButton from "../../../common/utils/IconButton";
 import Confirm from "../../../common/utils/Comfirm";
-import Editor from "./Editor";
 import WithSuggested from "./WithSuggesters";
 import EmailSchedule from "./EmailSchedule";
 
@@ -34,7 +33,10 @@ import useActiveSchedule from "../../hooks/useSchedules/active";
 import useCommonSettings from "../../../common/hooks/useSettings";
 import useSettings from "../../hooks/useSettings";
 
-import { schedule_date_range_ui } from "../../utils/utils";
+import {
+  schedule_date_range_ui,
+  next_or_current as noc,
+} from "../../utils/utils";
 import { u } from "../../../common/utils/utils";
 
 const PrimaryBar = (props) => (
@@ -151,30 +153,31 @@ const ToolBar = () => {
   const refreshButton = (
     <IconButton Icon={Refresh} onClick={loadSchedule} title="Refresh" />
   );
-  const approve = admin && (approved || !has_approved) && (
-    <Confirm
-      ok_color={approved ? "error" : "primary"}
-      ok_text={approved ? "Unapprove" : "Approve"}
-      title={(approved ? "Unapprove" : "Approve") + " suggetion?"}
-      Clickable={(props) => (
-        <IconButton
-          Icon={approved ? VerifiedUserIcon : VerifiedUserOutlinedIcon}
-          title={approved ? "Unapprove" : "Approve"}
-          {...props}
-        />
-      )}
-      onConfirm={approve_suggestion}
-    >
-      This will {approved ? "unapprove" : "forcefully approve"} this suggestion{" "}
-      {approved
-        ? ""
-        : "even if it has the least vote. The Entire schedule will then be locked."}
-      <Typography color="text.secondary" mt={1}>
-        *All admins can reverse this action.
-      </Typography>
-    </Confirm>
-  );
-
+  const approve = admin &&
+    ((locked && has_approved) || (!locked && !has_approved)) && (
+      <Confirm
+        ok_color={approved ? "error" : "primary"}
+        ok_text={approved ? "Unapprove" : "Approve"}
+        title={(approved ? "Unapprove" : "Approve") + " suggetion?"}
+        Clickable={(props) => (
+          <IconButton
+            Icon={approved ? VerifiedUserIcon : VerifiedUserOutlinedIcon}
+            title={approved ? "Unapprove" : "Approve"}
+            {...props}
+          />
+        )}
+        onConfirm={approve_suggestion}
+      >
+        This will {approved ? "unapprove" : "forcefully approve"} this
+        suggestion{" "}
+        {approved
+          ? ""
+          : "even if it has the least vote. The Entire schedule will then be locked."}
+        <Typography color="text.secondary" mt={1}>
+          *All admins can reverse this action.
+        </Typography>
+      </Confirm>
+    );
   const copyButton = may_create_own() && (
     <IconButton
       Icon={ContentCopyIcon}
@@ -198,7 +201,7 @@ const ToolBar = () => {
     />
   );
   const send = user && <EmailSchedule />;
-  const lock = admin && (
+  const lock = admin && !has_approved && (
     <Confirm
       ok_color={locked ? "primary" : "error"}
       ok_text={locked ? "Unlock" : "Lock"}
@@ -307,7 +310,6 @@ const ToolBar = () => {
           {approve}
         </Stack>
         {likersGroup}
-        <Editor />
       </SpaceBetween>
     </PrimaryBar>
   );

@@ -49,7 +49,12 @@ const Apps = () => {
             description="Auto generate monthly schedules for CFSOC team"
             title="CFSOC Schedules"
             icon="/app-icons/schedules.png"
-            disabled
+          />
+          <Card
+            to="/mitre"
+            description="No description"
+            title="MITIRE ATT&amp;CK"
+            icon="/app-icons/schedules.png"
           />
         </Box>
       </Box>

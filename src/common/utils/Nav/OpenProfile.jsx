@@ -29,11 +29,12 @@ export default function OpenProfile() {
       onClose={handleClose}
       Clickable={(props) => (
         <IconButton
+          disabled
           Icon={ArrowDropDownIcon}
           size="small"
           {...props}
           onClick={(e) => {
-            handleOpen();
+            // handleOpen();
             props.onClick(e);
           }}
         />

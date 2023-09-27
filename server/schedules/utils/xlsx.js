@@ -6,9 +6,12 @@ const {
   int_to_time,
   u,
   schedule_date_range_ui,
+  arr_to_obj,
+  accepted_schedule,
 } = require("./common");
 const { getSchedule } = require("../db/schedules");
 const { getShifs } = require("../db/dates");
+const { getStatus } = require("../db/statuses");
 
 module.exports = async ({ from, to, by }) => {
   let bys;
@@ -18,24 +21,33 @@ module.exports = async ({ from, to, by }) => {
 
   const sug = await getSchedule(from, to);
   const shifts = await getShifs();
+  const statuses = arr_to_obj(await getStatus(), "name");
+
   const wb = new exceljs.Workbook();
   const dr = schedule_date_range_ui(from, to);
   const date = `${dr[0]} - ${dr[1]}`;
+
+  const accepted = accepted_schedule(sug.suggestions);
 
   bys.map((b) => {
     b = b.trim();
     const assiduity = sug.suggestions[b].assiduity;
 
     const ths = create_th(assiduity);
-
-    const ws = wb.addWorksheet(u(b === "sys" ? "SYSTEM" : b.split(".")[0]));
+    const acc = accepted === b ? " (Used)" : "";
+    const ws = wb.addWorksheet(
+      u(b === "sys" ? "SYSTEM" : b.split(".")[0]) + acc
+    );
 
     let currentRow = 1;
+
     const middle = { vertical: "middle", horizontal: "center" };
 
     const r1 = [date, ...ths.map((th) => th[0])];
     const r2 = [date, ...ths.map((th) => th[1])];
+
     const maxColLetter = numberToLetters(r1.length - 1);
+
     ws.addRows([r1, r2]);
     ws.mergeCells("A1:A2");
     [1, 2].map((n) => {
@@ -88,7 +100,7 @@ module.exports = async ({ from, to, by }) => {
           ...dates.map((d) => {
             const not_shift_swap =
               d.shift.from === shift.from && d.shift.to === shift.to;
-            if (not_shift_swap && d.status === "work") return "X";
+            if (not_shift_swap) return statuses[d.status].label || "";
             return "";
           }),
         ]);
@@ -97,13 +109,15 @@ module.exports = async ({ from, to, by }) => {
           const swap = !(
             d.shift.from === shift.from && d.shift.to === shift.to
           );
-          if (swap) {
-            r.getCell(i + 2).fill = {
-              type: "pattern",
-              pattern: "solid",
-              fgColor: { argb: "ffd9d9d9" },
-            };
-          }
+          r.getCell(i + 2).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: {
+              argb: swap
+                ? "ffd9d9d9"
+                : (statuses[d.status].color || "#ffffff").substring(1),
+            },
+          };
           if (!swap && Object.values(d.comments).some((v) => v)) {
             let note = "";
 
@@ -114,7 +128,7 @@ module.exports = async ({ from, to, by }) => {
                 note += com + "\n\n";
               }
             });
-            r.getCell(i + 3).note = note;
+            r.getCell(i + 2).note = note;
           }
         });
         r.alignment = middle;
