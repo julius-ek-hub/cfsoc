@@ -66,7 +66,7 @@ export default function DatePicker(props) {
 
   return (
     <LocalizationProvider>
-      <Picker format={format} ampm={false} {...rest} />
+      <Picker format={format} {...rest} />
     </LocalizationProvider>
   );
 }

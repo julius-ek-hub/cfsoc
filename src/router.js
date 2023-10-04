@@ -4,7 +4,7 @@ import Schedule from "./schedule";
 import Splunk from "./splunk";
 import Apps from "./Apps";
 import Account from "./Account";
-import Mitre from "./Mitre";
+import UCM from "./UCM";
 import Err_404 from "./common/utils/404";
 import Err_500 from "./common/utils/500";
 
@@ -12,7 +12,7 @@ export default createBrowserRouter([
   {
     path: "/",
     // element: <Apps />,
-    loader: () => redirect("/use-case-management/tactics"),
+    loader: () => redirect("/use-case-management/l1_uc"),
   },
   // {
   //   path: "/schedules/:date",
@@ -31,12 +31,12 @@ export default createBrowserRouter([
 
   {
     path: "/use-case-management/:path",
-    element: <Mitre />,
+    element: <UCM />,
     errorElement: <Err_500 />,
   },
   {
     path: "/use-case-management/",
-    loader: () => redirect("/use-case-management/tactics"),
+    loader: () => redirect("/use-case-management/l1_uc"),
   },
   {
     path: "/account",

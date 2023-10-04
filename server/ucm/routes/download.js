@@ -12,9 +12,9 @@ module.exports = async (req, res) => {
               .filter((c) => !pl.excluded_columns.includes(c[0]))
               .map((c) => [
                 c[0],
-                data[c[0]] && !isNaN(data[c[0]])
-                  ? Number(data[c[0]])
-                  : data[c[0]],
+                data[c[0]].value && !isNaN(data[c[0]].value)
+                  ? Number(data[c[0]].value)
+                  : data[c[0]].value,
               ])
           )
         ),

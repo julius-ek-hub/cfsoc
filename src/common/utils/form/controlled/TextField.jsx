@@ -1,15 +1,18 @@
-import TextFieldMui, { TextFieldProps } from "@mui/material/TextField";
+import { TextFieldProps } from "@mui/material/TextField";
+
+import OwnTextField from "../uncontrolled/TextField";
 
 import { useFormikContext } from "formik";
 
 /**
- * @param {TextFieldProps} props
+ * @param {TextFieldProps & {onEnterButtonPressed: Function, enterButton: Boolean}} props
  */
 
 const TextField = (props) => {
-  const { errors, touched, values, handleChange } = useFormikContext();
+  const { errors, touched, values, handleChange, submitForm } =
+    useFormikContext();
 
-  const { name, helperText, type, ...rest } = props;
+  const { name, helperText, type, enterButton, ...rest } = props;
 
   const error = errors[name];
   const value = values[name];
@@ -22,7 +25,7 @@ const TextField = (props) => {
   };
 
   return (
-    <TextFieldMui
+    <OwnTextField
       error={hasError}
       value={value}
       name={name}
@@ -32,6 +35,9 @@ const TextField = (props) => {
       onChange={handleChange}
       placeholder={props.placeholder || props.label}
       helperText={error || helperText}
+      {...(enterButton && {
+        onEnterButtonPressed: submitForm,
+      })}
       {...rest}
     />
   );

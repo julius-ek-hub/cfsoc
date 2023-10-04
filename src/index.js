@@ -22,7 +22,7 @@ import toasts from "./common/store/toasts";
 import schedule_settings from "./schedule/store/settings";
 import schedules from "./schedule/store/schedules";
 import splunk from "./splunk/store/splunk";
-import ucm from "./Mitre/store/ucm";
+import ucm from "./UCM/store/ucm";
 
 const common_store = configureStore({
   reducer: {
@@ -34,6 +34,11 @@ const common_store = configureStore({
     toasts,
     ucm,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      immutableCheck: false,
+      serializableCheck: false,
+    }),
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -41,7 +46,7 @@ root.render(
   <Provider store={common_store}>
     <Settings>
       <Box sx={{ display: "flex", height: "100vh", flexDirection: "column" }}>
-        <RouterProvider router={router} />
+        <RouterProvider router={router} fallbackElement={<Box>Fallback</Box>} />
       </Box>
     </Settings>
   </Provider>

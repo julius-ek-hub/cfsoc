@@ -4,7 +4,7 @@ const { structure } = require("../utils");
 const overRide = async (body) => {
   const db = mongoose.connection.useDb("ucm");
 
-  const collections = ["l2_uc", "l3_uc", "l4_uc"];
+  const collections = ["l2_uc", "l3_uc", "l4_uc", "car_uc", "dev_uc"];
 
   await Promise.all(
     collections.map((collection) => db.collection(collection).drop())

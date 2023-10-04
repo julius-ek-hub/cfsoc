@@ -18,6 +18,7 @@ const {
 } = require("./routes/content");
 const { overRide } = require("./routes/override");
 const extract = require("./routes/extract");
+const fetch_site = require("./routes/fetch_site");
 
 const Router = express.Router();
 
@@ -35,5 +36,6 @@ Router.patch("/update-structure", try_catch(updateStructure));
 Router.patch("/sheets/location", try_catch(updateSheetLocation));
 Router.delete("/sheets/:key", try_catch(deleteSheet));
 Router.post("/extract", try_catch(extract));
+Router.get("/html", try_catch(fetch_site));
 
 module.exports = Router;

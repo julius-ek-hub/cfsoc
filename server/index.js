@@ -3,6 +3,7 @@ require("dotenv").config();
 const fileUpload = require("express-fileupload");
 const express = require("express");
 const helmet = require("helmet");
+// const cors = require("cors");
 const path = require("path");
 
 const cors = require("./mware/cors");
@@ -19,7 +20,7 @@ app.use(express.static(path.join(__dirname, "view")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "1mb" }));
 app.use(fileUpload());
-app.use(helmet());
+// app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors);
 app.use(db);
 app.use("/api/schedules", schedules);

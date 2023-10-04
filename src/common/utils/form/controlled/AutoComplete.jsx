@@ -11,7 +11,7 @@ import { useFormikContext } from "formik";
  */
 
 export default function AutoComplete(props) {
-  const { errors, values, handleChange } = useFormikContext();
+  const { errors, values, handleChange, touched } = useFormikContext();
 
   const {
     name,
@@ -23,23 +23,19 @@ export default function AutoComplete(props) {
     size,
     sx,
     fixed,
-    getOptionLabel,
     onChange: oC,
+    getOptionLabel,
     ...rest
   } = props;
 
   const error = errors[name];
   const value = values[name];
 
-  const hasError = Boolean(error);
+  const hasError = Boolean(error && touched[name]);
 
   const onChange = (e, value) => {
     handleChange({ target: { value, name } });
     !hasError && oC?.call({}, e, value);
-  };
-
-  const preventTypingIfError = (e) => {
-    if (hasError) return e.preventDefault();
   };
 
   return (
@@ -50,7 +46,6 @@ export default function AutoComplete(props) {
       value={value}
       fullWidth
       filterSelectedOptions
-      onKeyDown={preventTypingIfError}
       onChange={onChange}
       sx={{ mt: 1, ...sx }}
       getOptionLabel={getOptionLabel}

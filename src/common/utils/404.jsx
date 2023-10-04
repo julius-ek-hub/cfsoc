@@ -11,13 +11,19 @@ const Err_404 = ({
   if (hide) return null;
 
   return (
-    <Middle height="100%" fontSize={100}>
+    <Middle height="100%" fontSize={100} px={4}>
       {children ? (
         children
       ) : (
         <>
           {code}
-          <Typography color="error">{errorMessage}</Typography>
+          <Typography
+            color="error"
+            textAlign="center"
+            sx={{ wordBreak: "normal" }}
+          >
+            {errorMessage}
+          </Typography>
         </>
       )}
     </Middle>

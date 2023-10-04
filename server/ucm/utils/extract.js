@@ -86,6 +86,8 @@ module.exports = async ({ columns, unique_key, type, worker, sheet }) => {
     });
   });
 
+  // console.log(col_locations);
+
   const no_col = Object.entries(col_locations).filter(
     (c) => typeof c[1] !== "number"
   );
@@ -97,14 +99,35 @@ module.exports = async ({ columns, unique_key, type, worker, sheet }) => {
         .join(", ")}`,
     };
 
-  worker.ws.getRows(2, worker.ws.actualRowCount - 1).forEach((row) => {
+  worker.ws.getRows(2, worker.ws.rowCount - 1)?.forEach((row, rInd) => {
     const _data = {};
     let error;
     Object.entries(col_locations).map(([k, ind]) => {
       const cell = row.getCell(ind + 1);
-      let value = getCellValue(cell.value);
+      let image;
+      // console.log(rInd, ind, worker.images);
+      const im = worker.images.find(
+        (im) => im.row === rInd && im.col === ind - 1
+      );
+      if (im) image = im.name;
+      const style = cell.style;
+      const bgcolor = style.fill?.fgColor?.argb;
+      const color = style.font?.fgColor?.argb;
+      let { value, link } = getCellValue(cell.value);
       let a = analize(k, value);
-      _data[k] = { value: a[k] };
+      _data[k] = {
+        value: a[k],
+        sx: {
+          textAlign: style.alignment?.horizontal || "left",
+          verticalAlign: style.alignment?.vertical || "middle",
+          fontWeight: style.font?.bold ? "bold" : "normal",
+          fontSize: (style.font?.size || 10) + 5,
+          ...(bgcolor && { bgcolor: `#${bgcolor}!important` }),
+          ...(color && { color: `#${color}!important` }),
+        },
+        ...(link && { link }),
+        ...(image && { image }),
+      };
       if (a.error) error = a.error;
     });
 

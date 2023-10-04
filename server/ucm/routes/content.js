@@ -6,7 +6,8 @@ const {
 } = require("../db/content");
 
 const getContent = async (req, res) => {
-  const data = await gc(req.query.sheet);
+  const { sheet, page } = req.query;
+  const data = await gc(sheet, {}, page);
   res.json(data);
 };
 const addContent = async (req, res) => {

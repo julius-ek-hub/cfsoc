@@ -2,6 +2,7 @@ const { addContent } = require("../db/content");
 const { prepare } = require("../utils/extract_utils");
 const extract = require("../utils/extract");
 const { updateSheet } = require("../db/sheets");
+const { addContent: ac } = require("../db/special_extract");
 
 module.exports = async (req, res) => {
   const { sheet, sheet_index = 0, columns, unique_key } = req.body;
@@ -9,7 +10,11 @@ module.exports = async (req, res) => {
   let new_sheet = Object.keys(columns_parsed).length === 0;
   let new_columns;
 
-  const { error, type, worker } = await prepare(req.files.extract, sheet_index);
+  const { error, type, worker } = await prepare(
+    req.files.extract,
+    sheet_index,
+    sheet
+  );
 
   if (error) return res.json({ error });
 
@@ -19,8 +24,8 @@ module.exports = async (req, res) => {
         label === "_id"
           ? "__id"
           : label
-              .replace(/[ &\+=-]/gi, "_")
-              .replace(/[#%\(\)]/gi, "")
+              .replace(/[ ,.&\+=-]/gi, "_")
+              .replace(/[#%\(\)\/]/gi, "")
               .toLowerCase(),
         {
           position,
@@ -52,7 +57,7 @@ module.exports = async (req, res) => {
   const added = await addContent(sheet, data.data, unique_key);
 
   res.json({
-    ...added,
+    length: added.data.length,
     warnings: [...added.warnings, ...data.warnings],
     ...(new_columns && { new_columns }),
   });

@@ -1,4 +1,11 @@
 const exceljs = require("exceljs");
+const fs = require("fs");
+const path = require("path");
+
+const Yup = require("yup");
+
+const validURL = (url) =>
+  Yup.object({ url: Yup.string().required().url() }).isValidSync({ url });
 
 const objectExcept = (obj, keys) => {
   const newObject = {};
@@ -33,6 +40,7 @@ const structure = (body) => {
       Object.entries(data).map(([key, value]) => [
         key,
         {
+          ...(typeof value === "object" && !Array.isArray(value) && value),
           value: typeof value?.value === "undefined" ? value : value.value,
         },
       ])
@@ -65,22 +73,45 @@ const excelBuffer = (payload) => {
     ws.autoFilter = `A1:${numberToLetters(sorted_cols.length - 1)}1`;
 
     pl.data.map((data, r) => {
-      ws.addRows([
-        sorted_cols.map((sr, col_Index) => {
-          let val = data[sr[0]];
-          const len = String(val).length;
-          const old = colWidths[col_Index];
-          if (!old || old < val) colWidths[col_Index] = len;
-          if (val && !isNaN(val)) return Number(val);
-          const p = String(val).split("%");
-          if (p.length === 2 && !p[1] && !isNaN(p[0])) {
-            ws.getColumn(col_Index + 1).numFmt = "0.00%";
+      sorted_cols.map((sr, col_Index) => {
+        const cell = ws.getCell(r + 2, col_Index + 1);
+        let v = data[sr[0]];
+        let val = v.value;
+        if (v.image) {
+          const img_path = path.join(
+            ...__dirname.split(path.sep).reverse().slice(2).reverse(),
+            "server",
+            "view",
+            "sheet_images",
+            pl.sheet,
+            v.image
+          );
 
-            return Number(p[0]) / 100;
-          }
-          return val;
-        }),
-      ]);
+          const imageId = wb.addImage({
+            filename: img_path,
+            extension: img_path.split(".").at(-1),
+          });
+
+          return ws.addImage(imageId, `A${1}:A${1}`);
+        }
+        const link = validURL(val) && val;
+        const len = String(val).length;
+        const old = colWidths[col_Index];
+        if (!old || old < val) colWidths[col_Index] = len;
+        if (val && !isNaN(val)) val = Number(val);
+        const p = String(val).split("%");
+        if (p.length === 2 && !p[1] && !isNaN(p[0])) {
+          cell.numFmt = "0.00%";
+          val = Number(p[0]) / 100;
+        }
+        if (link) {
+          cell.value = { text: val, hyperlink: link };
+          cell.font = {
+            color: { argb: "2F75B5" },
+            underline: true,
+          };
+        } else cell.value = val;
+      });
     });
 
     Object.entries(colWidths).map(([k, v]) => {

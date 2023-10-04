@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const fs = require("fs");
+const path = require("path");
 
 const db = mongoose.connection.useDb("ucm");
 
@@ -31,6 +33,13 @@ const updateStructure = async (sheets) => {
 const deleteSheet = async (key) => {
   await db.collection(key).drop();
   await db.collection("sheets").findOneAndDelete({ key });
+  const _link = path.join(
+    ...__dirname.split(path.sep).reverse().slice(2).reverse(),
+    "view",
+    "sheet_images",
+    key
+  );
+  if (fs.existsSync(_link)) fs.rmSync(_link, { recursive: true });
   return { key };
 };
 
@@ -56,6 +65,8 @@ const newSheet = async ($new) => {
         filters: {},
         pagination: {},
         columns: {},
+        user_added: true,
+        num_rows: 0,
       });
       return { key, name };
     })
