@@ -1,0 +1,9 @@
+JWT_KEY=MB&!VHJJ67f@vh6%5ghfff65JKgh98sj
+EMAIL_ID=no-reply@247-dev.com
+EMAIL_PASS=Mangowanchop1-no-reply
+DEV_RECEIVE=julius.ek.dev@gmail.com
+MONGO_DB_CONNECTION_STRING=mongodb+srv://julius:Mangowanchop1-soc-schedule@cluster-soc.rcbk4q3.mongodb.net
+MONGO_DB_CONNECTION_STRING_DEV=mongodb://127.0.0.1:27017/cfsoc
+PUBLIC_VAPID_KEY=BIaHciU-RpHaVUjPhRxcqBIuEQu8aTv_q7StQ4FmEBP6-0qg9WhowTE6IUOcuANuNdS0ssXc-K-YYV-q9OSQLY8
+PRIVATE_VAPID_KEY=0siCucHLdPe4BHS4DwmMzUOdZdropMn6HVS7f9mRWoQ
+NODE_ENV=developement
