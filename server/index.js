@@ -34,4 +34,4 @@ app.get("/*", (req, res) =>
 
 const PORT = process.env.PORT || 4999;
 
-app.listen(PORT, () => console.log(`Listing in port ${PORT}`));
+app.listen(PORT, () => console.log(`Listening in port ${PORT}`));
