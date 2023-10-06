@@ -31,12 +31,9 @@
     "yup": "^1.2.0"
   },
   "scripts": {
-    "start": "node server/index.js",
-    "start_win": "node server/index.js",
-    "dev": "nodemon server/index.js",
-    "devclient": "react-scripts start",
-    "build": "react-scripts build && cp -R build/. server/view",
-    "build_win": "react-scripts build && xcopy build\\* server\\view /i /s /y"
+    "start": "nodemon server/index.js",
+    "dev": "react-scripts start",
+    "build": "react-scripts build && xcopy build\\* server\\view /i /s /y"
   },
   "browserslist": {
     "production": [
