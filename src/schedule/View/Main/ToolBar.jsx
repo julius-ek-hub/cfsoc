@@ -33,10 +33,7 @@ import useActiveSchedule from "../../hooks/useSchedules/active";
 import useCommonSettings from "../../../common/hooks/useSettings";
 import useSettings from "../../hooks/useSettings";
 
-import {
-  schedule_date_range_ui,
-  next_or_current as noc,
-} from "../../utils/utils";
+import { schedule_date_range_ui } from "../../utils/utils";
 import { u } from "../../../common/utils/utils";
 
 const PrimaryBar = (props) => (

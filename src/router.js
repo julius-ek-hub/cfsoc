@@ -11,18 +11,18 @@ import Err_500 from "./common/utils/500";
 export default createBrowserRouter([
   {
     path: "/",
-    // element: <Apps />,
-    loader: () => redirect("/use-case-management/intro"),
+    element: <Apps />,
+    errorElement: <Err_500 />,
   },
-  // {
-  //   path: "/schedules/:date",
-  //   element: <Schedule />,
-  //   errorElement: <Err_500 />,
-  // },
-  // {
-  //   path: "/schedules",
-  //   loader: () => redirect("/schedules/current"),
-  // },
+  {
+    path: "/schedules/:date",
+    element: <Schedule />,
+    errorElement: <Err_500 />,
+  },
+  {
+    path: "/schedules",
+    loader: () => redirect("/schedules/current"),
+  },
   // {
   //   path: "/splunk",
   //   element: <Splunk />,
@@ -36,7 +36,7 @@ export default createBrowserRouter([
   },
   {
     path: "/use-case-management/",
-    loader: () => redirect("/use-case-management/l1_uc"),
+    loader: () => redirect("/use-case-management/intro"),
   },
   {
     path: "/account",

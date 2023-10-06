@@ -63,10 +63,6 @@ const Tr = ({ row }) => {
     }
   };
 
-  const Tc = (props) => (
-    <TableCell {...(open && { sx: { borderBottom: "none" } })} {...props} />
-  );
-
   return (
     <>
       <TableRow
@@ -77,30 +73,16 @@ const Tr = ({ row }) => {
           },
         }}
       >
-        <Tc>
-          <IconButton
-            Icon={ArrowForwardIosIcon}
-            size="small"
-            iprop={{
-              fontSize: "small",
-              sx: {
-                transform: `rotate(${open ? 90 : 0}deg)`,
-                transition: "200ms transform",
-              },
-            }}
-            onClick={() => setOpen(!open)}
-          />
-        </Tc>
         {columns.map((column) => {
           let value = row[column.id];
           value = column.id === "admin" ? (value ? "Admin" : "User") : value;
           return (
-            <Tc key={column.id} align={column.align}>
+            <TableCell key={column.id} align={column.align}>
               {value}
-            </Tc>
+            </TableCell>
           );
         })}
-        <Tc>
+        <TableCell>
           {admin && (
             <Box visibility="hidden" whiteSpace="nowrap">
               {uname !== row.username && (
@@ -133,23 +115,6 @@ const Tr = ({ row }) => {
               />
             </Box>
           )}
-        </Tc>
-      </TableRow>
-      <TableRow>
-        <TableCell
-          colSpan={8}
-          sx={{
-            paddingBottom: 0,
-            paddingTop: 0,
-            border: "none",
-            ...(open && {
-              borderBottom: (t) => `1px solid ${t.palette.divider}`,
-            }),
-          }}
-        >
-          <Collapse in={open}>
-            <Box p={2}>Some staff info</Box>
-          </Collapse>
         </TableCell>
       </TableRow>
     </>
@@ -173,12 +138,6 @@ const Staffs = () => {
           <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
-                <TableCell width={50}>
-                  <PriorityHighIcon
-                    fontSize="small"
-                    sx={{ transform: "rotate(20deg)" }}
-                  />
-                </TableCell>
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}

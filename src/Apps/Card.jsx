@@ -5,25 +5,26 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+
 import Middle from "../common/utils/Middle";
 
-const Card = ({
-  to,
-  title,
-  description = "",
-  creator = "Julus",
-  status = 'Development',
-  icon,
-}) => {
+const Card = ({ to, title, description = "", icon, status }) => {
   const Launch = () => (
-    <Button variant="contained" size="small" sx={{ px: 4 }}>
-      Launch
+    <Button
+      variant="contained"
+      size="small"
+      sx={{ px: 4 }}
+      endIcon={<OpenInNewIcon />}
+    >
+      Open
     </Button>
   );
   return (
     <Box
       sx={{
-        height: 200,
+        height: 250,
         width: 300,
         border: (t) => `0.8px solid ${t.palette.divider}`,
         p: 2,
@@ -36,28 +37,39 @@ const Card = ({
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant="h6">{title}</Typography>
-          <Typography color="text.secondary" fontSize="small">
-            By {creator}
-          </Typography>
         </Box>
-        <Middle
-          sx={{
-            boxShadow: (t) => t.shadows[1],
-            borderRadius: "50%",
-            p: 1,
-          }}
-        >
-          <Avatar alt="S" src={icon} sx={{ height: 20, width: 20 }} />
-        </Middle>
+        {icon && (
+          <Middle
+            sx={{
+              boxShadow: (t) => t.shadows[1],
+              borderRadius: "50%",
+              p: 1,
+            }}
+          >
+            <Avatar
+              alt={description[0]}
+              src={icon}
+              sx={{ height: 20, width: 20 }}
+            />
+          </Middle>
+        )}
       </Box>
-      <Middle flexGrow={1} color="text.secondary">
-        {description.substring(0, 100)}
+      <Box flexGrow={1} color="text.secondary" my={1}>
+        {description.substring(0, 110)}
         {description.length > 100 && "..."}
-      </Middle>
-      <Box>
-          <Link to={to}>
-            <Launch />
-          </Link>
+      </Box>
+      <Box display="flex" alignItems="center" justifyContent="space-between">
+        <Link to={to}>
+          <Launch />
+        </Link>
+        {status && (
+          <>
+            <MoreHorizIcon color="primary" />
+            <Typography fontSize="small" color="text.secondary">
+              {status}
+            </Typography>
+          </>
+        )}
       </Box>
     </Box>
   );

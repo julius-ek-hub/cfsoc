@@ -1,15 +1,19 @@
+import { Link } from "react-router-dom";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
 
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import AppsIcon from "@mui/icons-material/Apps";
 
-import AppSelect from "./AppSelect";
 import Theme from "./Theme";
-import OpenProfile from "./OpenProfile";
+import IconButton from "../IconButton";
+
 import useCommonSettings from "../../hooks/useSettings";
 
 const Nav = ({ app = "All Apps" }) => {
-  const { getName, user } = useCommonSettings();
+  const { user, getName } = useCommonSettings();
 
   if (!user) return null;
 
@@ -31,12 +35,24 @@ const Nav = ({ app = "All Apps" }) => {
         <Typography component="span" color="success.main" fontWeight="bold">
           {app}
         </Typography>
-        <AppSelect />
+        {app.toLocaleLowerCase() !== "all apps" && (
+          <Link to="/" style={{ color: "inherit" }}>
+            <IconButton Icon={AppsIcon} sx={{ ml: 4 }} title="All Apps" />
+          </Link>
+        )}
       </Box>
       <Box mr={2} display="flex" alignItems="center">
         <Theme />
-        <OpenProfile />
-        {getName()}
+        {app.toLocaleLowerCase() !== "accounts" && (
+          <Link to="/account" style={{ textDecoration: "none" }}>
+            <Avatar sx={{ height: 30, width: 30, mr: 1, fontSize: 16 }}>
+              {getName()
+                .split(" ")
+                .map((_) => _[0])
+                .join("")}
+            </Avatar>
+          </Link>
+        )}
       </Box>
     </Box>
   );

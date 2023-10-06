@@ -27,12 +27,7 @@ const schema = Yup.object({
   name: required("Fullnames"),
   position: required("Position"),
   level: required("Level", Yup.number()),
-  email: required("Email")
-    .email("Invalid email")
-    .matches(
-      /[a-zA-Z0-9_-]*@beaconred.ae/,
-      "Email must be in the form <staff>@beaconred.ae"
-    ),
+  email: required("Email").email("Invalid email"),
 });
 
 const AddUser = ({ ClickComponent, edit }) => {

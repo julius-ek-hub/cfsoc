@@ -39,22 +39,17 @@ const Apps = () => {
           overflow="auto"
         >
           <Card
-            to="/splunk"
-            description="Gets live notification from Splunk server whenever there is an alert, and plays a sound."
-            title="Splunk Webhook"
-            icon="/app-icons/splunk.png"
-          />
-          <Card
             to="/schedules/current"
             description="Auto generate monthly schedules for CFSOC team"
             title="CFSOC Schedules"
             icon="/app-icons/schedules.png"
+            status="experimental"
           />
           <Card
-            to="/mitre"
-            description="No description"
-            title="MITIRE ATT&amp;CK"
-            icon="/app-icons/schedules.png"
+            to="/use-case-management"
+            description="<No description>"
+            title="Use Case Management"
+            status="production"
           />
         </Box>
       </Box>

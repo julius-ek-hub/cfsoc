@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Box from "@mui/material/Box";
 
 import T from "./T";
-import CalendarView from "./CalendarView";
+
 import ToolBar from "./ToolBar";
 import OwnerNav from "./OwnerNav";
 import NoSchedule from "./NoSchedule";
@@ -36,13 +36,7 @@ const Main = () => {
       ) : (
         <>
           <ToolBar />
-          {error ? (
-            <NoSchedule error={error} />
-          ) : view === "calendar" ? (
-            <CalendarView />
-          ) : (
-            <T />
-          )}
+          {error ? <NoSchedule error={error} /> : <T />}
           <OwnerNav />
         </>
       )}
