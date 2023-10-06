@@ -12,7 +12,7 @@ export default createBrowserRouter([
   {
     path: "/",
     // element: <Apps />,
-    loader: () => redirect("/use-case-management/l1_uc"),
+    loader: () => redirect("/use-case-management/intro"),
   },
   // {
   //   path: "/schedules/:date",
