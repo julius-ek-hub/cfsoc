@@ -90,7 +90,7 @@ const AddUser = ({ ClickComponent, edit }) => {
           initialValues={{
             name: edit?.name || "",
             position: edit?.position || "",
-            level: edit?.level || "",
+            level: typeof edit?.level === "number" ? edit.level : "",
             email: edit?.email || "",
           }}
           onSubmit={onSubmit}
