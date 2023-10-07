@@ -30,15 +30,12 @@ const get_new_version = () =>
 const update = (req, res) => {
   const new_version = get_new_version();
   try {
-    exec(`git pull --force`, { stdio: "ignore" });
-    exec("git add .", { stdio: "ignore" });
-    exec(`git commit -m "Updating UI to ${new_version}"`, {
-      stdio: "ignore",
-    });
-    exec("npm run build", { stdio: "ignore" });
-    exec("npm run build", { stdio: "ignore" });
+    exec(`git pull --force`);
+    exec("git add .");
+    exec(`git commit -m "Updating UI to ${new_version}"`);
+    exec("npm run build");
   } finally {
-    res.json({});
+    setTimeout(() => res.json({}), 5000);
   }
 };
 
