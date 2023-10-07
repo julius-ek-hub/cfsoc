@@ -2,7 +2,7 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const util = require("util");
-const exec = util.promisify(require("child_process").exec);
+const exec = require("child_process").execSync;
 
 const get_new_version = () =>
   new Promise((res, rej) => {
@@ -27,16 +27,18 @@ const get_new_version = () =>
       .on("error", rej);
   });
 
-const update = async (req, res) => {
-  const new_version = await get_new_version();
-  await exec(`git pull --force`, { stdio: "pipe" });
-  await exec("git add .", { stdio: "pipe" });
-  await exec(`git commit -m "Updating UI to ${new_version}"`, {
-    stdio: "pipe",
-  });
-  await exec("npm run build", { stdio: "pipe" });
-  await exec("npm run build", { stdio: "pipe" });
-  res.json({ stderr, stdout });
+const update = (req, res) => {
+  const new_version = get_new_version();
+  try {
+    exec(`git pull --force`, { stdio: "ignore" });
+    exec("git add .", { stdio: "ignore" });
+    exec(`git commit -m "Updating UI to ${new_version}"`, {
+      stdio: "ignore",
+    });
+    exec("npm run build", { stdio: "ignore" });
+    exec("npm run build", { stdio: "ignore" });
+    res.json({ stderr, stdout });
+  } catch (error) {}
 };
 
 const check = async () => {
