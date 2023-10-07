@@ -7,13 +7,20 @@ import Confirm from "../Comfirm";
 import useFetch from "../../hooks/useFetch";
 import useLoading from "../../hooks/useLoading";
 
+const num = (version) =>
+  version
+    .split(".")
+    .map(Number)
+    .reduce((a, b) => a + b, 0);
+
 const UpdateUI = ({ user }) => {
   const { get } = useFetch("/auth");
   const { update } = useLoading();
 
   const { old_version, new_version } = user.app_versions;
 
-  if (old_version === new_version) return null;
+  if (old_version === new_version || num(old_version) > num(new_version))
+    return null;
 
   const updateUI = async () => {
     update(true);
