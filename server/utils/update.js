@@ -29,10 +29,13 @@ const get_new_version = () =>
 
 const update = async (req, res) => {
   const new_version = await get_new_version();
-  await exec(`git pull --force`);
-  await exec("git add .");
-  await exec(`git commit -m "Updating UI to ${new_version}"`);
-  await exec("npm run build");
+  await exec(`git pull --force`, { stdio: "pipe" });
+  await exec("git add .", { stdio: "pipe" });
+  await exec(`git commit -m "Updating UI to ${new_version}"`, {
+    stdio: "pipe",
+  });
+  await exec("npm run build", { stdio: "pipe" });
+  await exec("npm run build", { stdio: "pipe" });
   res.json({ stderr, stdout });
 };
 
