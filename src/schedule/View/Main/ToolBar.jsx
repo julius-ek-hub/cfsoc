@@ -107,6 +107,7 @@ const ToolBar = () => {
     <Confirm
       ok_color="error"
       ok_text="Delete"
+      fullWidth
       Clickable={(props) => (
         <IconButton Icon={DeleteIcon} title="Delete" {...props} />
       )}
@@ -156,6 +157,7 @@ const ToolBar = () => {
         ok_color={approved ? "error" : "primary"}
         ok_text={approved ? "Unapprove" : "Approve"}
         title={(approved ? "Unapprove" : "Approve") + " suggetion?"}
+        fullWidth
         Clickable={(props) => (
           <IconButton
             Icon={approved ? VerifiedUserIcon : VerifiedUserOutlinedIcon}

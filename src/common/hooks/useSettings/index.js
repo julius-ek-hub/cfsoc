@@ -7,7 +7,7 @@ import useFetch from "../useFetch";
 import { u as uc } from "../../utils/utils";
 
 const useCommonSettings = () => {
-  const { user, theme, staffs, push_notification } = useSelector(
+  const { user, theme, staffs, push_notification, apps } = useSelector(
     ({ common_settings }) => common_settings
   );
   const dispatch = useDispatch();
@@ -50,6 +50,7 @@ const useCommonSettings = () => {
 
   return {
     theme,
+    apps,
     user,
     staffs,
     uname: user?.username,

@@ -56,7 +56,11 @@ function Dialog(props) {
           {header}
         </>
       )}
-      <DialogContent>
+      <DialogContent
+        sx={{
+          wordWrap: "break-word",
+        }}
+      >
         {typeof children === "string" ? (
           <DialogContentText sx={{ wordBreak: "normal" }}>
             {children}

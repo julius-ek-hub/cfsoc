@@ -13,6 +13,7 @@ export default function Confirm({
   close_on_ok = true,
   sx,
   title,
+  is_alert,
   ...rest
 }) {
   const [open, setOpen] = useState(false);
@@ -36,12 +37,12 @@ export default function Confirm({
         open={open}
         onClose={handleClose}
         onXClose={handleClose}
-        // sx={{ ".MuiPaper-root": { width: 400 }, ...sx }}
         title={title || "Confirm!"}
+        fullWidth={rest.fullWidth || true}
         {...rest}
         action={
           <>
-            <Button onClick={handleClose}>Cancel</Button>
+            {!is_alert && <Button onClick={handleClose}>Cancel</Button>}
             <Button
               onClick={handleAccpet}
               color={ok_color || "primary"}

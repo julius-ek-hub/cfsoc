@@ -19,6 +19,7 @@ const Logout = (btnProps) => {
       title="Confirm Logout"
       ok_text="Logout"
       ok_color="error"
+      fullWidth
       onConfirm={logout}
       Clickable={(props) => (
         <Button

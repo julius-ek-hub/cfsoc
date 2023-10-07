@@ -1,16 +1,31 @@
+import { useState } from "react";
+
 import { Link } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Avatar from "@mui/material/Avatar";
 
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import IconButton from "../common/utils/IconButton";
+import Edit from "@mui/icons-material/Edit";
+import Delete from "@mui/icons-material/Delete";
 
-import Middle from "../common/utils/Middle";
+import Menu from "../common/utils/Menu";
+import Confirm from "../common/utils/Comfirm";
 
-const Card = ({ to, title, description = "", icon, status }) => {
+const Card = ({
+  to,
+  title,
+  description = "",
+  status,
+  onDelete,
+  onEdit,
+  _id,
+}) => {
+  const [menu, setMenu] = useState(false);
   const Launch = () => (
     <Button
       variant="contained"
@@ -32,31 +47,87 @@ const Card = ({ to, title, description = "", icon, status }) => {
         display: "flex",
         flexDirection: "column",
         flexShrink: 0,
+        position: "relative",
+        "&:hover > div:first-of-type": {
+          visibility: "visible",
+        },
       }}
     >
+      <Box position="absolute" top={0} right={0} visibility="hidden">
+        <Menu
+          open={menu}
+          onClose={() => setMenu(false)}
+          Clickable={(props) => (
+            <IconButton
+              Icon={MoreVertIcon}
+              onClick={(e) => {
+                setMenu(true);
+                props.onClick(e);
+              }}
+            />
+          )}
+        >
+          <Box px={2}>
+            <Button
+              color="inherit"
+              fullWidth
+              sx={{ justifyContent: "start" }}
+              startIcon={<Edit />}
+              onClick={() => {
+                onEdit(_id);
+                setMenu(false);
+              }}
+            >
+              Edit
+            </Button>
+            <Confirm
+              onConfirm={() => onDelete(_id)}
+              fullWidth
+              ok_text="Yes"
+              Clickable={(props) => (
+                <Button
+                  color="error"
+                  fullWidth
+                  sx={{ justifyContent: "start" }}
+                  startIcon={<Delete />}
+                  {...props}
+                >
+                  Delete
+                </Button>
+              )}
+            >
+              Delete App?
+            </Confirm>
+          </Box>
+        </Menu>
+      </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant="h6">{title}</Typography>
         </Box>
-        {icon && (
-          <Middle
-            sx={{
-              boxShadow: (t) => t.shadows[1],
-              borderRadius: "50%",
-              p: 1,
-            }}
-          >
-            <Avatar
-              alt={description[0]}
-              src={icon}
-              sx={{ height: 20, width: 20 }}
-            />
-          </Middle>
-        )}
       </Box>
       <Box flexGrow={1} color="text.secondary" my={1}>
-        {description.substring(0, 110)}
-        {description.length > 100 && "..."}
+        {description.substring(0, 110)}.
+        {description.length > 100 && (
+          <Confirm
+            title={`${title} | description`}
+            is_alert
+            Clickable={(props) => (
+              <Box
+                component="span"
+                {...props}
+                color="primary.main"
+                ml={1}
+                fontWeight="bold"
+                sx={{ cursor: "pointer" }}
+              >
+                read more...
+              </Box>
+            )}
+          >
+            {description}
+          </Confirm>
+        )}
       </Box>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Link to={to}>

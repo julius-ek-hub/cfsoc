@@ -7,6 +7,7 @@ import MuiTextField, { TextFieldProps } from "@mui/material/TextField";
 const TextField = ({ onEnterButtonPressed, ...rest }) => {
   return (
     <MuiTextField
+      placeholder={rest.placeholder || rest.label}
       {...rest}
       {...(typeof onEnterButtonPressed === "function" && {
         onKeyDown: (e) => {
