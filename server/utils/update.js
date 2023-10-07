@@ -28,7 +28,7 @@ const get_new_version = () =>
 
 const update = async (req, res) => {
   try {
-    exec("./pull.cmd");
+    exec("git pull --force && npm run build");
   } finally {
     res.json({});
   }
