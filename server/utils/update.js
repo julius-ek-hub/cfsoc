@@ -28,11 +28,8 @@ const get_new_version = () =>
   });
 
 const update = async (req, res) => {
-  const new_version = await get_new_version();
   try {
     exec(`git pull --force`);
-    exec("git add .");
-    exec(`git commit -m "Updating UI to ${new_version}"`);
     exec("npm run build");
   } finally {
     res.json({});
