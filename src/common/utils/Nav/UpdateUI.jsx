@@ -44,7 +44,7 @@ const UpdateUI = ({ user }) => {
       server, rebuild and restart the server and then reload this browser.
       <p>
         If for some reason, a problem arises, update manually through the steps
-        in <b>update.txt</b> found on the Desktop
+        in <b>update.txt</b> found on the Desktop.
       </p>
     </Confirm>
   );
