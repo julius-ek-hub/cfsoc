@@ -21,7 +21,6 @@ import loading from "./common/store/loading";
 import toasts from "./common/store/toasts";
 import schedule_settings from "./schedule/store/settings";
 import schedules from "./schedule/store/schedules";
-import splunk from "./splunk/store/splunk";
 import ucm from "./UCM/store/ucm";
 
 const common_store = configureStore({
@@ -30,7 +29,6 @@ const common_store = configureStore({
     loading,
     schedule_settings,
     schedules,
-    splunk,
     toasts,
     ucm,
   },

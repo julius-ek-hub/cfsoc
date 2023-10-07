@@ -1,11 +1,10 @@
+import Box from "@mui/material/Box";
+
 import GitHubIcon from "@mui/icons-material/GitHub";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import IconButton from "../IconButton";
 import Confirm from "../Comfirm";
-
-import useFetch from "../../hooks/useFetch";
-import useLoading from "../../hooks/useLoading";
 
 const num = (version) =>
   String(version)
@@ -14,32 +13,22 @@ const num = (version) =>
     .reduce((a, b) => a + b, 0);
 
 const UpdateUI = ({ user }) => {
-  const { get } = useFetch("/auth");
-  const { update } = useLoading();
-
   const { old_version, new_version } = user.app_versions || {};
 
   if (old_version === new_version || num(old_version) > num(new_version))
     return null;
 
-  const updateUI = async () => {
-    update(true);
-    await get("/update-ui");
-    update(false);
-    window.location.reload();
-  };
-
   return (
     <Confirm
-      onConfirm={updateUI}
       fullWidth
+      title={`New version | ${new_version}`}
       Clickable={(props) => (
         <>
           <IconButton
             Icon={GitHubIcon}
             sx={{ ml: 3, mr: 1 }}
             {...props}
-            title="Version changed, click to apply"
+            title="New version available"
           />
           {old_version}
           <ArrowForwardIcon fontSize="small" sx={{ mx: 1 }} />
@@ -47,11 +36,15 @@ const UpdateUI = ({ user }) => {
         </>
       )}
     >
-      This process will pull all project changes from GitHub into CFSOC local
-      server, rebuild and restart the server and then reload this browser.
+      Go to the Desktop of the server machine, right-click on <b>cfsoc</b>{" "}
+      folder and open with <b>Git Batch Here</b>. Type the command{" "}
+      <Box component="code" color="error.main">
+        npm run pull
+      </Box>{" "}
+      and hit Enter. <b>{`(Wait for the process to complete)`}</b>
       <p>
-        If for some reason, a problem arises, update manually through the steps
-        in <b>update.txt</b> found on the Desktop.
+        This will pull all updates from the GitHub repository into the local
+        server and restart the server.
       </p>
     </Confirm>
   );

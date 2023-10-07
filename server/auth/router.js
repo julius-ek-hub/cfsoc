@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { check } = require("../utils/update");
 
-const { deleteNotify } = require("../expo/db/notify");
 const {
   getStaff: gs,
   addStaff: as,
@@ -65,9 +64,7 @@ const updateStaff = async (req, res) => {
 const deleteStaff = async (req, res) => {
   const username = req.query.username;
   const st = await gs({ username });
-  const email = Object.values(st)[0].email;
   const deleted = await ds(username);
-  await deleteNotify(email);
   res.json({ ...deleted });
 };
 

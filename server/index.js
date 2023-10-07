@@ -10,7 +10,6 @@ const auth = require("./auth");
 const ucm = require("./ucm");
 
 const schedules = require("./schedules");
-const expo = require("./expo");
 const apps = require("./apps");
 
 const app = express();
@@ -22,7 +21,6 @@ app.use(fileUpload());
 app.use(cors);
 app.use(db);
 app.use("/api/schedules", schedules);
-app.use("/expocitydubai", expo);
 app.use("/auth", auth);
 app.use("/ucm", ucm);
 app.use("/apps", apps);

@@ -146,11 +146,13 @@ const Apps = () => {
             />
           ))}
         </Box>
-        <Middle>
-          <Button color="inherit" endIcon={<Add />} onClick={handleOpen}>
-            Add App
-          </Button>
-        </Middle>
+        {user.username === "julius.ekane" && (
+          <Middle>
+            <Button color="inherit" endIcon={<Add />} onClick={handleOpen}>
+              Add App
+            </Button>
+          </Middle>
+        )}
       </Box>
       <Dialog
         onXClose={handleClose}

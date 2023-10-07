@@ -3,8 +3,11 @@ const path = require("path");
 const exec = require("child_process").execSync;
 
 (() => {
-  const _path = (file) =>
-    path.join(...__dirname.split(path.sep).reverse().slice(2).reverse(), file);
+  const _path = (...files) =>
+    path.join(
+      ...__dirname.split(path.sep).reverse().slice(2).reverse(),
+      ...files
+    );
   const pk_json_file = _path("package.json");
   const pk_json = JSON.parse(fs.readFileSync(pk_json_file, "utf-8"));
   const _v = pk_json.version;

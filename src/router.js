@@ -1,7 +1,6 @@
 import { createBrowserRouter, redirect } from "react-router-dom";
 
 import Schedule from "./schedule";
-import Splunk from "./splunk";
 import Apps from "./Apps";
 import Account from "./Account";
 import UCM from "./UCM";
@@ -23,11 +22,6 @@ export default createBrowserRouter([
     path: "/schedules",
     loader: () => redirect("/schedules/current"),
   },
-  // {
-  //   path: "/splunk",
-  //   element: <Splunk />,
-  //   errorElement: <Err_500 />,
-  // },
 
   {
     path: "/use-case-management/:path",
