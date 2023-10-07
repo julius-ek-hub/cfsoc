@@ -21,6 +21,7 @@ const UpdateUI = ({ user }) => {
   return (
     <Confirm
       fullWidth
+      is_alert
       title={`New version | ${new_version}`}
       Clickable={(props) => (
         <>
