@@ -42,8 +42,12 @@ const check = async () => {
     "package.json"
   );
   const old_pk_json = JSON.parse(fs.readFileSync(old_pk_json_file, "utf-8"));
+  const old_version = old_pk_json.version;
 
-  return old_pk_json.version !== new_version;
+  return {
+    old_version,
+    new_version,
+  };
 };
 
 module.exports = { check, update };

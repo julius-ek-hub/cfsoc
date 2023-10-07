@@ -1,4 +1,5 @@
 import GitHubIcon from "@mui/icons-material/GitHub";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import IconButton from "../IconButton";
 import Confirm from "../Comfirm";
@@ -10,9 +11,9 @@ const UpdateUI = ({ user }) => {
   const { get } = useFetch("/auth");
   const { update } = useLoading();
 
-  console.log(user);
+  const { old_version, new_version } = user.app_versions;
 
-  if (!user.ui_changed) return null;
+  if (old_version === new_version) return null;
 
   const updateUI = async () => {
     update(true);
@@ -26,7 +27,17 @@ const UpdateUI = ({ user }) => {
       onConfirm={updateUI}
       fullWidth
       Clickable={(props) => (
-        <IconButton Icon={GitHubIcon} sx={{ ml: 3 }} {...props} />
+        <>
+          <IconButton
+            Icon={GitHubIcon}
+            sx={{ ml: 3, mr: 1 }}
+            {...props}
+            title="Version changed, click to apply"
+          />
+          {old_version}
+          <ArrowForwardIcon fontSize="small" sx={{ mx: 1 }} />
+          {new_version}
+        </>
       )}
     >
       This process will pull all project changes from GitHub into CFSOC local

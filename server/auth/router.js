@@ -16,7 +16,7 @@ const getStaffs = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const ui_changed = await check();
+  const app_versions = await check();
   // const { token } = req.query;
   const loginError = {
     error: "Login failed",
@@ -29,7 +29,7 @@ const getUser = async (req, res) => {
     // const { username } = jwt.verify(token, env("JWT_KEY"));
     const username = "system";
     const user = await gs({ username }, "-hash -__v");
-    res.json({ ...user[username], ui_changed });
+    res.json({ ...user[username], app_versions });
   } catch (error) {
     res.json(loginError);
   }
