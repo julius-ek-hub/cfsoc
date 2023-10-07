@@ -37,8 +37,9 @@ const update = (req, res) => {
     });
     exec("npm run build", { stdio: "ignore" });
     exec("npm run build", { stdio: "ignore" });
-    res.json({ stderr, stdout });
-  } catch (error) {}
+  } finally {
+    res.json({});
+  }
 };
 
 const check = async () => {
