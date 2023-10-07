@@ -1,7 +1,6 @@
 const https = require("https");
 const fs = require("fs");
 const path = require("path");
-const util = require("util");
 const exec = require("child_process").execSync;
 
 const get_new_version = () =>
