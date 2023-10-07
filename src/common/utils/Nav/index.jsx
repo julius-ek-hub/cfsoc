@@ -32,7 +32,7 @@ const Nav = ({ app = "All Apps" }) => {
       sx={{ overflowX: "auto" }}
     >
       <Box display="flex" alignItems="center">
-        CFSOC - {" {test} "}
+        CFSOC
         <ArrowForwardIosIcon fontSize="x-small" sx={{ mx: 1 }} />
         <Typography component="span" color="success.main" fontWeight="bold">
           {app}
