@@ -1,5 +1,3 @@
-import Button from "@mui/material/Button";
-
 import JoinFullIcon from "@mui/icons-material/JoinFull";
 
 import Confirm from "../../common/utils/Comfirm";

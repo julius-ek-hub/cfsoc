@@ -6,9 +6,11 @@ import Avatar from "@mui/material/Avatar";
 
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AppsIcon from "@mui/icons-material/Apps";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 import Theme from "./Theme";
 import IconButton from "../IconButton";
+import UpdateUI from "./UpdateUI";
 
 import useCommonSettings from "../../hooks/useSettings";
 
@@ -40,6 +42,7 @@ const Nav = ({ app = "All Apps" }) => {
             <IconButton Icon={AppsIcon} sx={{ ml: 4 }} title="All Apps" />
           </Link>
         )}
+        <UpdateUI user={user} />
       </Box>
       <Box mr={2} display="flex" alignItems="center">
         <Theme />
