@@ -109,6 +109,7 @@ const L3UCForm = ({ Button, edit }) => {
                   enterButton
                   name={k}
                   margin="dense"
+                  multiline={k === "description"}
                   hidden
                   label={v.label}
                   {...(edit &&

@@ -82,6 +82,7 @@ const L2UCForm = ({ Button, edit }) => {
                 <TextField
                   fullWidth
                   enterButton
+                  multiline={k === "description"}
                   name={k}
                   margin="dense"
                   label={v.label}

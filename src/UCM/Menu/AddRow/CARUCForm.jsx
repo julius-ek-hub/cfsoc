@@ -119,6 +119,7 @@ const CARUCForm = ({ Button, edit }) => {
                   fullWidth
                   name={k}
                   margin="dense"
+                  multiline={k === "description"}
                   hidden
                   label={v.label}
                   {...(k === "implementations" && {

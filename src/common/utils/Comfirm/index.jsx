@@ -38,7 +38,7 @@ export default function Confirm({
         onClose={handleClose}
         onXClose={handleClose}
         title={title || "Confirm!"}
-        fullWidth={rest.fullWidth || true}
+        fullWidth={typeof rest.fullWidth === "boolean" ? rest.fullWidth : true}
         {...rest}
         action={
           <>

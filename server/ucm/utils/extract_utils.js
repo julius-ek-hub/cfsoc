@@ -29,6 +29,11 @@ const getCellValue = (v) => {
 };
 
 const prepare = async (file, sheet_index, sheet) => {
+  if (file.size / 1024 / 1024 > 2)
+    return {
+      error: `File is too large, reading this might crash the server. maximum size has been set to 2MB`,
+    };
+
   const ext = file.name.split(".").at(-1);
   if (ext === "json") {
     let json = JSON.parse(file.data.toString());

@@ -1,13 +1,16 @@
 import { useState } from "react";
 
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
+import CheckBox from "@mui/icons-material/CheckBox";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import CheckBoxOutlineBlank from "@mui/icons-material/CheckBoxOutlineBlank";
 
 import DataObjectIcon from "@mui/icons-material/DataObject";
 import BorderAllIcon from "@mui/icons-material/BorderAll";
@@ -16,16 +19,12 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import MyMenu from "../../common/utils/Menu";
 import useSheet from "../hooks/useSheet";
-import { Stack } from "@mui/material";
-import CheckBox from "@mui/icons-material/CheckBox";
-import CheckBoxOutlineBlank from "@mui/icons-material/CheckBoxOutlineBlank";
 
 const Download = ({ onChange }) => {
   const [open, setOpen] = useState(false);
   const [checked, setChecked] = useState([]);
 
-  const { sheet_names: sn, sheets } = useSheet();
-  const sheet_names = sn.filter((s) => sheets[s.key].content.length > 0);
+  const { sheet_names } = useSheet();
   const sn_keys = sheet_names.map((sn) => sn.key);
 
   const handleDownload = (format) => {

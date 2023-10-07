@@ -218,6 +218,7 @@ const useFetcher = () => {
   };
 
   const downloadData = async (format, _sheets) => {
+    await Promise.all(_sheets.map(fetchSheetContent));
     const payload = _sheets.map((_sheet) => ({
       sheet: _sheet,
       columns: sheets[_sheet].columns,

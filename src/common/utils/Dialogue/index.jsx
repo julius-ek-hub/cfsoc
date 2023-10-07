@@ -1,15 +1,16 @@
-import {
-  Dialog as MuiDialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
-  Zoom,
-} from "@mui/material";
-import { forwardRef, ReactElement } from "react";
+import { forwardRef, ReactElement, useState } from "react";
 
-// import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
-import CloseFullscreenIcon from "@mui/icons-material/Close";
+import Box from "@mui/material/Box";
+import Zoom from "@mui/material/Zoom";
+import MuiDialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContentText from "@mui/material/DialogContentText";
+
+import CloseIcon from "@mui/icons-material/Close";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 
 import { DialogProps } from "./types";
 import IconButton from "../IconButton";
@@ -23,7 +24,7 @@ const Transition = forwardRef(function Transition(
 
 /**
  * Customized Dialog base component
- * @arg {typeof DialogProps & {transition: Boolean, header: ReactElement, onXClose: Function}} props
+ * @arg {typeof DialogProps & {transition: Boolean, header: ReactElement, onXClose: Function, expandable: Boolean}} props
  */
 
 function Dialog(props) {
@@ -34,24 +35,39 @@ function Dialog(props) {
     transition = true,
     header,
     onXClose,
+    expandable,
     ...rest
   } = props;
+
+  const [fullScreen, setFs] = useState(false);
+
   return (
     <MuiDialog
       {...(transition && {
         TransitionComponent: rest.TransitionComponent || Transition,
       })}
       {...rest}
+      {...(expandable && {
+        fullScreen,
+      })}
     >
-      {title && (
+      {(title || expandable) && (
         <>
           <DialogTitle
             display="flex"
             alignItems="center"
             justifyContent="space-between"
           >
-            {title}
-            <IconButton Icon={CloseFullscreenIcon} onClick={onXClose} />
+            {title || <Box />}
+            <Box>
+              {expandable && (
+                <IconButton
+                  Icon={fullScreen ? CloseFullscreenIcon : FullscreenIcon}
+                  onClick={() => setFs(!fullScreen)}
+                />
+              )}
+              <IconButton Icon={CloseIcon} onClick={onXClose} />
+            </Box>
           </DialogTitle>
           {header}
         </>

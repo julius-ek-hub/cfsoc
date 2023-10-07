@@ -41,7 +41,7 @@ const Tc = ({ link, value, image, sheet, ...rest }) => {
       ) : image ? (
         <img
           src={`${serverURL(`/sheet_images/${sheet}/${image}`)}`}
-          style={{ objectFit: "cover", width: "100%" }}
+          style={{ objectFit: "cover", width: "100%", maxWidth: "1000px" }}
           alt={image}
         />
       ) : (
@@ -166,68 +166,72 @@ function Table() {
             </TableRow>
           </TableHead>
         )}
-        <TableBody>
-          {pted.map((row, index) => {
-            const _selected = selected.includes(row._id.value);
-            const __sel = () => handleSelect(row._id.value);
-            const colLen = sorted_columns.length;
-            const first_val = val(sorted_columns[0], row);
-            const span =
-              [
-                ...new Set(
-                  sorted_columns.map((e) => row[e[0]]?.value).filter((v) => v)
-                ),
-              ].length === 1;
-            return (
-              <TableRow
-                key={index}
-                sx={{
-                  cursor: "pointer",
-                  ...(_selected && { bgcolor: (t) => t.palette.action.hover }),
-                }}
-              >
-                {!locked && (
-                  <>
-                    <TableCell
-                      sx={{
-                        bgcolor: first_val.sx?.bgcolor,
-                      }}
-                    >
-                      {page * rowsPerPage + 1 + index}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        py: 0.5,
-                        width: "10px",
-                        bgcolor: first_val.sx?.bgcolor,
-                      }}
-                    >
-                      <Checkbox checked={_selected} onChange={__sel} />
-                    </TableCell>
-                  </>
-                )}
-                {colLen > 1 && span ? (
-                  <Tc
-                    {...first_val}
-                    image={Object.values(row).find((e) => e?.image)?.image}
-                    onClick={__sel}
-                    colSpan={colLen}
-                    sheet={key}
-                  />
-                ) : (
-                  sorted_columns.map((k) => (
+        {sorted_columns.length > 0 && (
+          <TableBody>
+            {pted.map((row, index) => {
+              const _selected = selected.includes(row._id.value);
+              const __sel = () => handleSelect(row._id.value);
+              const colLen = sorted_columns.length;
+              const first_val = val(sorted_columns[0], row);
+              const span =
+                [
+                  ...new Set(
+                    sorted_columns.map((e) => row[e[0]]?.value).filter((v) => v)
+                  ),
+                ].length === 1;
+              return (
+                <TableRow
+                  key={index}
+                  sx={{
+                    cursor: "pointer",
+                    ...(_selected && {
+                      bgcolor: (t) => t.palette.action.hover,
+                    }),
+                  }}
+                >
+                  {!locked && (
+                    <>
+                      <TableCell
+                        sx={{
+                          bgcolor: first_val.sx?.bgcolor,
+                        }}
+                      >
+                        {page * rowsPerPage + 1 + index}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          py: 0.5,
+                          width: "10px",
+                          bgcolor: first_val.sx?.bgcolor,
+                        }}
+                      >
+                        <Checkbox checked={_selected} onChange={__sel} />
+                      </TableCell>
+                    </>
+                  )}
+                  {colLen > 1 && span ? (
                     <Tc
-                      key={k}
+                      {...first_val}
+                      image={Object.values(row).find((e) => e?.image)?.image}
                       onClick={__sel}
-                      {...val(k, row)}
-                      sheet={active_sheet.key}
+                      colSpan={colLen}
+                      sheet={key}
                     />
-                  ))
-                )}
-              </TableRow>
-            );
-          })}
-        </TableBody>
+                  ) : (
+                    sorted_columns.map((k) => (
+                      <Tc
+                        key={k}
+                        onClick={__sel}
+                        {...val(k, row)}
+                        sheet={active_sheet.key}
+                      />
+                    ))
+                  )}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        )}
       </TableMui>
       {!locked && (
         <Middle py={4} flexGrow={1}>

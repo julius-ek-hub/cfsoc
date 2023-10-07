@@ -112,6 +112,7 @@ const Card = ({
           <Confirm
             title={`${title} | description`}
             is_alert
+            expandable
             Clickable={(props) => (
               <Box
                 component="span"
@@ -125,7 +126,9 @@ const Card = ({
               </Box>
             )}
           >
-            {description}
+            {description.split("\n").map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
           </Confirm>
         )}
       </Box>

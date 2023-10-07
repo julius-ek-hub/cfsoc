@@ -114,6 +114,7 @@ const UCDBForm = ({ Button, edit }) => {
               ) : (
                 <TextField
                   enterButton
+                  multiline={k === "description"}
                   fullWidth
                   name={k}
                   margin="dense"
