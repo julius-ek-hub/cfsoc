@@ -15,4 +15,5 @@ const exec = require("child_process").execSync;
   exec(`git add .`);
   exec(`git commit -m "Updating to ${pk_json.version}"`);
   exec(`git push`);
+  exec(`npm run build`);
 })();

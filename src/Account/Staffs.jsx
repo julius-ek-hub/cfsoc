@@ -1,11 +1,8 @@
 import { useState } from "react";
 
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -42,7 +39,6 @@ const columns = [
 ];
 
 const Tr = ({ row }) => {
-  const [open, setOpen] = useState(false);
   const { dlete } = useFetch("/auth");
   const { update: ul } = useLoading();
   const { update: us, staffs, uname, admin } = useCommonSettings();

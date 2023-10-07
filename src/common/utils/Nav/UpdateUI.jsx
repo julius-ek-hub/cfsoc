@@ -10,6 +10,8 @@ const UpdateUI = ({ user }) => {
   const { get } = useFetch("/auth");
   const { update } = useLoading();
 
+  console.log(user);
+
   if (!user.ui_changed) return null;
 
   const updateUI = async () => {
