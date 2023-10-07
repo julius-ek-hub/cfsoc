@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import Dialog from "../Dialogue";
 
@@ -11,14 +11,14 @@ import useLoading from "../../hooks/useLoading";
 const Login = () => {
   const [havePass, setHavePass] = useState(true);
   const { user } = useCommonSettings();
-  const { loading } = useLoading();
   const [open, setOpen] = useState(false);
+  const { loading } = useLoading();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setOpen(!Boolean(user));
   }, [user]);
 
-  if (Object.values(loading).some((v) => v)) return null;
+  if (loading.user || loading.staffs) return;
 
   return (
     <Dialog

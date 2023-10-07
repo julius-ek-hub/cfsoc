@@ -35,7 +35,7 @@ const HavePass = ({ onNoPass }) => {
       onSubmit={async (v, form) => {
         setUsername(v.username);
         try {
-          ul(true);
+          ul(true, "login");
           const { json } = await post("/login", {
             username: v.username.toLowerCase(),
             password: v.password,
@@ -45,13 +45,13 @@ const HavePass = ({ onNoPass }) => {
               json.field || "username",
               json.errorCode === 500 ? "Internal Server Error." : json.error
             );
-            return ul(false);
+            return ul(false, "login");
           }
           update("user", json.user);
           update("x-auth-token", json.jwt);
-          ul(false);
+          ul(false, "login");
         } catch (error) {
-          ul(false);
+          ul(false, "login");
           form.setFieldError("username", error.message);
         }
       }}
