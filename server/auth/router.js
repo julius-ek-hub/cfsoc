@@ -17,7 +17,7 @@ const getStaffs = async (req, res) => {
 
 const getUser = async (req, res) => {
   const app_versions = await check();
-  // const { token } = req.query;
+  const { token } = req.query;
   const loginError = {
     error: "Login failed",
     errorCode: 400,
@@ -26,12 +26,13 @@ const getUser = async (req, res) => {
 
   // if (!token) return res.json(loginError);
   try {
-    // const { username } = jwt.verify(token, env("JWT_KEY"));
-    const username = "system";
+    const { username } = jwt.verify(token, env("JWT_KEY"));
     const user = await gs({ username }, "-hash -__v");
     res.json({ ...user[username], app_versions });
   } catch (error) {
-    res.json(loginError);
+    const username = "system";
+    const user = await gs({ username }, "-hash -__v");
+    res.json({ ...user[username], app_versions });
   }
 };
 const addStaff = async (req, res) => {
@@ -55,9 +56,10 @@ const addStaff = async (req, res) => {
 };
 
 const updateStaff = async (req, res) => {
+  const app_versions = await check();
   let { username, ...update } = req.body;
   const upd = await us({ username }, update);
-  res.json(upd);
+  res.json({ ...upd, app_versions });
 };
 
 const deleteStaff = async (req, res) => {

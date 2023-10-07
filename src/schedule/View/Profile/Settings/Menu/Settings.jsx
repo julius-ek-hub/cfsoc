@@ -32,7 +32,7 @@ function Settings() {
   };
 
   return (
-    <Box size="small" sx={{ mt: 2, px: 2 }} fullWidth>
+    <Box size="small" sx={{ mt: 2, px: 2 }}>
       <InputLabel>Schedule interval:</InputLabel>
       <Select
         value={max_days}

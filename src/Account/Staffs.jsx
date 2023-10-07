@@ -122,7 +122,7 @@ const Staffs = () => {
   const { user, staffs: st, admin } = useCommonSettings();
   if (!user || !st) return null;
 
-  const staffs = Object.values(st);
+  const staffs = Object.values(st).filter((st) => st.username !== "system");
 
   return (
     <>

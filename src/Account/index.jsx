@@ -7,6 +7,7 @@ import Nav from "../common/utils/Nav";
 import Middle from "../common/utils/Middle";
 import UserInfo from "../common/utils/UserInfo";
 import Staffs from "./Staffs";
+import Logout from "../common/utils/Logout";
 
 import useCommonSettings from "../common/hooks/useSettings";
 
@@ -33,6 +34,7 @@ const Account = () => {
       >
         <Middle gap={2} mt={2}>
           <UserInfo />
+          <Logout />
           <Divider sx={{ my: 3, width: "100%" }} />
           <Staffs />
         </Middle>

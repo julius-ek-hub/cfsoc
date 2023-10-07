@@ -8,7 +8,7 @@ import useFetch from "../../hooks/useFetch";
 import useLoading from "../../hooks/useLoading";
 
 const num = (version) =>
-  version
+  String(version)
     .split(".")
     .map(Number)
     .reduce((a, b) => a + b, 0);
@@ -17,7 +17,7 @@ const UpdateUI = ({ user }) => {
   const { get } = useFetch("/auth");
   const { update } = useLoading();
 
-  const { old_version, new_version } = user.app_versions;
+  const { old_version, new_version } = user.app_versions || {};
 
   if (old_version === new_version || num(old_version) > num(new_version))
     return null;

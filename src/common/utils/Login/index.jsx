@@ -18,7 +18,7 @@ const Login = () => {
     setOpen(!Boolean(user));
   }, [user]);
 
-  if (loading.user) return null;
+  if (Object.values(loading).some((v) => v)) return null;
 
   return (
     <Dialog

@@ -6,7 +6,6 @@ import Avatar from "@mui/material/Avatar";
 
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AppsIcon from "@mui/icons-material/Apps";
-import GitHubIcon from "@mui/icons-material/GitHub";
 
 import Theme from "./Theme";
 import IconButton from "../IconButton";
@@ -47,7 +46,11 @@ const Nav = ({ app = "All Apps" }) => {
       <Box mr={2} display="flex" alignItems="center">
         <Theme />
         {app.toLocaleLowerCase() !== "accounts" && (
-          <Link to="/account" style={{ textDecoration: "none" }}>
+          <Link
+            to="/account"
+            style={{ textDecoration: "none" }}
+            title={getName()}
+          >
             <Avatar sx={{ height: 30, width: 30, mr: 1, fontSize: 16 }}>
               {getName()
                 .split(" ")
