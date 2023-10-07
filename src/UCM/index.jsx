@@ -49,6 +49,7 @@ const Mitre = () => {
     <Box display="flex" flexDirection="column" height="100%">
       <Box>
         <Nav app="Use Case Management" />
+        This is a test file
       </Box>
       <SearchParamFilter />
       <Menu />
