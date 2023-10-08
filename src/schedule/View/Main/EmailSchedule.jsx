@@ -39,7 +39,7 @@ const EmailSchedule = () => {
   const d = schedule_date_range_ui(active.from, active.to);
   const subject = `SOC Schedule (${d[0]} - ${d[1]})`;
 
-  const handleChose = () => setBys(null);
+  const handleClose = () => setBys(null);
 
   const onDone = async (values) => {
     await emailSchedule({
@@ -61,7 +61,11 @@ const EmailSchedule = () => {
         title="Email Schedule"
         okText="Next"
       />
-      <Dialogue open={Boolean(bys)} title="Add a message">
+      <Dialogue
+        open={Boolean(bys)}
+        title="Add a message"
+        onXClose={handleClose}
+      >
         <Form
           validationSchema={schema}
           initialValues={{
@@ -117,7 +121,7 @@ const EmailSchedule = () => {
               type="button"
               size="large"
               sx={{ ml: 2 }}
-              onClick={handleChose}
+              onClick={handleClose}
             >
               Cencel
             </Button>
