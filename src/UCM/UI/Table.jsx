@@ -172,7 +172,11 @@ function Table() {
               const _selected = selected.includes(row._id.value);
               const __sel = () => handleSelect(row._id.value);
               const colLen = sorted_columns.length;
-              const first_val = val(sorted_columns[0], row);
+              let first_val = sorted_columns
+                .map((sc) => val(sc, row))
+                .find((sc) => sc.value || sc.image);
+              if (!first_val) first_val = val(sorted_columns[0], row);
+
               const span =
                 [
                   ...new Set(
