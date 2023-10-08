@@ -7,10 +7,7 @@ import IconButton from "../IconButton";
 import Confirm from "../Comfirm";
 
 const num = (version) =>
-  String(version)
-    .split(".")
-    .map(Number)
-    .reduce((a, b) => a + b, 0);
+  Number((typeof version === "string" ? version : "0").split(".").join(""));
 
 const UpdateUI = ({ user }) => {
   const { old_version, new_version } = user.app_versions || {};
