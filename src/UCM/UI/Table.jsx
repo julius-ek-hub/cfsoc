@@ -182,7 +182,8 @@ function Table() {
                   ...new Set(
                     sorted_columns.map((e) => row[e[0]]?.value).filter((v) => v)
                   ),
-                ].length === 1;
+                ].length <= 1;
+
               return (
                 <TableRow
                   key={index}
