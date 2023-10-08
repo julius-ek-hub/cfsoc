@@ -66,7 +66,6 @@ const NoHistory = () => {
             TransitionProps={{ direction: "right" }}
             TransitionComponent={Slide}
             open={open}
-            sx={{ ".MuiPaper-root": { maxWidth: 400 } }}
             onClose={handleClose}
           >
             <Typography p={2} variant="h6">

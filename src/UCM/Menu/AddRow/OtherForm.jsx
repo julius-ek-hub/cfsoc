@@ -70,7 +70,6 @@ const OtherForm = ({ Button, edit }) => {
           return (
             <TextField
               multiline
-              onEnterButtonPressed={handleSubmit}
               fullWidth
               onChange={(e) =>
                 setValues({

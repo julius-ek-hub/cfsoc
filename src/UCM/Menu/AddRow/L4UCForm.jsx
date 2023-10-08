@@ -114,7 +114,6 @@ const L4UCForm = ({ Button, edit }) => {
               ) : (
                 <TextField
                   fullWidth
-                  enterButton
                   name={k}
                   margin="dense"
                   multiline={k === "description"}

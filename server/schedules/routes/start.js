@@ -18,8 +18,7 @@ module.exports = async (req, res) => {
       return res.json({ error: "No staff added." });
     if (shifts.length === 0)
       return res.json({
-        error:
-          "At least one shift needed to generate schedule, go to settings and add a shift.",
+        error: "At least one shift needed to generate schedule.",
       });
     if (statuses.length === 0)
       await saveStatus([{ name: "work", label: "X" }, { name: "off" }]);
