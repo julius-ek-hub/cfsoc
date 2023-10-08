@@ -109,7 +109,8 @@ const useActiveSchedule = () => {
 
   const emailSchedule = async (body) => {
     const { json } = await post("/email", body);
-    console.log(json);
+    if (json.error) return push({ message: json.error, severity: "error" });
+    push({ ...json, severity: "success" });
   };
 
   const saveSchedule = async () => {
