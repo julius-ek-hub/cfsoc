@@ -41,7 +41,7 @@ const Tc = ({ link, value, image, sheet, ...rest }) => {
       ) : image ? (
         <img
           src={`${serverURL(`/sheet_images/${sheet}/${image}`)}`}
-          style={{ objectFit: "cover", width: "100%", maxWidth: "1000px" }}
+          style={{ objectFit: "cover", width: "100%" }}
           alt={image}
         />
       ) : (
