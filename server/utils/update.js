@@ -35,18 +35,25 @@ const update = async (req, res) => {
 };
 
 const check = async () => {
-  const new_version = await get_new_version();
-  const old_pk_json_file = path.join(
-    ...__dirname.split(path.sep).reverse().slice(2).reverse(),
-    "package.json"
-  );
-  const old_pk_json = JSON.parse(fs.readFileSync(old_pk_json_file, "utf-8"));
-  const old_version = old_pk_json.version;
+  try {
+    const new_version = await get_new_version();
+    const old_pk_json_file = path.join(
+      ...__dirname.split(path.sep).reverse().slice(2).reverse(),
+      "package.json"
+    );
+    const old_pk_json = JSON.parse(fs.readFileSync(old_pk_json_file, "utf-8"));
+    const old_version = old_pk_json.version;
 
-  return {
-    old_version,
-    new_version,
-  };
+    return {
+      old_version,
+      new_version,
+    };
+  } catch (err) {
+    return {
+      old_version: "",
+      new_version: "",
+    };
+  }
 };
 
 module.exports = { check, update };

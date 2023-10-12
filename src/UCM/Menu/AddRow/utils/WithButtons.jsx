@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -8,11 +9,10 @@ import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import Confirm from "../../../../common/utils/Comfirm";
 import NewColumn from "./NewColumn";
 import ViewRelated from "./ViewRelated";
+import Style from "./Style";
 
 import useSheet from "../../../hooks/useSheet";
-
 import useAddModify from "../../../hooks/useAddModify";
-import { Typography } from "@mui/material";
 
 const WithButtons = ({ Form, name }) => {
   const { active_sheet, sheets } = useSheet();
@@ -46,14 +46,17 @@ const WithButtons = ({ Form, name }) => {
         </>
       )}
       {selected.length === 1 && (
-        <Form
-          edit={selected[0]}
-          Button={(props) => (
-            <Button color="inherit" endIcon={<EditIcon />} {...props}>
-              Edit selected
-            </Button>
-          )}
-        />
+        <>
+          <Form
+            edit={selected[0]}
+            Button={(props) => (
+              <Button color="inherit" endIcon={<EditIcon />} {...props}>
+                Edit values
+              </Button>
+            )}
+          />
+          <Style _id={selected[0]} />
+        </>
       )}
       {selected.length >= 1 && (
         <>

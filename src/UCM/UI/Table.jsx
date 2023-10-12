@@ -24,10 +24,14 @@ import useFilter from "../hooks/useFilter";
 import useSheet from "../hooks/useSheet";
 import useFetch from "../../common/hooks/useFetch";
 
-const Tc = ({ link, value, image, sheet, ...rest }) => {
+const Tc = ({ link, value, image, sheet, selected, sx, ...rest }) => {
   const { serverURL } = useFetch();
+
   return (
-    <TableCell {...rest}>
+    <TableCell
+      {...rest}
+      sx={{ ...sx, bgcolor: selected ? "inherit" : sx?.bgcolor }}
+    >
       {link ? (
         <Link
           rel="noreferrer"
@@ -197,9 +201,9 @@ function Table() {
                   {!locked && (
                     <>
                       <TableCell
-                        sx={{
-                          bgcolor: first_val.sx?.bgcolor,
-                        }}
+                        {...(!_selected && {
+                          sx: { bgcolor: first_val.sx?.bgcolor },
+                        })}
                       >
                         {page * rowsPerPage + 1 + index}
                       </TableCell>
@@ -207,7 +211,7 @@ function Table() {
                         sx={{
                           py: 0.5,
                           width: "10px",
-                          bgcolor: first_val.sx?.bgcolor,
+                          ...(!_selected && { bgcolor: first_val.sx?.bgcolor }),
                         }}
                       >
                         <Checkbox checked={_selected} onChange={__sel} />
@@ -221,6 +225,7 @@ function Table() {
                       onClick={__sel}
                       colSpan={colLen}
                       sheet={key}
+                      selected={_selected}
                     />
                   ) : (
                     sorted_columns.map((k) => (
@@ -229,6 +234,7 @@ function Table() {
                         onClick={__sel}
                         {...val(k, row)}
                         sheet={active_sheet.key}
+                        selected={_selected}
                       />
                     ))
                   )}

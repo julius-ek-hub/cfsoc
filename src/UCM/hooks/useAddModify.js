@@ -246,6 +246,10 @@ const useAddModify = () => {
           ..._data,
           _id: { value: edit },
         });
+        updateSheet(
+          `${key + fs}selected`,
+          selected.filter((s) => s !== edit)
+        );
       }
       return onDone();
     }

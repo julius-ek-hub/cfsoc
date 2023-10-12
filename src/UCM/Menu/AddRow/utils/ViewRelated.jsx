@@ -87,16 +87,18 @@ function ViewRelated({ _ids }) {
   };
 
   const But = ({ tos }) => {
-    return tos.map((to) => (
-      <Button
-        key={to}
-        color="inherit"
-        endIcon={<OpenInNewIcon />}
-        onClick={() => goSearchRelated(to)}
-      >
-        View Related {sheets[to].name}
-      </Button>
-    ));
+    return tos
+      .filter((to) => sheets[to])
+      .map((to) => (
+        <Button
+          key={to}
+          color="inherit"
+          endIcon={<OpenInNewIcon />}
+          onClick={() => goSearchRelated(to)}
+        >
+          View Related {sheets[to].name}
+        </Button>
+      ));
   };
   return (
     <>

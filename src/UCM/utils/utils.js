@@ -27,6 +27,7 @@ export const objectExcept = (obj, keys) => {
 };
 
 export const _entr = (ob) => Object.entries(ob);
+export const entr_ = (arr) => Object.fromEntries(arr);
 export const _l = (str) => String(str).toLowerCase().trim();
 export const _u = (str) => String(str).toUpperCase().trim();
 
