@@ -12,6 +12,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 
 import IconButton from "../../common/utils/IconButton";
 
@@ -267,8 +268,13 @@ const Sections = () => {
           )}
         </Tabs>
       )}
+      <HorizontalRuleIcon sx={{ transform: "rotate(90deg)" }} />
       <Button
-        sx={{ whiteSpace: "nowrap", ...(sheet_names.length === 0 && { m: 3 }) }}
+        sx={{
+          whiteSpace: "nowrap",
+          flexShrink: 0,
+          ...(sheet_names.length === 0 && { m: 3 }),
+        }}
         color="inherit"
         endIcon={<AddIcon />}
         size="small"
@@ -277,7 +283,10 @@ const Sections = () => {
         Add New
       </Button>
       {active_sheet && (
-        <Pagination __key={`${key + fs}content`} content={active_content} />
+        <>
+          <HorizontalRuleIcon sx={{ transform: "rotate(90deg)" }} />
+          <Pagination __key={`${key + fs}content`} content={active_content} />
+        </>
       )}
     </Box>
   );

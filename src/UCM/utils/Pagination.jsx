@@ -124,7 +124,7 @@ export default function Pagination() {
     <>
       <TablePagination
         component="div"
-        sx={{ ml: "auto" }}
+        sx={{ flexShrink: 0 }}
         rowsPerPageOptions={[30, 60, 100, 200]}
         colSpan={3}
         count={f.length}
