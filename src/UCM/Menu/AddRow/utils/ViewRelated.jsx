@@ -104,10 +104,30 @@ function ViewRelated({ _ids }) {
         <But tos={["l2_uc", "l3_uc", "l4_uc", "db_uc", "dev_uc"]} />
       )}
       {key === "l2_uc" && (
-        <But tos={["l1_uc", "l3_uc", "l4_uc", "db_uc", "dev_uc", "sigma_uc"]} />
+        <But
+          tos={[
+            "l1_uc",
+            "l3_uc",
+            "l4_uc",
+            "db_uc",
+            "dev_uc",
+            "sigma_uc",
+            "expo_sentinel_uc",
+          ]}
+        />
       )}
       {key === "l3_uc" && (
-        <But tos={["l1_uc", "l2_uc", "l4_uc", "db_uc", "dev_uc", "sigma_uc"]} />
+        <But
+          tos={[
+            "l1_uc",
+            "l2_uc",
+            "l4_uc",
+            "db_uc",
+            "dev_uc",
+            "sigma_uc",
+            "expo_sentinel_uc",
+          ]}
+        />
       )}
       {key === "l4_uc" && (
         <But tos={["l1_uc", "l2_uc", "l3_uc", "db_uc", "dev_uc", "sigma_uc"]} />
