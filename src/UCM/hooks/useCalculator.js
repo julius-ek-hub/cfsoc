@@ -345,6 +345,37 @@ const useCalculator = (sheets) => {
 
       return { mitre_url, application_platforms };
     }
+    if (key === "expo_sentinel_uc") {
+      const l2_uc_identifiers = {};
+      const l3_uc_identifiers = {};
+
+      content.map((c) => {
+        const _id = c._id.value;
+        const l2 = c.l2_uc_identifiers.value;
+        const l3 = c.l3_uc_identifiers.value;
+        l3_uc_identifiers[_id] = l3.join(", ");
+        l2_uc_identifiers[_id] = l2.join(", ");
+      });
+
+      return { l2_uc_identifiers, l3_uc_identifiers };
+    }
+    if (key === "sigma_uc") {
+      const l2_uc_identifiers = {};
+      const l3_uc_identifiers = {};
+      const l4_uc_identifiers = {};
+
+      content.map((c) => {
+        const _id = c._id.value;
+        const l2 = c.l2_uc_identifiers.value;
+        const l3 = c.l3_uc_identifiers.value;
+        const l4 = c.l4_uc_identifiers.value;
+        l3_uc_identifiers[_id] = l3.join(", ");
+        l2_uc_identifiers[_id] = l2.join(", ");
+        l4_uc_identifiers[_id] = l4.join(", ");
+      });
+
+      return { l2_uc_identifiers, l3_uc_identifiers, l4_uc_identifiers };
+    }
     return {};
   };
 

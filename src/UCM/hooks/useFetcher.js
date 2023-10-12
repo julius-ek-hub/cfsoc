@@ -91,13 +91,14 @@ const useFetcher = () => {
     const { json } = await post(`/extract`, data, "all_mitre", true);
     const _update = updateSheetWithDataFromDb(json, key, false);
     if (!_update) return false;
-    await fetchSheetContent(key, true, json.length > 1000 ? 1 : undefined);
+    await fetchSheetContent(key, true, json.length >= 5000 ? 1 : undefined);
     return true;
   };
 
   const fetchAllFromDB = async () => {
     if (Object.keys(sheets).length === 0) {
       const { json: sh } = await get("/sheets", "all_mitre");
+
       if (!sh.error)
         addSheet(
           sh.map((sheet) => ({

@@ -25,6 +25,8 @@ const useSheet = () => {
     "car_uc",
     "dev_uc",
     "db_uc",
+    "expo_sentinel_uc",
+    "sigma_uc",
   ];
 
   const sp_filter = {};
@@ -49,11 +51,12 @@ const useSheet = () => {
   const dispatch = useDispatch();
 
   const sheet_names = Object.values(sheets)
-    .map(({ key, name, location, locked }) => ({
+    .map(({ key, name, location, locked, user_added }) => ({
       key,
       name,
       location,
       locked,
+      user_added,
     }))
     .sort((a, b) => a.location - b.location);
 
@@ -120,7 +123,7 @@ const useSheet = () => {
         ]);
 
       pushes.push({
-        message: `Added ${json.length} new ${name}`,
+        message: `Added ${json.length || 1} new ${sheets[key].name}`,
         severity: "success",
       });
       _return = true;

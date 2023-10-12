@@ -12,8 +12,8 @@ const getContent = async (collection, filter = {}, page) => {
   if (page) {
     docs = await col
       .find(filter)
-      .skip(1000 * (Number(page) - 1))
-      .limit(1000)
+      .skip(5000 * (Number(page) - 1))
+      .limit(5000)
       .toArray();
   } else docs = await col.find(filter).toArray();
   return docs.map((doc) => ({

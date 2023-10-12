@@ -23,6 +23,7 @@ import useFetch from "../../common/hooks/useFetch";
 
 import { field_separator as fs, _entr } from "./utils";
 import useSettings from "../hooks/useSettings";
+import Confirm from "../../common/utils/Comfirm";
 
 const Menu = ({ sheet }) => {
   const [open, setOpen] = useState(false);
@@ -32,7 +33,6 @@ const Menu = ({ sheet }) => {
     deleteSheet,
     sheet_names_except_current,
     sheet_names,
-    sheets,
     important_sheets,
   } = useSheet();
   const { patch, dlete } = useFetch("/ucm");
@@ -159,14 +159,23 @@ const Menu = ({ sheet }) => {
 
         <Box display="flex" justifyContent="end" mt={2} gap={1}>
           {!important_sheets.includes(sheet.key) && (
-            <Button
-              size="small"
-              color="error"
-              sx={{ justifyContent: "start" }}
-              onClick={handleDelete}
+            <Confirm
+              onConfirm={handleDelete}
+              ok_color="error"
+              ok_text="Yes"
+              Clickable={(props) => (
+                <Button
+                  size="small"
+                  color="error"
+                  sx={{ justifyContent: "start" }}
+                  {...props}
+                >
+                  Delete
+                </Button>
+              )}
             >
-              Delete
-            </Button>
+              Delete {name}?
+            </Confirm>
           )}
           <Button
             disabled={name_exists}
@@ -236,22 +245,26 @@ const Sections = () => {
           scrollButtons={true}
           sx={{ "& .MuiTab-root": { minHeight: "unset" } }}
         >
-          {sheet_names.map(({ key, name, location, locked }, index) => (
-            <Tab
-              label={name}
-              value={key}
-              key={key}
-              {...(!locked && {
-                icon: <Menu sheet={{ key, name, location, index }} />,
-                iconPosition: "end",
-                sx: {
-                  "&:hover > div": {
-                    visibility: "visible",
+          {sheet_names.map(
+            ({ key, name, location, locked, user_added }, index) => (
+              <Tab
+                label={name}
+                value={key}
+                key={key}
+                {...(!locked && {
+                  icon: (
+                    <Menu sheet={{ key, name, location, index, user_added }} />
+                  ),
+                  iconPosition: "end",
+                  sx: {
+                    "&:hover > div": {
+                      visibility: "visible",
+                    },
                   },
-                },
-              })}
-            />
-          ))}
+                })}
+              />
+            )
+          )}
         </Tabs>
       )}
       <Button

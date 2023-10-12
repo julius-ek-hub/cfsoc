@@ -21,7 +21,7 @@ const SearchParamFilter = () => {
       flexDirection="row"
       gap={1}
       color="common.white"
-      bgcolor="primary.main"
+      bgcolor="error.main"
       flexWrap="wrap"
     >
       <LightbulbIcon fontSize="small" />
@@ -40,7 +40,7 @@ const SearchParamFilter = () => {
         Icon={CloseIcon}
         size="small"
         title="Remove this filter"
-        color="error"
+        color="info"
         onClick={removeSP}
       />
     </Middle>

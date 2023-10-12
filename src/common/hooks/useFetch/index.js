@@ -10,6 +10,7 @@ const useFetch = (baseURL = "/api/schedules") => {
     const proto = `${protocol}//`;
     const por = port ? `:${4999}` : "";
     return proto + hostname + por + path;
+    // return proto + "10.131.20.21" + por + path;
   };
 
   const fech = async (endpoint, props, loading) => {

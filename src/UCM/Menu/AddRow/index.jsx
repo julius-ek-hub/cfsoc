@@ -1,3 +1,4 @@
+import SigMaUC from "./SigMaUC";
 import L1UCForm from "./L1UCForm";
 import L2UCForm from "./L2UCForm";
 import L3UCForm from "./L3UCForm";
@@ -6,6 +7,7 @@ import UCDEVFoem from "./UCDEVForm";
 import UCDBForm from "./UCDBForm";
 import CARUCForm from "./CARUCForm";
 import OtherForm from "./OtherForm";
+import ExpoUCForm from "./ExpoUCForm";
 
 import WithButtons from "./utils/WithButtons";
 
@@ -23,6 +25,8 @@ const AddRow = () => {
     db_uc: { Form: UCDBForm, name },
     dev_uc: { Form: UCDEVFoem, name },
     car_uc: { Form: CARUCForm, name },
+    expo_sentinel_uc: { Form: ExpoUCForm, name },
+    sigma_uc: { Form: SigMaUC, name },
   }[key] || { Form: OtherForm, name: "" };
 
   return <WithButtons Form={uc.Form} name={uc.name} />;

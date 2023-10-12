@@ -67,7 +67,7 @@ const HeaveSheetPagination = () => {
   const { fetchSheetContent } = useFetcher();
   const { num_rows, large_page, key } = active_sheet;
 
-  if (num_rows <= 1000) return null;
+  if (num_rows <= 5000) return null;
 
   const handleChange = (e, newPage) => {
     updateSheet(`${key + fs}large_page`, newPage);

@@ -11,6 +11,18 @@ const is_col_match = (col, key) => {
 
 const _l = (v) => v.toLowerCase();
 
+const _arr = (v) => {
+  try {
+    let _v = v;
+    if (typeof v === "string") _v = JSON.parse(_v);
+    if (Array.isArray(_v) && _v.every((__v) => typeof __v === "string"))
+      return _v;
+    return v;
+  } catch (error) {
+    return v;
+  }
+};
+
 module.exports = async ({ columns, unique_key, type, worker, sheet }) => {
   const data = [];
   let verify = [];
@@ -44,7 +56,7 @@ module.exports = async ({ columns, unique_key, type, worker, sheet }) => {
       } else value = _v;
     } else value = String(value);
     if (k === unique_key) value = value.toUpperCase();
-    _data[k] = value;
+    _data[k] = _arr(value);
     return _data;
   };
 

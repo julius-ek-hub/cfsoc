@@ -39,11 +39,15 @@ function ViewRelated({ _ids }) {
     } else if (key === "l3_uc") {
       if (to === "l1_uc") ret.identifier = selected("l1_uc_identifiers", true);
       else if (to === "l2_uc") ret.name = selected("l2_uc_identifiers", true);
+      else if (to === "sigma_uc")
+        ret.l3_uc_identifiers = selected("identifier");
       else ret.l3_uc_identifier = selected("identifier");
     } else if (key === "l4_uc") {
       if (to === "l1_uc") ret.identifier = selected("l1_uc_identifiers", true);
       else if (to === "l2_uc") ret.name = selected("l2_uc_identifiers", true);
       else if (to === "l3_uc") ret.identifier = selected("l3_uc_identifier");
+      else if (to === "sigma_uc")
+        ret.l4_uc_identifiers = selected("identifier");
       else ret.l4_uc_identifier = selected("identifier");
     } else if (key === "dev_uc") {
       if (to === "l1_uc") ret.identifier = selected("l1_uc_identifiers", true);
@@ -60,6 +64,10 @@ function ViewRelated({ _ids }) {
     } else if (key === "car_uc") {
       if (to === "dev_uc")
         ret.car_uc_identifiers = selected("identifier", true);
+    } else if (key === "sigma_uc") {
+      if (to === "l2_uc") ret.name = selected("l2_uc_identifiers", true);
+      else if (to === "l3_uc") ret.identifier = selected("l3_uc_identifiers");
+      else if (to === "l4_uc") ret.identifier = selected("l4_uc_identifiers");
     }
 
     return ret;
@@ -93,17 +101,18 @@ function ViewRelated({ _ids }) {
         <But tos={["l2_uc", "l3_uc", "l4_uc", "db_uc", "dev_uc"]} />
       )}
       {key === "l2_uc" && (
-        <But tos={["l1_uc", "l3_uc", "l4_uc", "db_uc", "dev_uc"]} />
+        <But tos={["l1_uc", "l3_uc", "l4_uc", "db_uc", "dev_uc", "sigma_uc"]} />
       )}
       {key === "l3_uc" && (
-        <But tos={["l1_uc", "l2_uc", "l4_uc", "db_uc", "dev_uc"]} />
+        <But tos={["l1_uc", "l2_uc", "l4_uc", "db_uc", "dev_uc", "sigma_uc"]} />
       )}
       {key === "l4_uc" && (
-        <But tos={["l1_uc", "l2_uc", "l3_uc", "db_uc", "dev_uc"]} />
+        <But tos={["l1_uc", "l2_uc", "l3_uc", "db_uc", "dev_uc", "sigma_uc"]} />
       )}
       {key === "dev_uc" && (
         <But tos={["l1_uc", "l2_uc", "l3_uc", "l4_uc", "db_uc", "car_uc"]} />
       )}
+      {key === "sigma_uc" && <But tos={["l2_uc", "l3_uc", "l4_uc"]} />}
       {key === "db_uc" && (
         <But tos={["l1_uc", "l2_uc", "l3_uc", "l4_uc", "dev_uc"]} />
       )}

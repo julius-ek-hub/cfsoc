@@ -133,6 +133,17 @@ const useAddModify = () => {
     )
   );
 
+  const expo_uc_schema = Yup.object(
+    Object.fromEntries(
+      cols.map(([k, v]) => [
+        k,
+        k === "name"
+          ? Yup.string().required().label(v.label)
+          : Yup.array().label(v.label),
+      ])
+    )
+  );
+
   const dev_uc_schema = Yup.object(
     Object.fromEntries(
       cols.map(([k, v]) => [
@@ -142,6 +153,23 @@ const useAddModify = () => {
           : k === "l4_uc_identifier"
           ? Yup.object().label(v.label)
           : Yup.array().min(1).label(v.label),
+      ])
+    )
+  );
+
+  const sigma_uc_schema = Yup.object(
+    Object.fromEntries(
+      cols.map(([k, v]) => [
+        k,
+        [
+          "l2_uc_identifiers",
+          "l3_uc_identifiers",
+          "l4_uc_identifiers",
+        ].includes(k)
+          ? Yup.array().label(v.label)
+          : k === "url"
+          ? Yup.string().url().default("")
+          : Yup.string(),
       ])
     )
   );
@@ -243,11 +271,13 @@ const useAddModify = () => {
     for_edit,
     car_schema,
     uc_db_schema,
+    expo_uc_schema,
     dev_uc_schema,
     l4_uc_schema,
     l1_uc_schema,
     l2_uc_schema,
     l3_uc_schema,
+    sigma_uc_schema,
     cols,
     active_content,
   };
