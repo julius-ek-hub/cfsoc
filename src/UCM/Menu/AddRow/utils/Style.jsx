@@ -17,7 +17,6 @@ import TextField from "../../../../common/utils/form/controlled/TextField";
 import Form from "../../../../common/utils/form/controlled/Form";
 
 import useSheet from "../../../hooks/useSheet";
-import useAddModify from "../../../hooks/useAddModify";
 
 import * as Yup from "yup";
 
@@ -26,6 +25,7 @@ import {
   entr_,
   field_separator as fs,
   objectExcept,
+  default_styles,
 } from "../../../utils/utils";
 
 import useFetch from "../../../../common/hooks/useFetch";
@@ -40,38 +40,19 @@ const Style = ({ _id }) => {
   const { patch } = useFetch("/ucm");
   const { push } = useToasts();
 
-  const { cols } = useAddModify();
-
   const { active_content, active_sheet, updateSheet } = useSheet();
+  const { columns } = active_sheet;
 
-  const styles = {
-    textAlign: {
-      type: "list",
-      value: ["center", "left", "right"],
-      label: "Text Align",
-      default: "left",
-    },
-    verticalAlign: {
-      type: "list",
-      value: ["middle", "top", "bottom"],
-      label: "Vertical Align",
-      default: "middle",
-    },
-    fontWeight: { type: "text", label: "Font Weight", default: "normal" },
-    fontSize: { type: "number", label: "Font Size", default: 16 },
-    bgcolor: { type: "color", label: "Background Color", default: "inherit" },
-    color: { type: "color", label: "Text Ccolor", default: "inherit" },
-  };
+  const cols = _entr(columns);
 
   const targetIndex = active_content.findIndex((ac) => ac._id.value === _id);
   const target = active_content[targetIndex];
 
   const default_sx = entr_(
-    _entr(target)
-      .filter(([k]) => k !== "_id")
-      .map(([k, v]) => {
-        const sx = v.sx || {};
-        return _entr({ ...styles }).map(([_k, _v]) => [
+    cols
+      .map(([k]) => {
+        const sx = target[k]?.sx || {};
+        return _entr({ ...default_styles }).map(([_k, _v]) => [
           `${k}____${_k}`,
           sx[_k] || _v.default,
         ]);
@@ -82,7 +63,7 @@ const Style = ({ _id }) => {
   const d_ent = _entr(default_sx);
 
   const style_schema = Yup.object(
-    entr_(d_ent.map(([k, v]) => [k, Yup.string()]))
+    entr_(d_ent.map(([k, v]) => [k, Yup.string().required()]))
   );
 
   const handleClose = () => setOpen(false);
@@ -92,9 +73,10 @@ const Style = ({ _id }) => {
 
     cols.map(([k, v]) => {
       const sx = entr_(
-        _entr(styles).map(([_k, _v]) => [_k, update[`${k}____${_k}`]])
+        _entr(default_styles).map(([_k, _v]) => [_k, update[`${k}____${_k}`]])
       );
-      const prop = { ..._target[k] };
+
+      const prop = { ...(_target[k] || {}) };
       prop.sx = sx;
       _target[k] = prop;
     });
@@ -132,20 +114,20 @@ const Style = ({ _id }) => {
     const _cols = cols.filter((c) => c[0] !== _key);
 
     const revert = () => {
-      _entr(styles).map(([k, v]) => {
+      _entr(default_styles).map(([k, v]) => {
         fk.setFieldValue(`${_key}____${k}`, v.default);
       });
     };
 
     const copyStyle = (to) => {
       if (to == "*") {
-        _entr(styles).map(([k, v]) => {
+        _entr(default_styles).map(([k, v]) => {
           _cols.map((c) => {
             fk.setFieldValue(`${c[0]}____${k}`, fk.values[`${_key}____${k}`]);
           });
         });
       } else {
-        _entr(styles).map(([k, v]) => {
+        _entr(default_styles).map(([k, v]) => {
           fk.setFieldValue(`${to}____${k}`, fk.values[`${_key}____${k}`]);
         });
       }
@@ -190,7 +172,7 @@ const Style = ({ _id }) => {
               {[["*", { label: "All" }], ..._cols].map(([k, v]) => (
                 <Button
                   key={k}
-                  sx={{ justifyContent: "start" }}
+                  sx={{ justifyContent: "start", whiteSpace: "nowrap" }}
                   color="inherit"
                   fullWidth
                   onClick={() => copyStyle(k)}
@@ -249,7 +231,7 @@ const Style = ({ _id }) => {
               p={2}
             >
               <Container label={v.label} _key={k}>
-                {_entr(styles).map(([_k, _v]) => {
+                {_entr(default_styles).map(([_k, _v]) => {
                   return _v.type === "list" ? (
                     <AutoComplete
                       key={_k}

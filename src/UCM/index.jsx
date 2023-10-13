@@ -46,7 +46,7 @@ const Mitre = () => {
   }, [key, settings.deleted]);
 
   return (
-    <Box display="flex" flexDirection="column" height="100%">
+    <Box display="flex" flexDirection="column" height="100%" overflow="hidden">
       <Box>
         <Nav app="Use Case Management" />
       </Box>

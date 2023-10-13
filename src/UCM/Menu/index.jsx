@@ -7,11 +7,12 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 
 import Update from "./Update";
 import Download from "./Download";
+import AddRow from "./AddRow";
 
 import useFetcher from "../hooks/useFetcher";
 import useSheet from "../hooks/useSheet";
-import AddRow from "./AddRow";
 import useSettings from "../hooks/useSettings";
+import ViewRelated from "./AddRow/utils/ViewRelated";
 
 const Menu = () => {
   const { downloadData, saveChanges, lockUnlock } = useFetcher();
@@ -20,21 +21,33 @@ const Menu = () => {
 
   if (!active_sheet) return null;
 
-  const hasSelected = active_sheet.selected.length > 0;
+  const { selected } = active_sheet;
+
+  const hasSelected = selected.length > 0;
+
+  const Flex = (props) => (
+    <Box
+      display="flex"
+      mt={2}
+      px={2}
+      {...(!active_sheet && { py: 1 })}
+      alignItems="center"
+      gap={2}
+      whiteSpace="nowrap"
+      overflow="auto"
+      sx={{ "&>*": { flexShrink: 0 } }}
+      {...props}
+    />
+  );
 
   return (
     <Box>
-      <Box
-        display="flex"
-        mt={2}
-        px={2}
-        {...(!active_sheet && { py: 1 })}
-        alignItems="center"
-        gap={2}
-        whiteSpace="nowrap"
-        overflow="auto"
-        sx={{ "&>*": { flexShrink: 0 } }}
-      >
+      {selected.length > 0 && (
+        <Flex>
+          <ViewRelated _ids={selected} />
+        </Flex>
+      )}
+      <Flex>
         {!hasSelected && <Update />}
 
         <>
@@ -61,7 +74,7 @@ const Menu = () => {
             </Button>
           )}
         </>
-      </Box>
+      </Flex>
     </Box>
   );
 };

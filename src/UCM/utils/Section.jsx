@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -12,7 +12,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
+import CloseIcon from "@mui/icons-material/Close";
 
 import IconButton from "../../common/utils/IconButton";
 
@@ -25,6 +26,8 @@ import useFetch from "../../common/hooks/useFetch";
 import { field_separator as fs, _entr } from "./utils";
 import useSettings from "../hooks/useSettings";
 import Confirm from "../../common/utils/Comfirm";
+import { Drawer } from "@mui/material";
+import useDimension from "../../common/hooks/useDimensions";
 
 const Menu = ({ sheet }) => {
   const [open, setOpen] = useState(false);
@@ -112,6 +115,9 @@ const Menu = ({ sheet }) => {
         <Box
           color="inherit"
           visibility="hidden"
+          position="absolute"
+          ml={1}
+          right={0}
           onClick={(e) => {
             setOpen(true);
             props.onClick(e);
@@ -196,16 +202,26 @@ const Menu = ({ sheet }) => {
 const Sections = () => {
   const { sheet_names, addSheet, active_sheet, active_content } = useSheet();
   const { post } = useFetch("/ucm");
+  const [open, setOpen] = useState(false);
+  const { up } = useDimension();
 
   const navigate = useNavigate();
   const { updateSheet } = useSheet();
 
-  const handleChange = (_, newSection) => {
+  const { key, num_rows } = active_sheet || {};
+
+  const handleChange = (e, newSection) => {
     navigate("/use-case-management/" + newSection);
     updateSheet(`${newSection + fs}filters`, {});
   };
 
-  const { key } = active_sheet || {};
+  const shouldDraw = useMemo(() => {
+    if (up.lg) return false;
+    if (up.md && num_rows <= 5000) return false;
+    return true;
+  }, [up]);
+
+  const handleClose = () => setOpen(false);
 
   const addBlanc = async () => {
     let max = sheet_names.map((sh, i) => {
@@ -236,15 +252,15 @@ const Sections = () => {
     navigate("/use-case-management/" + sheet.key);
   };
 
-  return (
-    <Box display="flex" alignItems="center" pr={6} position="relative">
+  const Sheets = ({ orientation = "horizontal" }) => (
+    <>
       {sheet_names.length > 0 && (
         <Tabs
           variant="scrollable"
           onChange={handleChange}
           value={active_sheet ? key : ""}
           scrollButtons={true}
-          sx={{ "& .MuiTab-root": { minHeight: "unset" } }}
+          orientation={orientation}
         >
           {sheet_names.map(
             ({ key, name, location, locked, user_added }, index) => (
@@ -252,23 +268,28 @@ const Sections = () => {
                 label={name}
                 value={key}
                 key={key}
+                sx={{
+                  "&:hover > div": {
+                    visibility: "visible",
+                  },
+                  position: "relative",
+                  ...(orientation === "vertical" && {
+                    alignItems: "start!important",
+                    justifyContent: "start!important",
+                    ml: 1,
+                  }),
+                }}
+                iconPosition="end"
                 {...(!locked && {
                   icon: (
                     <Menu sheet={{ key, name, location, index, user_added }} />
                   ),
-                  iconPosition: "end",
-                  sx: {
-                    "&:hover > div": {
-                      visibility: "visible",
-                    },
-                  },
                 })}
               />
             )
           )}
         </Tabs>
       )}
-      <HorizontalRuleIcon sx={{ transform: "rotate(90deg)" }} />
       <Button
         sx={{
           whiteSpace: "nowrap",
@@ -282,11 +303,30 @@ const Sections = () => {
       >
         Add New
       </Button>
-      {active_sheet && (
+    </>
+  );
+
+  return (
+    <Box display="flex" alignItems="center">
+      {shouldDraw ? (
         <>
-          <HorizontalRuleIcon sx={{ transform: "rotate(90deg)" }} />
-          <Pagination __key={`${key + fs}content`} content={active_content} />
+          <IconButton Icon={MenuOpenIcon} onClick={() => setOpen(true)} />
+          <Drawer
+            sx={{ ".MuiPaper-root": { width: "30%" } }}
+            open={open}
+            onClose={handleClose}
+          >
+            <Box display="flex" justifyContent="end" my={1} mr={2}>
+              <IconButton Icon={CloseIcon} onClick={handleClose} />
+            </Box>
+            <Sheets orientation="vertical" />
+          </Drawer>
         </>
+      ) : (
+        <Sheets />
+      )}
+      {active_sheet && (
+        <Pagination __key={`${key + fs}content`} content={active_content} />
       )}
     </Box>
   );

@@ -80,7 +80,7 @@ const HeaveSheetPagination = () => {
       <LargePagination
         page={large_page || 1}
         onChange={handleChange}
-        count={Math.ceil(num_rows / 1000)}
+        count={Math.ceil(60000 / 1000)}
         color="primary"
         sx={{ ul: { flexWrap: "nowrap" } }}
       />
@@ -121,7 +121,7 @@ export default function Pagination() {
   if (!active_sheet || f.length === 0 || locked) return null;
 
   return (
-    <>
+    <Box display="flex" ml="auto" flexShrink={0} alignItems="center">
       <TablePagination
         component="div"
         sx={{ flexShrink: 0 }}
@@ -138,6 +138,6 @@ export default function Pagination() {
         ActionsComponent={TablePaginationActions}
       />
       <HeaveSheetPagination />
-    </>
+    </Box>
   );
 }

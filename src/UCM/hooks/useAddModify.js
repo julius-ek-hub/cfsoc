@@ -3,7 +3,7 @@ import useSheet from "./useSheet";
 
 import * as Yup from "yup";
 
-import { field_separator as fs } from "../utils/utils";
+import { _entr, field_separator as fs } from "../utils/utils";
 import useSettings from "./useSettings";
 import useToasts from "../../common/hooks/useToast";
 
@@ -28,7 +28,7 @@ const useAddModify = () => {
 
   const { selected, key, columns, name } = active_sheet;
 
-  const cols = Object.entries(columns)
+  const cols = _entr(columns)
     .filter((c) => !c[1].calculate)
     .sort((a, b) => a[1].position - b[1].position);
 

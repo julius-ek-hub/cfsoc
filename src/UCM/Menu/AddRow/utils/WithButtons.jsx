@@ -8,8 +8,9 @@ import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 
 import Confirm from "../../../../common/utils/Comfirm";
 import NewColumn from "./NewColumn";
-import ViewRelated from "./ViewRelated";
 import Style from "./Style";
+import CopyStyle from "./CopyStyle";
+import PasteStyle from "./PasteStyle";
 
 import useSheet from "../../../hooks/useSheet";
 import useAddModify from "../../../hooks/useAddModify";
@@ -45,22 +46,20 @@ const WithButtons = ({ Form, name }) => {
           />
         </>
       )}
-      {selected.length === 1 && (
-        <>
-          <Form
-            edit={selected[0]}
-            Button={(props) => (
-              <Button color="inherit" endIcon={<EditIcon />} {...props}>
-                Edit values
-              </Button>
-            )}
-          />
-          <Style _id={selected[0]} />
-        </>
-      )}
       {selected.length >= 1 && (
         <>
-          <ViewRelated _ids={selected} />
+          {selected.length === 1 && (
+            <>
+              <Form
+                edit={selected[0]}
+                Button={(props) => (
+                  <Button color="inherit" endIcon={<EditIcon />} {...props}>
+                    Edit values
+                  </Button>
+                )}
+              />
+            </>
+          )}
           <Confirm
             ok_color="error"
             onConfirm={_delete}
@@ -86,6 +85,13 @@ const WithButtons = ({ Form, name }) => {
               </Typography>
             )}
           </Confirm>
+          {selected.length === 1 && (
+            <>
+              <Style _id={selected[0]} />
+              <CopyStyle _id={selected[0]} />
+            </>
+          )}
+          <PasteStyle />
         </>
       )}
     </>

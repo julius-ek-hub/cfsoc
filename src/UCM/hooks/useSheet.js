@@ -90,7 +90,10 @@ const useSheet = () => {
         return {
           ...doc,
           ...Object.fromEntries(
-            cd.map(([k, v]) => [k, { value: v[doc._id.value] || "" }])
+            cd.map(([k, v]) => [
+              k,
+              { ...doc[k], value: v[doc._id.value] || "" },
+            ])
           ),
         };
       }),

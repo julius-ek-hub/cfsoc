@@ -138,11 +138,17 @@ function Table() {
           <TableHead>
             <TableRow>
               {pted.length > 1 && (
-                <TableCell sx={{ py: 0.5, width: "10px" }}>S/N</TableCell>
+                <TableCell
+                  sx={{ py: 0.5, width: "10px", ...sorted_columns[0][1].sx }}
+                >
+                  S/N
+                </TableCell>
               )}
 
               {pted.length > 0 && has_select && (
-                <TableCell sx={{ py: 0.5, width: "10px" }}>
+                <TableCell
+                  sx={{ py: 0.5, width: "10px", ...sorted_columns[0][1].sx }}
+                >
                   <Box display="flex" alignItems="center">
                     <Checkbox
                       checked={
@@ -158,6 +164,7 @@ function Table() {
               {sorted_columns.map((k) => {
                 return (
                   <FilterButton
+                    sx={k[1].sx}
                     key={k[0]}
                     column={k[0]}
                     label={k[1].label}
@@ -205,7 +212,7 @@ function Table() {
                   {pted.length > 1 && (
                     <TableCell
                       {...(!_selected && {
-                        sx: { bgcolor: first_val.sx?.bgcolor },
+                        sx: first_val.sx,
                       })}
                     >
                       {page * rowsPerPage + 1 + index}
@@ -217,7 +224,7 @@ function Table() {
                         py: 0.5,
                         width: "10px",
                         ...(!_selected && {
-                          bgcolor: first_val.sx?.bgcolor,
+                          ...first_val.sx,
                         }),
                       }}
                     >

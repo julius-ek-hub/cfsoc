@@ -1,6 +1,29 @@
 export const field_separator = "<@>";
 export const mitre_base_url = "https://attack.mitre.org";
 
+export const default_styles = {
+  textAlign: {
+    type: "list",
+    value: ["center", "left", "right"],
+    label: "Text Align",
+    default: "left",
+  },
+  verticalAlign: {
+    type: "list",
+    value: ["middle", "top", "bottom"],
+    label: "Vertical Align",
+    default: "middle",
+  },
+  fontWeight: { type: "text", label: "Font Weight", default: "normal" },
+  fontSize: { type: "text", label: "Font Size", default: 16 },
+  bgcolor: {
+    type: "color",
+    label: "Background Color",
+    default: "background.paper",
+  },
+  color: { type: "color", label: "Text Ccolor", default: "inherit" },
+};
+
 export const deepKey = (key, obj, update) => {
   const keys = key.split(field_separator);
   const lastKey = keys.at(-1);

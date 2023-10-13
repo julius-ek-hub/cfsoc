@@ -10,13 +10,22 @@ import Filter from "./Filter";
 import RenameColumn from "./RenameColumn";
 import DeleteColumn from "./Delelete";
 
-function FilterButton({ column, onHide, has_filter, mw, label, user_added }) {
+function FilterButton({
+  column,
+  onHide,
+  has_filter,
+  mw,
+  label,
+  user_added,
+  sx,
+}) {
   return (
     <TableCell
       sx={{
         py: 0.5,
         whiteSpace: "nowrap",
         minWidth: (mw > 1000 ? 1000 : mw) + "px",
+        ...sx,
       }}
     >
       <Box
