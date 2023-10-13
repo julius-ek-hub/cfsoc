@@ -60,6 +60,13 @@ const WithButtons = ({ Form, name }) => {
               />
             </>
           )}
+          {selected.length === 1 && (
+            <>
+              <Style _id={selected[0]} />
+              <CopyStyle _id={selected[0]} />
+            </>
+          )}
+          <PasteStyle />
           <Confirm
             ok_color="error"
             onConfirm={_delete}
@@ -85,13 +92,6 @@ const WithButtons = ({ Form, name }) => {
               </Typography>
             )}
           </Confirm>
-          {selected.length === 1 && (
-            <>
-              <Style _id={selected[0]} />
-              <CopyStyle _id={selected[0]} />
-            </>
-          )}
-          <PasteStyle />
         </>
       )}
     </>

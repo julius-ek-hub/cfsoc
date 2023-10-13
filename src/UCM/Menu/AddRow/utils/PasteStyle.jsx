@@ -20,7 +20,7 @@ const PasteStyle = () => {
   const { push } = useToasts();
 
   const { active_sheet, updateSheet } = useSheet();
-  const { cloned, selected, content, key } = active_sheet;
+  const { cloned, selected, content, key, columns } = active_sheet;
 
   if (!cloned) return null;
 
@@ -35,19 +35,20 @@ const PasteStyle = () => {
     const applied = await Promise.all(
       _selected.map(async (_id) => {
         const target = content.find((c) => c._id.value === _id);
-        const applied = entr_(
-          _entr(target).map(([k, v]) => [k, { ...v, sx: cloned[k].sx }])
+        const app = entr_(
+          _entr(columns).map(([k]) => [k, { ...target[k], sx: cloned[k]?.sx }])
         );
+        app._id = target._id;
 
         const { json } = await patch(`/data?sheet=${key}`, {
           _id,
-          update: objectExcept(applied, ["_id"]),
+          update: objectExcept(app, ["_id"]),
         });
         if (json.error) {
           failed++;
           return { error: json.error };
         }
-        return applied;
+        return app;
       })
     );
 
