@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 
 import EditIcon from "@mui/icons-material/Edit";
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import Dialog from "../../../../common/utils/Dialogue";
 import AutoComplete from "../../../../common/utils/form/controlled/AutoComplete";
@@ -30,6 +31,8 @@ import {
 import useFetch from "../../../../common/hooks/useFetch";
 import useToasts from "../../../../common/hooks/useToast";
 import IconButton from "../../../../common/utils/IconButton";
+import { Box } from "@mui/material";
+import Menu from "../../../../common/utils/Menu";
 
 const Style = ({ _id }) => {
   const [open, setOpen] = useState(false);
@@ -122,11 +125,31 @@ const Style = ({ _id }) => {
 
   const Container = ({ label, children, _key }) => {
     const fk = useFormikContext();
+    const [copyOpen, setCopyOpen] = useState(false);
+
+    const hanldleCloseCopy = () => setCopyOpen(false);
+
+    const _cols = cols.filter((c) => c[0] !== _key);
 
     const revert = () => {
       _entr(styles).map(([k, v]) => {
         fk.setFieldValue(`${_key}____${k}`, v.default);
       });
+    };
+
+    const copyStyle = (to) => {
+      if (to == "*") {
+        _entr(styles).map(([k, v]) => {
+          _cols.map((c) => {
+            fk.setFieldValue(`${c[0]}____${k}`, fk.values[`${_key}____${k}`]);
+          });
+        });
+      } else {
+        _entr(styles).map(([k, v]) => {
+          fk.setFieldValue(`${to}____${k}`, fk.values[`${_key}____${k}`]);
+        });
+      }
+      hanldleCloseCopy();
     };
 
     useEffect(() => {
@@ -135,16 +158,55 @@ const Style = ({ _id }) => {
 
     return (
       <>
-        <InputLabel sx={{ mb: 1 }}>
-          {label}{" "}
+        <InputLabel sx={{ mb: 1 }}>{label}</InputLabel>
+        {children}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            whiteSpace: "nowrap",
+            justifyContent: "space-between",
+            mt: 2,
+          }}
+        >
+          <Menu
+            open={copyOpen}
+            onClose={hanldleCloseCopy}
+            Clickable={(props) => (
+              <Button
+                endIcon={<KeyboardArrowDownIcon />}
+                sx={{ justifyContent: "start", flexShrink: 0 }}
+                color="inherit"
+                onClick={(e) => {
+                  setCopyOpen(true);
+                  props.onClick(e);
+                }}
+              >
+                Copy Styles to
+              </Button>
+            )}
+          >
+            <Box width={200} p={1}>
+              {[["*", { label: "All" }], ..._cols].map(([k, v]) => (
+                <Button
+                  key={k}
+                  sx={{ justifyContent: "start" }}
+                  color="inherit"
+                  fullWidth
+                  onClick={() => copyStyle(k)}
+                >
+                  {v.label}
+                </Button>
+              ))}
+            </Box>
+          </Menu>
           <IconButton
             Icon={SettingsBackupRestoreIcon}
             sx={{ ml: 2 }}
             title="Revert to original"
             onClick={revert}
           />
-        </InputLabel>
-        {children}
+        </Box>
       </>
     );
   };

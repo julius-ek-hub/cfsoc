@@ -90,6 +90,7 @@ function Table() {
   ]);
 
   const { widths } = columns();
+  const has_select = selected.length > 0;
 
   const sorted_columns = Object.entries(c)
     .filter((c) => !excluded_columns.includes(c[0]))
@@ -133,11 +134,14 @@ function Table() {
       sx={{ height: "100%", display: "flex", flexDirection: "column" }}
     >
       <TableMui stickyHeader>
-        {Object.keys(active_sheet.columns).length > 0 && !locked && (
+        {Object.keys(active_sheet.columns).length > 0 && (
           <TableHead>
             <TableRow>
-              <TableCell sx={{ py: 0.5, width: "10px" }}>S/N</TableCell>
-              {pted.length > 0 && (
+              {pted.length > 1 && (
+                <TableCell sx={{ py: 0.5, width: "10px" }}>S/N</TableCell>
+              )}
+
+              {pted.length > 0 && has_select && (
                 <TableCell sx={{ py: 0.5, width: "10px" }}>
                   <Box display="flex" alignItems="center">
                     <Checkbox
@@ -198,26 +202,29 @@ function Table() {
                     }),
                   }}
                 >
-                  {!locked && (
-                    <>
-                      <TableCell
-                        {...(!_selected && {
-                          sx: { bgcolor: first_val.sx?.bgcolor },
-                        })}
-                      >
-                        {page * rowsPerPage + 1 + index}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          py: 0.5,
-                          width: "10px",
-                          ...(!_selected && { bgcolor: first_val.sx?.bgcolor }),
-                        }}
-                      >
-                        <Checkbox checked={_selected} onChange={__sel} />
-                      </TableCell>
-                    </>
+                  {pted.length > 1 && (
+                    <TableCell
+                      {...(!_selected && {
+                        sx: { bgcolor: first_val.sx?.bgcolor },
+                      })}
+                    >
+                      {page * rowsPerPage + 1 + index}
+                    </TableCell>
                   )}
+                  {has_select && (
+                    <TableCell
+                      sx={{
+                        py: 0.5,
+                        width: "10px",
+                        ...(!_selected && {
+                          bgcolor: first_val.sx?.bgcolor,
+                        }),
+                      }}
+                    >
+                      <Checkbox checked={_selected} onChange={__sel} />
+                    </TableCell>
+                  )}
+
                   {colLen > 1 && span ? (
                     <Tc
                       {...first_val}
