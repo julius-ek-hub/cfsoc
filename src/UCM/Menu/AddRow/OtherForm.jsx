@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 
 import MuiButton from "@mui/material/Button";
-import TextField from "../../../common/utils/form/uncontrolled/TextField";
+import Typography from "@mui/material/Typography";
 
+import TextField from "../../../common/utils/form/uncontrolled/TextField";
 import Dialog from "../../../common/utils/Dialogue";
 
 import useAddModify from "../../hooks/useAddModify";
-import { Typography } from "@mui/material";
 
 const OtherForm = ({ Button, edit }) => {
   const [open, setOpen] = useState(false);
@@ -20,9 +20,7 @@ const OtherForm = ({ Button, edit }) => {
   const handleClose = () => setOpen(false);
 
   const handleSubmit = () => {
-    if (Object.values(values).every((v) => !v.value.trim() && !v.image))
-      return setError("At least one field is required.");
-    else setError(null);
+    setError(null);
     save(values, edit, handleClose);
   };
 

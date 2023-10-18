@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
+import Drawer from "@mui/material/Drawer";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
@@ -16,18 +16,17 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import CloseIcon from "@mui/icons-material/Close";
 
 import IconButton from "../../common/utils/IconButton";
-
 import Pagination from "../utils/Pagination";
 import MyMenu from "../../common/utils/Menu";
+import Confirm from "../../common/utils/Comfirm";
+import TextField from "../../common/utils/form/uncontrolled/TextField";
 
 import useSheet from "../hooks/useSheet";
+import useSettings from "../hooks/useSettings";
 import useFetch from "../../common/hooks/useFetch";
+import useDimension from "../../common/hooks/useDimensions";
 
 import { field_separator as fs, _entr } from "./utils";
-import useSettings from "../hooks/useSettings";
-import Confirm from "../../common/utils/Comfirm";
-import { Drawer } from "@mui/material";
-import useDimension from "../../common/hooks/useDimensions";
 
 const Menu = ({ sheet }) => {
   const [open, setOpen] = useState(false);
@@ -131,10 +130,7 @@ const Menu = ({ sheet }) => {
         <TextField
           label="Rename sheet"
           value={name}
-          onChange={(e) => {
-            e.stopPropagation();
-            setName(e.target.value);
-          }}
+          onChange={(e) => setName(e.target.value)}
           fullWidth
           size="small"
           margin="dense"

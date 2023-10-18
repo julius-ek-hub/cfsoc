@@ -8,6 +8,7 @@ const cors = require("./mware/cors");
 const db = require("./mware/db");
 const auth = require("./auth");
 const ucm = require("./ucm");
+const expo_sentinel = require("./expo-sentinel");
 
 const schedules = require("./schedules");
 const apps = require("./apps");
@@ -23,6 +24,7 @@ app.use(db);
 app.use("/api/schedules", schedules);
 app.use("/auth", auth);
 app.use("/ucm", ucm);
+app.use("/expo-sentinel", expo_sentinel);
 app.use("/apps", apps);
 
 app.get("/*", (req, res) =>

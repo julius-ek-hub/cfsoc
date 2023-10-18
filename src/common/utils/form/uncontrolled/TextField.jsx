@@ -9,15 +9,23 @@ const TextField = ({ onEnterButtonPressed, ...rest }) => {
     <MuiTextField
       placeholder={rest.placeholder || rest.label}
       {...rest}
-      {...(typeof onEnterButtonPressed === "function" && {
-        onKeyDown: (e) => {
-          if (e.key === "Enter" || e.code === "Enter") {
-            e.preventDefault();
-            onEnterButtonPressed(e);
-            rest.onKeyDown?.call({}, e);
+      {...(typeof onEnterButtonPressed === "function"
+        ? {
+            onKeyDown: (e) => {
+              e.stopPropagation();
+              if (e.key === "Enter" || e.code === "Enter") {
+                e.preventDefault();
+                onEnterButtonPressed(e);
+                rest.onKeyDown?.call({}, e);
+              }
+            },
           }
-        },
-      })}
+        : {
+            onKeyDown: (e) => {
+              e.stopPropagation();
+              rest.onKeyDown?.call({}, e);
+            },
+          })}
     />
   );
 };

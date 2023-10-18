@@ -8,11 +8,11 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Update from "./Update";
 import Download from "./Download";
 import AddRow from "./AddRow";
+import ViewRelated from "./AddRow/utils/ViewRelated";
 
 import useFetcher from "../hooks/useFetcher";
 import useSheet from "../hooks/useSheet";
 import useSettings from "../hooks/useSettings";
-import ViewRelated from "./AddRow/utils/ViewRelated";
 
 const Menu = () => {
   const { downloadData, saveChanges, lockUnlock } = useFetcher();

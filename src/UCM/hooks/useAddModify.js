@@ -3,7 +3,8 @@ import useSheet from "./useSheet";
 
 import * as Yup from "yup";
 
-import { _entr, field_separator as fs } from "../utils/utils";
+import { _entr, field_separator as fs, fix_data } from "../utils/utils";
+
 import useSettings from "./useSettings";
 import useToasts from "../../common/hooks/useToast";
 
@@ -226,14 +227,7 @@ const useAddModify = () => {
     onDone,
     should_include_primary_key = true
   ) => {
-    const _data = Object.fromEntries(
-      Object.entries(data).map(([key, value]) => [
-        key,
-        typeof value === "object" && value.hasOwnProperty("value")
-          ? value
-          : { value },
-      ])
-    );
+    const _data = fix_data(data);
 
     if (edit) {
       const { json } = await patch(`/data?sheet=${key}`, {

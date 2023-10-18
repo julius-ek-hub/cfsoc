@@ -6,19 +6,20 @@ import Dialog from "../../../common/utils/Dialogue";
 import AutoComplete from "../../../common/utils/form/controlled/AutoComplete";
 import SubmitButton from "../../../common/utils/form/controlled/SubmitButton";
 import Form from "../../../common/utils/form/controlled/Form";
+import TextField from "../../../common/utils/form/controlled/TextField";
 
 import useAddModify from "../../hooks/useAddModify";
 import useSheet from "../../hooks/useSheet";
 
 import { useFormikContext } from "formik";
-import TextField from "../../../common/utils/form/controlled/TextField";
+
 import { _l } from "../../utils/utils";
 
 const SigMaUC = ({ Button, edit }) => {
   const [open, setOpen] = useState(false);
   const { cols, for_edit, save, sigma_uc_schema } = useAddModify();
 
-  const { sheets, active_sheet, active_content } = useSheet();
+  const { sheets, active_sheet } = useSheet();
 
   const df = for_edit(edit);
 

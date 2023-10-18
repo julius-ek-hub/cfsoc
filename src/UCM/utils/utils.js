@@ -15,7 +15,14 @@ export const default_styles = {
     default: "middle",
   },
   fontWeight: { type: "text", label: "Font Weight", default: "normal" },
-  fontSize: { type: "text", label: "Font Size", default: 16 },
+  border: {
+    type: "list",
+    label: "Border",
+    default: "thin",
+    value: ["thin", "thick", "none"],
+  },
+  fontSize: { type: "number", label: "Font Size", default: "" },
+  padding: { type: "text", label: "Padding", default: "" },
   bgcolor: {
     type: "color",
     label: "Background Color",
@@ -23,6 +30,30 @@ export const default_styles = {
   },
   color: { type: "color", label: "Text Ccolor", default: "inherit" },
 };
+
+export const getSX = (sx = {}) => ({
+  ...(sx.bgcolor && { bgcolor: sx.bgcolor }),
+  ...(sx.border === "none" && { borderColor: "transparent!important" }),
+  ...(sx.fontSize && { fontSize: `${sx.fontSize}px!important` }),
+  ...(sx.verticalAlign && {
+    verticalAlign: `${sx.verticalAlign}!important`,
+  }),
+  ...(sx.textAlign && { textAlign: `${sx.textAlign}!important` }),
+  ...(sx.fontWeight && { fontWeight: `${sx.fontWeight}!important` }),
+  ...(sx.padding && { padding: `${sx.padding}!important` }),
+  ...(sx.color && { color: `${sx.color}!important` }),
+});
+
+export const fix_data = (data) =>
+  entr_(
+    _entr(data).map(([key, value]) => [
+      key,
+      {
+        value: value?.hasOwnProperty("value") ? value.value : value,
+        sx: value?.sx || {},
+      },
+    ])
+  );
 
 export const deepKey = (key, obj, update) => {
   const keys = key.split(field_separator);

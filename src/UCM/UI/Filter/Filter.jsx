@@ -4,21 +4,20 @@ import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Typography from "@mui/material/Typography";
 
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 import IconButton from "../../../common/utils/IconButton";
 import Menu from "../../../common/utils/Menu";
 
 import useDimension from "../../../common/hooks/useDimensions";
+import useFilter from "../../hooks/useFilter";
 import useSheet from "../../hooks/useSheet";
 
 import { field_separator } from "../../utils/utils";
-import useFilter from "../../hooks/useFilter";
 
 export default function Filter({ column }) {
   const [open, setOpen] = useState(false);

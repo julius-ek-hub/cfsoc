@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 
+import * as Yup from "yup";
+
 import { useFormikContext } from "formik";
 
 import InputLabel from "@mui/material/InputLabel";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 import EditIcon from "@mui/icons-material/Edit";
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
@@ -15,10 +18,8 @@ import AutoComplete from "../../../../common/utils/form/controlled/AutoComplete"
 import SubmitButton from "../../../../common/utils/form/controlled/SubmitButton";
 import TextField from "../../../../common/utils/form/controlled/TextField";
 import Form from "../../../../common/utils/form/controlled/Form";
-
-import useSheet from "../../../hooks/useSheet";
-
-import * as Yup from "yup";
+import Menu from "../../../../common/utils/Menu";
+import IconButton from "../../../../common/utils/IconButton";
 
 import {
   _entr,
@@ -29,10 +30,8 @@ import {
 } from "../../../utils/utils";
 
 import useFetch from "../../../../common/hooks/useFetch";
+import useSheet from "../../../hooks/useSheet";
 import useToasts from "../../../../common/hooks/useToast";
-import IconButton from "../../../../common/utils/IconButton";
-import { Box } from "@mui/material";
-import Menu from "../../../../common/utils/Menu";
 
 const Style = ({ _id }) => {
   const [open, setOpen] = useState(false);
@@ -63,7 +62,7 @@ const Style = ({ _id }) => {
   const d_ent = _entr(default_sx);
 
   const style_schema = Yup.object(
-    entr_(d_ent.map(([k, v]) => [k, Yup.string().required()]))
+    entr_(d_ent.map(([k, v]) => [k, Yup.string()]))
   );
 
   const handleClose = () => setOpen(false);

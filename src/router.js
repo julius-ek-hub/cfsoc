@@ -1,9 +1,10 @@
 import { createBrowserRouter, redirect } from "react-router-dom";
 
-import Schedule from "./schedule";
+import Schedule from "./Schedule";
 import Apps from "./Apps";
 import Account from "./Account";
 import UCM from "./UCM";
+import ExpoSentinel from "./ExpoSentinel";
 import Err_404 from "./common/utils/404";
 import Err_500 from "./common/utils/500";
 
@@ -31,6 +32,15 @@ export default createBrowserRouter([
   {
     path: "/use-case-management/",
     loader: () => redirect("/use-case-management/intro"),
+  },
+  {
+    path: "/expo-sentinel/:path",
+    element: <ExpoSentinel />,
+    errorElement: <Err_500 />,
+  },
+  {
+    path: "/expo-sentinel/",
+    loader: () => redirect("/expo-sentinel/intro"),
   },
   {
     path: "/account",

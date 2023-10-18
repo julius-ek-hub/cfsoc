@@ -12,12 +12,11 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 
 import useSheet from "../hooks/useSheet";
-
 import useSettings from "../hooks/useSettings";
+import useFetcher from "../hooks/useFetcher";
 import useFilter from "../hooks/useFilter";
 
 import { field_separator as fs } from "../utils/utils";
-import useFetcher from "../hooks/useFetcher";
 
 function TablePaginationActions(props) {
   const { count, page, rowsPerPage, onPageChange } = props;

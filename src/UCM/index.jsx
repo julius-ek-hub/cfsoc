@@ -8,16 +8,16 @@ import Ui from "./UI";
 import Menu from "./Menu";
 import Nav from "../common/utils/Nav";
 import Sections from "./utils/Section";
+import SearchParamFilter from "./UI/Filter/SearchParamFilter";
 
 import useFetcher from "./hooks/useFetcher";
 import useLoading from "../common/hooks/useLoading";
 import useSheet from "./hooks/useSheet";
-
-import { field_separator as fs } from "./utils/utils";
-import SearchParamFilter from "./UI/Filter/SearchParamFilter";
 import useSettings from "./hooks/useSettings";
 
-const Mitre = () => {
+import { field_separator as fs } from "./utils/utils";
+
+const UCM = () => {
   const { fetchAllFromDB, fetchSheetContent } = useFetcher();
   const { loading } = useLoading();
   const { active_sheet, updateSheet, important_sheets } = useSheet();
@@ -61,4 +61,4 @@ const Mitre = () => {
   );
 };
 
-export default Mitre;
+export default UCM;

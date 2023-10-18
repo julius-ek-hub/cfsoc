@@ -18,19 +18,19 @@ import Middle from "../../common/utils/Middle";
 import FilterButton from "./Filter/Button";
 import Upload from "../Menu/Upload";
 
-import { field_separator as fs } from "../utils/utils";
+import { field_separator as fs, getSX, objectExcept } from "../utils/utils";
 
 import useFilter from "../hooks/useFilter";
 import useSheet from "../hooks/useSheet";
 import useFetch from "../../common/hooks/useFetch";
 
-const Tc = ({ link, value, image, sheet, selected, sx, ...rest }) => {
+const Tc = ({ link, value, image, sheet, selected, ...rest }) => {
   const { serverURL } = useFetch();
-
+  const sx = getSX(rest.sx);
   return (
     <TableCell
       {...rest}
-      sx={{ ...sx, bgcolor: selected ? "inherit" : sx?.bgcolor }}
+      sx={{ ...sx, bgcolor: selected ? "inherit" : sx.bgcolor }}
     >
       {link ? (
         <Link
@@ -68,7 +68,10 @@ function Table() {
     filters,
     user_added,
     locked,
+    ordered: ord,
   } = active_sheet;
+
+  const ordered = typeof ord === "boolean" ? ord : true;
 
   const {
     paginated,
@@ -139,7 +142,11 @@ function Table() {
             <TableRow>
               {pted.length > 1 && (
                 <TableCell
-                  sx={{ py: 0.5, width: "10px", ...sorted_columns[0][1].sx }}
+                  sx={{
+                    py: 0.5,
+                    width: "10px",
+                    ...getSX(sorted_columns[0][1]),
+                  }}
                 >
                   S/N
                 </TableCell>
@@ -147,7 +154,11 @@ function Table() {
 
               {pted.length > 0 && has_select && (
                 <TableCell
-                  sx={{ py: 0.5, width: "10px", ...sorted_columns[0][1].sx }}
+                  sx={{
+                    py: 0.5,
+                    width: "10px",
+                    ...getSX(sorted_columns[0][1]),
+                  }}
                 >
                   <Box display="flex" alignItems="center">
                     <Checkbox
@@ -164,7 +175,7 @@ function Table() {
               {sorted_columns.map((k) => {
                 return (
                   <FilterButton
-                    sx={k[1].sx}
+                    sx={getSX(k[1].sx)}
                     key={k[0]}
                     column={k[0]}
                     label={k[1].label}
@@ -186,18 +197,38 @@ function Table() {
             {pted.map((row, index) => {
               const _selected = selected.includes(row._id.value);
               const __sel = () => handleSelect(row._id.value);
-              const colLen = sorted_columns.length;
               let first_val = sorted_columns
                 .map((sc) => val(sc, row))
                 .find((sc) => sc.value || sc.image);
               if (!first_val) first_val = val(sorted_columns[0], row);
 
-              const span =
-                [
-                  ...new Set(
-                    sorted_columns.map((e) => row[e[0]]?.value).filter((v) => v)
-                  ),
-                ].length <= 1;
+              let colspans = [];
+              let lastVal;
+
+              sorted_columns.map((k) => {
+                let _v = val(k, row);
+                let v = _v.value || _v.link || "";
+                if (typeof lastVal === "string" && lastVal === v) {
+                  colspans[colspans.length - 1].colspan++;
+                } else {
+                  colspans.push({
+                    ..._v,
+                    value: v,
+                    colspan: 0,
+                    key: k[0],
+                  });
+                }
+                lastVal = v;
+              });
+
+              const TTC = (props) => (
+                <TableCell
+                  {...(!_selected && {
+                    sx: { ...getSX(first_val.sx) },
+                  })}
+                  {...props}
+                />
+              );
 
               return (
                 <TableRow
@@ -209,49 +240,39 @@ function Table() {
                     }),
                   }}
                 >
-                  {pted.length > 1 && (
-                    <TableCell
-                      {...(!_selected && {
-                        sx: first_val.sx,
-                      })}
-                    >
-                      {page * rowsPerPage + 1 + index}
-                    </TableCell>
+                  {pted.length > 1 && ordered && (
+                    <TTC>{page * rowsPerPage + 1 + index}</TTC>
                   )}
                   {has_select && (
-                    <TableCell
-                      sx={{
-                        py: 0.5,
-                        width: "10px",
-                        ...(!_selected && {
-                          ...first_val.sx,
-                        }),
-                      }}
-                    >
-                      <Checkbox checked={_selected} onChange={__sel} />
-                    </TableCell>
+                    <TTC>
+                      <Checkbox
+                        sx={{ py: 0, my: 0 }}
+                        checked={_selected}
+                        onChange={__sel}
+                        size="small"
+                      />
+                    </TTC>
                   )}
 
-                  {colLen > 1 && span ? (
-                    <Tc
-                      {...first_val}
-                      image={Object.values(row).find((e) => e?.image)?.image}
-                      onClick={__sel}
-                      colSpan={colLen}
-                      sheet={key}
-                      selected={_selected}
-                    />
-                  ) : (
-                    sorted_columns.map((k) => (
+                  {colspans.map((cp) => {
+                    const _cp = objectExcept(cp, ["colspan"]);
+                    return (
                       <Tc
-                        key={k}
+                        key={cp.key}
                         onClick={__sel}
-                        {...val(k, row)}
+                        {...{
+                          ..._cp,
+                          sx: {
+                            ..._cp.sx,
+                            ...(cp.colspan > 0 && { textAlign: "center" }),
+                          },
+                        }}
                         sheet={active_sheet.key}
                         selected={_selected}
+                        colSpan={cp.colspan + 1}
                       />
-                    ))
-                  )}
+                    );
+                  })}
                 </TableRow>
               );
             })}

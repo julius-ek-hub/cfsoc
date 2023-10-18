@@ -41,11 +41,11 @@ export default function Menu({
           slotProps={{
             paper: {
               elevation: 0,
-              ...(!no_tip && {
-                sx: {
-                  overflow: "visible",
-                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                  mt: 1.5,
+              sx: {
+                overflow: "visible",
+                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                mt: 1.5,
+                ...(!no_tip && {
                   "&:before": {
                     content: '""',
                     display: "block",
@@ -58,8 +58,8 @@ export default function Menu({
                     transform: "translateY(-50%) rotate(45deg)",
                     zIndex: 0,
                   },
-                },
-              }),
+                }),
+              },
             },
           }}
           {...(backdrop_color && {
