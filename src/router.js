@@ -40,7 +40,7 @@ export default createBrowserRouter([
   },
   {
     path: "/expo-sentinel/",
-    loader: () => redirect("/expo-sentinel/intro"),
+    loader: () => redirect("/expo-sentinel/welcome"),
   },
   {
     path: "/account",
