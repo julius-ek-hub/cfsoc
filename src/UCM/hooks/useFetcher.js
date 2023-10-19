@@ -172,19 +172,17 @@ const useFetcher = () => {
         ...new Set(target_dev.map((dev) => dev.l4_uc_identifier)),
       ].filter((i) => i);
 
-      const l3 = sheets.l3_uc.content.find((_l3) =>
-        l3_uc_identifiers.includes(_l3.identifier.value)
-      );
-      const l4 = sheets.l4_uc.content.find((_l4) =>
-        l4_uc_identifiers.includes(_l4.identifier.value)
-      );
+      const l3 = sheets.l3_uc.content
+        .filter((_l3) => l3_uc_identifiers.includes(_l3.identifier.value))
+        .map((_l4) => _l4.l2_uc_identifiers.value)
+        .flat();
 
-      const l2_uc_identifiers = [
-        ...new Set([
-          ...(l3?.l2_uc_identifiers?.value || []),
-          ...(l4?.l2_uc_identifiers?.value || []),
-        ]),
-      ].filter((i) => i);
+      const l4 = sheets.l4_uc.content
+        .filter((_l4) => l4_uc_identifiers.includes(_l4.identifier.value))
+        .map((_l4) => _l4.l2_uc_identifiers.value)
+        .flat();
+
+      const l2_uc_identifiers = [...new Set([...l3, ...l4])].filter((i) => i);
 
       const l1_uc_identifiers = [
         ...new Set(

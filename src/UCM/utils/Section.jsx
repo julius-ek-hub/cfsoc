@@ -156,7 +156,7 @@ const Menu = ({ sheet }) => {
         )}
 
         <Box display="flex" justifyContent="end" mt={2} gap={1}>
-          <Confirm
+          {/* <Confirm
             onConfirm={handleDelete}
             ok_color="error"
             ok_text="Yes"
@@ -172,7 +172,7 @@ const Menu = ({ sheet }) => {
             )}
           >
             Delete {name}?
-          </Confirm>
+          </Confirm> */}
 
           <Button
             disabled={name_exists}
