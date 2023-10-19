@@ -158,11 +158,12 @@ const useAddModify = () => {
     )
   );
 
-  const sigma_uc_schema = Yup.object(
+  const all_uc_schema = Yup.object(
     Object.fromEntries(
       cols.map(([k, v]) => [
         k,
         [
+          "l1_uc_identifiers",
           "l2_uc_identifiers",
           "l3_uc_identifiers",
           "l4_uc_identifiers",
@@ -275,7 +276,7 @@ const useAddModify = () => {
     l1_uc_schema,
     l2_uc_schema,
     l3_uc_schema,
-    sigma_uc_schema,
+    all_uc_schema,
     cols,
     active_content,
   };

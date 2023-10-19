@@ -31,13 +31,8 @@ import { field_separator as fs, _entr } from "./utils";
 const Menu = ({ sheet }) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
-  const {
-    updateSheet,
-    deleteSheet,
-    sheet_names_except_current,
-    sheet_names,
-    important_sheets,
-  } = useSheet();
+  const { updateSheet, deleteSheet, sheet_names_except_current, sheet_names } =
+    useSheet();
   const { patch, dlete } = useFetch("/ucm");
 
   const navigate = useNavigate();
@@ -161,25 +156,24 @@ const Menu = ({ sheet }) => {
         )}
 
         <Box display="flex" justifyContent="end" mt={2} gap={1}>
-          {!important_sheets.includes(sheet.key) && (
-            <Confirm
-              onConfirm={handleDelete}
-              ok_color="error"
-              ok_text="Yes"
-              Clickable={(props) => (
-                <Button
-                  size="small"
-                  color="error"
-                  sx={{ justifyContent: "start" }}
-                  {...props}
-                >
-                  Delete
-                </Button>
-              )}
-            >
-              Delete {name}?
-            </Confirm>
-          )}
+          <Confirm
+            onConfirm={handleDelete}
+            ok_color="error"
+            ok_text="Yes"
+            Clickable={(props) => (
+              <Button
+                size="small"
+                color="error"
+                sx={{ justifyContent: "start" }}
+                {...props}
+              >
+                Delete
+              </Button>
+            )}
+          >
+            Delete {name}?
+          </Confirm>
+
           <Button
             disabled={name_exists}
             onClick={handleChange}

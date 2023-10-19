@@ -55,7 +55,7 @@ function FilterButton({
           </Box>
         )}
 
-        <Box ml="auto" visibility="hidden">
+        <Box ml={1} visibility="hidden">
           <Filter column={column} />
         </Box>
       </Box>

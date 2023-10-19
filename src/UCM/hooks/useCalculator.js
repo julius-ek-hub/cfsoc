@@ -44,7 +44,7 @@ const useCalculator = (sheets) => {
         l2_uc_identifiers[_id] = tactics.join(", ");
 
         const l4s = sheets.l4_uc.content.filter((d) =>
-          l3s.includes(d.l3_uc_identifier.value)
+          l3s.some((l3) => d.l3_uc_identifiers.value.includes(l3))
         );
 
         l4_uc_related[uc] = String(l4s.length);
@@ -119,7 +119,7 @@ const useCalculator = (sheets) => {
         avg_effectiveness[_id] = av(effectiveness);
 
         const l4s = sheets.l4_uc.content.filter((d) =>
-          l3s.includes(d.l3_uc_identifier.value)
+          l3s.some((l3) => d.l3_uc_identifiers.value.includes(l3))
         );
 
         l4_uc_related[uc] = String(l4s.length);
@@ -167,8 +167,8 @@ const useCalculator = (sheets) => {
         l1_uc_identifiers[_id] = l1_uc_identifiers[uc];
         l1_uc_name[_id] = l1_uc_name[uc];
 
-        const l4s = sheets.l4_uc.content.filter(
-          (d) => d.l3_uc_identifier.value === uc
+        const l4s = sheets.l4_uc.content.filter((d) =>
+          d.l3_uc_identifiers.value.includes(uc)
         );
 
         const sum = (key) => {
@@ -182,10 +182,10 @@ const useCalculator = (sheets) => {
         l4_uc_related[uc] = String(l4s.length);
         l4_uc_related[_id] = String(l4s.length);
 
-        l2_uc_identifiers[uc] =
-          l2.map((l) => _l(l.name.value).split(" ").join("-")).join(", ") ||
-          "Unknown";
-        l2_uc_identifiers[_id] = l2_uc_identifiers[uc];
+        // l2_uc_identifiers[uc] =
+        //   l2.map((l) => _l(l.name.value).split(" ").join("-")).join(", ") ||
+        //   "Unknown";
+        l2_uc_identifiers[_id] = c.l2_uc_identifiers.value.join(", ");
         coverage[uc] = sum("coverage");
         effectiveness[uc] = sum("effectiveness");
         coverage[_id] = coverage[uc];
@@ -196,9 +196,9 @@ const useCalculator = (sheets) => {
         coverage,
         effectiveness,
         l1_uc_name,
+        l2_uc_identifiers,
         l1_uc_identifiers,
         l4_uc_related,
-        l2_uc_identifiers,
         mitre_url,
       };
     }
@@ -214,13 +214,13 @@ const useCalculator = (sheets) => {
       content.map((c) => {
         const uc = c.identifier.value;
         const _id = c._id.value;
-        const l3id = c.l3_uc_identifier.value;
+        const l3id = c.l3_uc_identifiers.value;
         mitre_url[_id] = `${mitre_base_url}/techniques/${uc
           .split(".")
           .join("/")}`;
 
-        const l3 = sheets.l3_uc.content.find(
-          (l3uc) => l3uc.identifier.value === l3id
+        const l3 = sheets.l3_uc.content.find((l3uc) =>
+          l3id.includes(l3uc.identifier.value)
         );
         if (!l3) return;
 
@@ -241,10 +241,10 @@ const useCalculator = (sheets) => {
         l1_uc_identifiers[_id] = l1_uc_identifiers[uc];
         l1_uc_name[_id] = l1_uc_name[uc];
 
-        l2_uc_identifiers[uc] =
-          l2.map((l) => _l(l.name.value).split(" ").join("-")).join(", ") ||
-          "Unknown";
-        l2_uc_identifiers[_id] = l2_uc_identifiers[uc];
+        // l2_uc_identifiers[uc] =
+        //   l2.map((l) => _l(l.name.value).split(" ").join("-")).join(", ") ||
+        //   "Unknown";
+        l2_uc_identifiers[_id] = c.l2_uc_identifiers.value.join(", ");
 
         coverage[uc] = fix_percent(c.coverage.value) + "%";
         effectiveness[uc] = fix_percent(c.effectiveness.value) + "%";
@@ -263,118 +263,30 @@ const useCalculator = (sheets) => {
       };
     }
 
-    if (key === "dev_uc") {
+    if (key === "all_uc") {
       const l1_uc_identifiers = {};
-      const l2_uc_identifiers = {};
-      const l3_uc_name = {};
-      const l4_uc_identifier = {};
-      const l4_uc_name = {};
-      const l2_uc_name = {};
-      const car_uc_names = {};
-      const car_uc_identifiers = {};
-
-      const { l1_uc_identifiers: l1uci, l2_uc_identifiers: l2i } =
-        calculate("l3_uc");
-
-      content.map((c) => {
-        const _id = c._id.value;
-        const l3id = c.l3_uc_identifier.value;
-        const l4id = c.l4_uc_identifier.value;
-        const cars = c.car_uc_identifiers.value;
-
-        l1_uc_identifiers[_id] = l1uci[l3id];
-        l2_uc_name[_id] = l2i[l3id];
-        l2_uc_identifiers[_id] = l2i[l3id];
-        l4_uc_identifier[_id] = l4id || "(N/A - technique only)";
-
-        const l3 = sheets.l3_uc.content.find(
-          (l3uc) => l3uc.identifier.value === l3id
-        );
-
-        if (l3) l3_uc_name[_id] = l3.name.value;
-
-        const l4 = sheets.l4_uc.content.find(
-          (l4uc) => l4uc.identifier.value === l4id
-        );
-        l4_uc_name[_id] = l4?.name?.value || "(N/A - technique only)";
-
-        const car_uc = sheets.car_uc.content.filter((l2uc) =>
-          cars.includes(l2uc.identifier.value)
-        );
-
-        if (car_uc)
-          car_uc_names[_id] = car_uc.map((c) => c.name.value).join(", ");
-
-        car_uc_identifiers[_id] = cars.join(", ");
-      });
-
-      return {
-        l2_uc_identifiers,
-        car_uc_identifiers,
-        l1_uc_identifiers,
-        l4_uc_identifier,
-        car_uc_names,
-        l2_uc_name,
-        l3_uc_name,
-        l4_uc_name,
-      };
-    }
-
-    if (key === "db_uc") {
-      const l1_uc_identifiers = {};
-
-      content.map((c) => {
-        l1_uc_identifiers[c._id.value] = c.l1_uc_identifiers.value.join(", ");
-      });
-
-      return {
-        l1_uc_identifiers,
-      };
-    }
-    if (key === "car_uc") {
-      const mitre_url = {};
-      const application_platforms = {};
-
-      content.map((c) => {
-        const _id = c._id.value;
-        const id = c.identifier.value;
-        const ap = c.application_platforms.value;
-        application_platforms[_id] = ap.join(", ");
-        mitre_url[_id] = "https://car.mitre.org/analytics/" + id;
-      });
-
-      return { mitre_url, application_platforms };
-    }
-    if (key === "expo_sentinel_uc") {
-      const l2_uc_identifiers = {};
-      const l3_uc_identifiers = {};
-
-      content.map((c) => {
-        const _id = c._id.value;
-        const l2 = c.l2_uc_identifiers.value;
-        const l3 = c.l3_uc_identifiers.value;
-        l3_uc_identifiers[_id] = l3.join(", ");
-        l2_uc_identifiers[_id] = l2.join(", ");
-      });
-
-      return { l2_uc_identifiers, l3_uc_identifiers };
-    }
-    if (key === "sigma_uc") {
       const l2_uc_identifiers = {};
       const l3_uc_identifiers = {};
       const l4_uc_identifiers = {};
 
       content.map((c) => {
         const _id = c._id.value;
+        const l1 = c.l1_uc_identifiers.value;
         const l2 = c.l2_uc_identifiers.value;
         const l3 = c.l3_uc_identifiers.value;
         const l4 = c.l4_uc_identifiers.value;
+        l1_uc_identifiers[_id] = l1.join(", ");
         l3_uc_identifiers[_id] = l3.join(", ");
         l2_uc_identifiers[_id] = l2.join(", ");
         l4_uc_identifiers[_id] = l4.join(", ");
       });
 
-      return { l2_uc_identifiers, l3_uc_identifiers, l4_uc_identifiers };
+      return {
+        l1_uc_identifiers,
+        l2_uc_identifiers,
+        l3_uc_identifiers,
+        l4_uc_identifiers,
+      };
     }
     return {};
   };

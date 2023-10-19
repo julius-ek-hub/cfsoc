@@ -15,15 +15,29 @@ import { useFormikContext } from "formik";
 
 import { _l } from "../../utils/utils";
 
-const SigMaUC = ({ Button, edit }) => {
+const AllUCForm = ({ Button, edit }) => {
   const [open, setOpen] = useState(false);
-  const { cols, for_edit, save, sigma_uc_schema } = useAddModify();
+  const { cols, for_edit, save, all_uc_schema } = useAddModify();
 
   const { sheets, active_sheet } = useSheet();
 
   const df = for_edit(edit);
 
   const handleClose = () => setOpen(false);
+
+  const l1_uc_identifiers = sheets.l1_uc.content.map(
+    ({ name, identifier }) => ({
+      name: name.value,
+      id: identifier.value,
+    })
+  );
+
+  const l2_uc_identifiers = sheets.l2_uc.content.map(
+    ({ name, identifier }) => ({
+      name: name.value,
+      id: identifier.value,
+    })
+  );
 
   const l3_uc_identifiers = sheets.l3_uc.content.map(
     ({ name, identifier }) => ({
@@ -39,20 +53,21 @@ const SigMaUC = ({ Button, edit }) => {
     })
   );
 
-  const l2_uc_identifiers = sheets.l2_uc.content.map(
-    ({ name, identifier }) => ({
-      name: name.value,
-      id: identifier.value,
-    })
-  );
+  const drops = {
+    l1_uc_identifiers,
+    l2_uc_identifiers,
+    l3_uc_identifiers,
+    l4_uc_identifiers,
+  };
 
-  const drops = { l4_uc_identifiers, l3_uc_identifiers, l2_uc_identifiers };
+  let df_l1uc =
+    l1_uc_identifiers.filter((id) =>
+      (df.l1_uc_identifiers?.value || []).includes(id.id)
+    ) || [];
 
-  let df_l2 =
+  let df_l2uc =
     l2_uc_identifiers.filter((id) =>
-      (df.l2_uc_identifiers?.value || []).includes(
-        _l(id.name.split(" ").join("-"))
-      )
+      (df.l2_uc_identifiers?.value || []).includes(id.id)
     ) || [];
 
   let df_l3uc =
@@ -66,13 +81,15 @@ const SigMaUC = ({ Button, edit }) => {
     ) || [];
 
   const dfs = {
-    title: df.title?.value || "",
-    status: df.status?.value || "",
+    name: df.name?.value || "",
+    identifier: df.identifier?.value || "",
+    source: df.source?.value || "",
     description: df.description?.value || "",
     url: df.url?.value || "",
-    l4_uc_identifiers: df_l4uc,
+    l1_uc_identifiers: df_l1uc,
+    l2_uc_identifiers: df_l2uc,
     l3_uc_identifiers: df_l3uc,
-    l2_uc_identifiers: df_l2,
+    l4_uc_identifiers: df_l4uc,
   };
 
   const Reset = ({ children }) => {
@@ -90,17 +107,15 @@ const SigMaUC = ({ Button, edit }) => {
       <Button onClick={(e) => setOpen(true)} />
       <Form
         initialValues={Object.fromEntries(cols.map(([k, v]) => [k, dfs[k]]))}
-        onSubmit={(d, f) => {
+        onSubmit={(d) => {
           let $new = { ...d };
-          $new.l2_uc_identifiers = $new.l2_uc_identifiers.map((l2) =>
-            _l(l2.name.split(" ").join("-"))
-          );
+          $new.l1_uc_identifiers = $new.l1_uc_identifiers.map((l1) => l1.id);
+          $new.l2_uc_identifiers = $new.l2_uc_identifiers.map((l2) => l2.id);
           $new.l3_uc_identifiers = $new.l3_uc_identifiers.map((l3) => l3.id);
           $new.l4_uc_identifiers = $new.l4_uc_identifiers.map((l4) => l4.id);
-          $new.url = $new.url || "";
           save($new, edit, handleClose, false);
         }}
-        validationSchema={sigma_uc_schema}
+        validationSchema={all_uc_schema}
       >
         <Reset />
         <Dialog
@@ -123,6 +138,7 @@ const SigMaUC = ({ Button, edit }) => {
         >
           {cols.map(([k, v]) =>
             [
+              "l1_uc_identifiers",
               "l2_uc_identifiers",
               "l3_uc_identifiers",
               "l4_uc_identifiers",
@@ -156,4 +172,4 @@ const SigMaUC = ({ Button, edit }) => {
   );
 };
 
-export default SigMaUC;
+export default AllUCForm;

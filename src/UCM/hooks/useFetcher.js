@@ -154,23 +154,62 @@ const useFetcher = () => {
       };
     });
 
+    const dev_uc = await getCarAnalyticsObject(serverURL);
+
     const car_uc = car_doc.map((tr) => {
       const ch = arr(tr.children).map((td) => fixNode(td));
-      const identifier = ch[0];
+      const identifier = ch[0].trim();
+
+      const target_dev = dev_uc.filter((duc) =>
+        duc.car_uc_identifiers.includes(identifier)
+      );
+
+      const l3_uc_identifiers = [
+        ...new Set(target_dev.map((dev) => dev.l3_uc_identifier)),
+      ].filter((i) => i);
+
+      const l4_uc_identifiers = [
+        ...new Set(target_dev.map((dev) => dev.l4_uc_identifier)),
+      ].filter((i) => i);
+
+      const l3 = sheets.l3_uc.content.find((_l3) =>
+        l3_uc_identifiers.includes(_l3.identifier.value)
+      );
+      const l4 = sheets.l4_uc.content.find((_l4) =>
+        l4_uc_identifiers.includes(_l4.identifier.value)
+      );
+
+      const l2_uc_identifiers = [
+        ...new Set([
+          ...(l3?.l2_uc_identifiers?.value || []),
+          ...(l4?.l2_uc_identifiers?.value || []),
+        ]),
+      ].filter((i) => i);
+
+      const l1_uc_identifiers = [
+        ...new Set(
+          sheets.l1_uc.content
+            .filter((l1) =>
+              l2_uc_identifiers.some((l2) =>
+                l1.l2_uc_identifiers.value.includes(l2)
+              )
+            )
+            .map((l1) => l1.identifier.value)
+        ),
+      ];
+
       return {
         identifier,
         name: ch[1],
-        submission_date: ch[2],
-        implementations: ch[4],
-        application_platforms: ch[5]
-          .trim()
-          .split(",")
-          .filter((p) => _l(p) !== "n/a")
-          .map((a) => a.trim()),
+        source_id: "car_uc",
+        source: "Car Analytics",
+        l1_uc_identifiers,
+        l2_uc_identifiers,
+        l3_uc_identifiers,
+        l4_uc_identifiers,
+        url: `https://car.mitre.org/analytics/${identifier}`,
       };
     });
-
-    const dev_uc = await getCarAnalyticsObject(serverURL);
 
     let l3_uc = [];
     let l4_uc = [];
@@ -200,9 +239,10 @@ const useFetcher = () => {
     });
 
     l4_uc = l4_uc.map((l4) =>
-      objectExcept({ ...l4, l3_uc_identifier: l4.identifier.split(".")[0] }, [
-        "l2_uc_identifier",
-      ])
+      objectExcept(
+        { ...l4, l3_uc_identifiers: [l4.identifier.split(".")[0]] },
+        ["l2_uc_identifier"]
+      )
     );
 
     l3_uc = l3_uc.map((l4) => objectExcept(l4, ["l2_uc_identifier"]));
@@ -210,11 +250,11 @@ const useFetcher = () => {
     await post("/override", {
       l2_uc,
       car_uc,
-      dev_uc,
       l3_uc,
       l4_uc,
     });
 
+    update(false, "all_mitre");
     window.location.reload();
   };
 

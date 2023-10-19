@@ -20,7 +20,7 @@ import { field_separator as fs } from "./utils/utils";
 const UCM = () => {
   const { fetchAllFromDB, fetchSheetContent } = useFetcher();
   const { loading } = useLoading();
-  const { active_sheet, updateSheet, important_sheets } = useSheet();
+  const { active_sheet, updateSheet } = useSheet();
   const { settings, updateSettings } = useSettings();
 
   const key = active_sheet?.key;
@@ -28,7 +28,7 @@ const UCM = () => {
   const initialize = async () => {
     await fetchAllFromDB();
     await Promise.all(
-      important_sheets
+      ["l4_uc", "l3_uc", "l2_uc", "l1_uc"]
         .filter((im) => im !== settings.deleted)
         .map((k) => fetchSheetContent(k))
     );

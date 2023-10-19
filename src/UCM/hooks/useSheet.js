@@ -17,17 +17,6 @@ const useSheet = () => {
   const { path } = useParams();
   const [sp, setSp] = useSearchParams();
   const active_sheet = sheets[path];
-  const important_sheets = [
-    "l4_uc",
-    "l3_uc",
-    "l2_uc",
-    "l1_uc",
-    "car_uc",
-    "dev_uc",
-    "db_uc",
-    "expo_sentinel_uc",
-    "sigma_uc",
-  ];
 
   const sp_filter = {};
 
@@ -81,7 +70,6 @@ const useSheet = () => {
   const active_content_with_calculations = (key = active_sheet?.key) => {
     if (!key || !sheets[key]) return [];
     const { content } = sheets[key];
-    if (!important_sheets.includes(key)) return content;
 
     let cd = _entr(calculte(key));
 
@@ -150,7 +138,6 @@ const useSheet = () => {
     sheet_names_except_current,
     updateSheetWithDataFromDb,
     active_content_with_calculations,
-    important_sheets,
     addSheet,
     updateSheet,
     deleteSheet,
