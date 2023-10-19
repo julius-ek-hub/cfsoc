@@ -22,8 +22,7 @@ const useSheet = () => {
 
   [...sp.keys()].map((sk) => {
     const vals = [...new Set([...sp.getAll(sk)])].filter((v) => v);
-    if (active_sheet && vals.length > 0 && active_sheet.columns[sk])
-      sp_filter[sk] = vals;
+    if (active_sheet && active_sheet.columns[sk]) sp_filter[sk] = vals;
   });
 
   const sorted_columns = _entr(active_sheet?.columns || {}).sort(

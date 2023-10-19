@@ -32,7 +32,12 @@ const SearchParamFilter = () => {
       <Box
         dangerouslySetInnerHTML={{
           __html: Object.entries(sp_filter)
-            .map(([k, v]) => `<b>'${columns[k].label}'</b> = ${v.join(", ")}`)
+            .map(
+              ([k, v]) =>
+                `<b>'${columns[k].label}'</b> ${
+                  v.length > 1 ? "matches any of:" : "="
+                } ${v.join(", ")}`
+            )
             .join(" &amp; "),
         }}
       />

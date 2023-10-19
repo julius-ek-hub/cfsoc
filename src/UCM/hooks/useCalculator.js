@@ -1,6 +1,12 @@
 import { _l, fix_percent, mitre_base_url } from "../utils/utils";
 
 const useCalculator = (sheets) => {
+  const getNames = (sheet, check) =>
+    sheets[sheet].content
+      .filter((l) => check.includes(l.identifier.value))
+      .map((l) => l.name.value)
+      .join(", ");
+
   const calculate = (key) => {
     const { content } = sheets[key];
     if (key === "l1_uc") {
@@ -269,16 +275,27 @@ const useCalculator = (sheets) => {
       const l3_uc_identifiers = {};
       const l4_uc_identifiers = {};
 
+      const l1_uc_names = {};
+      const l2_uc_names = {};
+      const l3_uc_names = {};
+      const l4_uc_names = {};
+
       content.map((c) => {
         const _id = c._id.value;
         const l1 = c.l1_uc_identifiers.value;
         const l2 = c.l2_uc_identifiers.value;
         const l3 = c.l3_uc_identifiers.value;
         const l4 = c.l4_uc_identifiers.value;
+
         l1_uc_identifiers[_id] = l1.join(", ");
         l3_uc_identifiers[_id] = l3.join(", ");
         l2_uc_identifiers[_id] = l2.join(", ");
         l4_uc_identifiers[_id] = l4.join(", ");
+
+        l1_uc_names[_id] = getNames("l1_uc", l1);
+        l2_uc_names[_id] = getNames("l2_uc", l2);
+        l3_uc_names[_id] = getNames("l3_uc", l3);
+        l4_uc_names[_id] = getNames("l4_uc", l4);
       });
 
       return {
@@ -286,8 +303,13 @@ const useCalculator = (sheets) => {
         l2_uc_identifiers,
         l3_uc_identifiers,
         l4_uc_identifiers,
+        l1_uc_names,
+        l2_uc_names,
+        l3_uc_names,
+        l4_uc_names,
       };
     }
+
     return {};
   };
 
