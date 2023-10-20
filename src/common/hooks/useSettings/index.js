@@ -36,7 +36,7 @@ const useCommonSettings = () => {
         update(k, k === "theme" ? "system" : undefined);
       }
     );
-    was !== "system" && window.location.reload();
+    was !== "guest" && window.location.reload();
   };
 
   const initializeCommonSettings = async () => {

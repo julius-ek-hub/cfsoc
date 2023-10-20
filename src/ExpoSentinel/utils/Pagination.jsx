@@ -118,7 +118,7 @@ export default function Pagination() {
     handleChangeRowsPerPage({ target: { value: 30 } });
   }, [key]);
 
-  if (!active_sheet || f.length === 0) return null;
+  if (!active_sheet || f.length < 2) return null;
 
   return (
     <Box display="flex" ml="auto" flexShrink={0} alignItems="center">

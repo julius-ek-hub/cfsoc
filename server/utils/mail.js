@@ -20,6 +20,9 @@ module.exports = ({
         user: env("EMAIL_ID"),
         pass: env("EMAIL_PASS"),
       },
+      tls: {
+        rejectUnauthorized: false,
+      },
     })
     .sendMail({
       from: (sn ? sn + " " : "") + env("EMAIL_ID"),

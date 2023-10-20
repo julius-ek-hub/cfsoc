@@ -40,7 +40,12 @@ export default function Security() {
 
   const p = permissions || {};
 
-  const _staffs = objectExcept(staffs, [uname, "system", active_sheet.creator]);
+  const _staffs = objectExcept(staffs, [
+    uname,
+    "system",
+    active_sheet.creator,
+    "guest",
+  ]);
 
   const getPermissions = (username) =>
     Array.isArray(p[username]) ? p[username] : ["read"];

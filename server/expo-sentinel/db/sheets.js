@@ -7,6 +7,7 @@ const db = mongoose.connection.useDb("expo-sentinel");
 const getSheets = async (filter, staff) => {
   const sheets = await db.collection("sheets").find(filter).toArray();
   return sheets.filter((sheet) => {
+    if (sheet.key !== "welcome" && staff === "guest") return false;
     const perm = (sheet.permissions || {})[staff] || ["read"];
     return perm.includes("read") || sheet.creator === staff;
   });

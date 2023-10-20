@@ -29,9 +29,15 @@ const getUser = async (req, res) => {
     const user = await gs({ username }, "-hash -__v");
     res.json({ ...user[username], app_versions });
   } catch (error) {
-    const username = "system";
-    const user = await gs({ username }, "-hash -__v");
-    res.json({ ...user[username], app_versions });
+    res.json({
+      name: "Guest",
+      level: 0,
+      admin: false,
+      username: "guest",
+      position: "-",
+      email: "",
+      app_versions,
+    });
   }
 };
 const addStaff = async (req, res) => {

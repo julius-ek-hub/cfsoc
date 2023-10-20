@@ -286,19 +286,21 @@ const Sections = () => {
           ))}
         </Tabs>
       )}
-      <Button
-        sx={{
-          whiteSpace: "nowrap",
-          flexShrink: 0,
-          ...(sheet_names.length === 0 && { m: 3 }),
-        }}
-        color="inherit"
-        endIcon={<AddIcon />}
-        size="small"
-        onClick={addBlanc}
-      >
-        Add New
-      </Button>
+      {uname !== "guest" && (
+        <Button
+          sx={{
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+            ...(sheet_names.length === 0 && { m: 3 }),
+          }}
+          color="inherit"
+          endIcon={<AddIcon />}
+          size="small"
+          onClick={addBlanc}
+        >
+          Add New
+        </Button>
+      )}
     </>
   );
 

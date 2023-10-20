@@ -13,6 +13,7 @@ import useSheet from "../hooks/useSheet";
 import useSettings from "../hooks/useSettings";
 import IconButton from "../../common/utils/IconButton";
 import useFetch from "../../common/hooks/useFetch";
+import useCommonSettings from "../../common/hooks/useSettings";
 
 import { field_separator as fs } from "../utils/utils";
 
@@ -21,6 +22,7 @@ const Menu = () => {
   const { active_sheet, active_content, updateSheet, permission } = useSheet();
   const { settings } = useSettings();
   const { patch } = useFetch("/expo-sentinel");
+  const { uname } = useCommonSettings();
 
   if (!active_sheet) return null;
 
@@ -61,15 +63,19 @@ const Menu = () => {
             title={ordered ? "Remove row numbering" : "Add row numbering"}
           />
         )}
-        {settings.changed && !hasSelected && (
-          <IconButton
-            Icon={SaveIcon}
-            onClick={saveChanges}
-            title="Save state"
-          />
-        )}
-        {active_content.length > 0 && !hasSelected && (
-          <Download onChange={downloadData} />
+        {uname !== "guest" && (
+          <>
+            {settings.changed && !hasSelected && (
+              <IconButton
+                Icon={SaveIcon}
+                onClick={saveChanges}
+                title="Save state"
+              />
+            )}
+            {active_content.length > 0 && !hasSelected && (
+              <Download onChange={downloadData} />
+            )}
+          </>
         )}
         <ActionButtons />
       </Flex>
