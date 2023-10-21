@@ -27,7 +27,8 @@ import useSettings from "../hooks/useSettings";
 import useDimension from "../../common/hooks/useDimensions";
 import UseCommonSettings from "../../common/hooks/useSettings";
 
-import { field_separator as fs, _entr } from "./utils";
+import { field_separator as fs, _entr, _u } from "./utils";
+import { Avatar } from "@mui/material";
 
 const Menu = ({ sheet }) => {
   const [open, setOpen] = useState(false);
@@ -194,7 +195,7 @@ const Sections = () => {
   const { post } = useFetch("/expo-sentinel");
   const [open, setOpen] = useState(false);
   const { up } = useDimension();
-  const { uname } = UseCommonSettings();
+  const { uname, getName } = UseCommonSettings();
   const navigate = useNavigate();
   const { updateSheet } = useSheet();
 
@@ -257,7 +258,25 @@ const Sections = () => {
         >
           {sheet_names.map((sn, index) => (
             <Tab
-              label={sn.name}
+              label={
+                <>
+                  {sn.name}
+                  <Avatar
+                    title={`Created by ${getName(sn.creator)}`}
+                    sx={{
+                      height: 18,
+                      width: 18,
+                      ml: 0.5,
+                      fontSize: "x-small",
+                    }}
+                  >
+                    {getName(sn.creator)
+                      .split(" ")
+                      .map((n) => _u(n[0]))
+                      .join("")}
+                  </Avatar>
+                </>
+              }
               value={sn.key}
               key={sn.key}
               sx={{

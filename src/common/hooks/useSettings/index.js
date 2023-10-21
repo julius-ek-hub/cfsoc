@@ -7,9 +7,8 @@ import useFetch from "../useFetch";
 import { u as uc } from "../../utils/utils";
 
 const useCommonSettings = () => {
-  const { user, theme, staffs, push_notification, apps } = useSelector(
-    ({ common_settings }) => common_settings
-  );
+  const { user, theme, staffs, push_notification, apps, hide_header } =
+    useSelector(({ common_settings }) => common_settings);
   const dispatch = useDispatch();
   const { get: lget, set, remove } = useLocalStorage();
   const { get } = useFetch("/auth");
@@ -55,6 +54,7 @@ const useCommonSettings = () => {
     apps,
     user,
     staffs,
+    hide_header,
     uname: user?.username,
     admin: Boolean(user?.admin),
     getName(username = user?.username) {

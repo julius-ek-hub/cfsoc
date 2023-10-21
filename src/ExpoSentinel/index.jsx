@@ -20,7 +20,7 @@ const ExpoSentinel = () => {
   const { fetchAllFromDB } = useFetcher();
   const { loading } = useLoading();
   const { active_sheet, updateSheet } = useSheet();
-  const { uname, staffs } = useCommonSettings();
+  const { uname, staffs, hide_header } = useCommonSettings();
 
   const key = active_sheet?.key;
 
@@ -41,7 +41,7 @@ const ExpoSentinel = () => {
       <Box>
         <Nav app="Expo Sentinel" />
       </Box>
-      <Menu />
+      {!hide_header && <Menu />}
       <Ui />
       <Sections />
       <Backdrop open={Boolean(loading.all_mitre)} sx={{ zIndex: 10000 }}>

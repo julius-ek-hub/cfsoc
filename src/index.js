@@ -45,7 +45,7 @@ root.render(
   <Provider store={common_store}>
     <Settings>
       <Box sx={{ display: "flex", height: "100vh", flexDirection: "column" }}>
-        <RouterProvider router={router} fallbackElement={<Box>Fallback</Box>} />
+        <RouterProvider router={router} fallbackElement={<Box>Error</Box>} />
       </Box>
     </Settings>
   </Provider>

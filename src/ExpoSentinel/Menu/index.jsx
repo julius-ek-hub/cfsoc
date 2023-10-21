@@ -8,6 +8,7 @@ import Download from "./Download";
 import ActionButtons from "./AddRow/utils/ActionButtons";
 import IconButton from "../../common/utils/IconButton";
 import Security from "../utils/Security";
+import SheetInfo from "../utils/SheetInfo";
 
 import useFetcher from "../hooks/useFetcher";
 import useSheet from "../hooks/useSheet";
@@ -40,8 +41,8 @@ const Menu = () => {
   const Flex = (props) => (
     <Box
       display="flex"
-      mt={2}
       px={2}
+      mt={1}
       {...(!active_sheet && { py: 1 })}
       alignItems="center"
       gap={2}
@@ -54,6 +55,9 @@ const Menu = () => {
 
   return (
     <Box>
+      <Flex fontSize="small" color="text.secondary">
+        <SheetInfo />
+      </Flex>
       <Flex>
         <Security />
         {permission.includes("modify") && (

@@ -14,9 +14,9 @@ import UpdateUI from "./UpdateUI";
 import useCommonSettings from "../../hooks/useSettings";
 
 const Nav = ({ app = "All Apps" }) => {
-  const { user, getName } = useCommonSettings();
+  const { user, getName, hide_header } = useCommonSettings();
 
-  if (!user) return null;
+  if (!user || hide_header) return null;
 
   return (
     <Box
