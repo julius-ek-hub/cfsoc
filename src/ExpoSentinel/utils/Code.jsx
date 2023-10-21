@@ -144,18 +144,22 @@ export default function Code({ children, has_selected, ordered }) {
       lines++;
     });
 
-    const __code = (
+    const codeProps = {
+      sx: {
+        fontFamily: "Consolas, Courier New, monospace",
+      },
+      dangerouslySetInnerHTML: {
+        __html: ch,
+      },
+    };
+
+    const codeCell = (
       <Box
-        sx={{
-          fontFamily: "Consolas, Courier New, monospace",
-          maxWidth,
-          overflow: "auto",
-        }}
-        dangerouslySetInnerHTML={{
-          __html: ch,
-        }}
+        {...codeProps}
+        sx={{ ...codeProps.sx, maxWidth, overflow: "auto" }}
       />
     );
+    const codeDialog = <Box {...codeProps} />;
 
     const copyButton = (
       <IconButton
@@ -176,7 +180,7 @@ export default function Code({ children, has_selected, ordered }) {
         }}
       >
         <Box maxHeight={200} overflow="hidden">
-          {__code}
+          {codeCell}
         </Box>
         {lines > 10 && (
           <Confirm
@@ -192,7 +196,7 @@ export default function Code({ children, has_selected, ordered }) {
               </Button>
             )}
           >
-            {__code}
+            {codeDialog}
           </Confirm>
         )}
 

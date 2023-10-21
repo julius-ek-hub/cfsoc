@@ -35,13 +35,7 @@ const Ui = () => {
   return (
     <>
       {active_sheet && (
-        <Box
-          display="flex"
-          flexGrow={1}
-          flexDirection="column"
-          overflow="auto"
-          mt={1}
-        >
+        <Box display="flex" flexGrow={1} flexDirection="column" overflow="auto">
           <ExcludedColumns />
           <Box
             id="main_table"
@@ -53,7 +47,6 @@ const Ui = () => {
                   border: (t) => `1px solid ${t.palette.divider}`,
                 },
               },
-              mt: 1,
               flexGrow: 1,
               overflow: "auto",
             }}

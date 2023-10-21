@@ -39,7 +39,7 @@ export default function Settings({ children }) {
           top: 0,
           top: 2,
           left: "46.5%",
-          zIndex: 10000,
+          zIndex: 100,
         }}
       >
         <IconButton
