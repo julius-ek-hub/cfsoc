@@ -9,8 +9,10 @@ import useToasts from "../../common/hooks/useToast";
 export default function Code({ children }) {
   const { push } = useToasts();
 
-  if (children.startsWith("```") && children.endsWith("```")) {
-    const real = children.substring(3, children.length - 3);
+  const __chi = children.trim();
+
+  if (__chi.startsWith("```") && __chi.endsWith("```")) {
+    const real = __chi.substring(3, __chi.length - 3);
 
     const handleCopy = async () => {
       const copied = () =>
@@ -140,5 +142,5 @@ export default function Code({ children }) {
     );
   }
 
-  return children;
+  return __chi;
 }
