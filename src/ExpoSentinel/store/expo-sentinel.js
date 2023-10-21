@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { deepKey, field_separator } from "../utils/utils";
+import { deepKey, field_separator as fs } from "../utils/utils";
 
 const arr = (doubt) => (!Array.isArray(doubt) ? [doubt] : doubt);
 
@@ -15,18 +15,6 @@ const mitreSlice = createSlice({
       const { object, lastKey } = deepKey(payload.key, state.settings, true);
       object[lastKey] = payload.value;
     },
-
-    updateTactics(state, { payload }) {
-      const { object, lastKey } = deepKey(payload.key, state.tactics, true);
-      object[lastKey] = payload.value;
-      const _keys = payload.key.split(field_separator);
-      state.changes.tactics[
-        `${state.tactics[Number(_keys[0])].id}.${_keys.slice(1).join(".")}`
-      ] = payload.value;
-    },
-    addTactics(state, { payload }) {
-      state.tactics = arr(payload);
-    },
     addSheet(state, { payload }) {
       arr(payload).map((sheet) => {
         if (state.sheets[sheet.key]) return;
@@ -37,19 +25,25 @@ const mitreSlice = createSlice({
       delete state.sheets[payload.key];
     },
     updateSheet(state, { payload }) {
-      const { object, lastKey } = deepKey(payload.key, state.sheets, true);
+      const key = payload.key;
+      const _key = key.split(fs)[0];
+      const { object, lastKey } = deepKey(key, state.sheets, true);
       object[lastKey] = payload.value;
+      if (["content", "place_after"].some((ew) => key.endsWith(ew))) {
+        const content = state.sheets[_key].content;
+
+        state.sheets[_key].content = content
+          .map((c, i) => {
+            const sn = c.sn?.value;
+            return { ...c, sn: { value: sn || i } };
+          })
+          .sort((a, b) => a.sn.value - b.sn.value);
+      }
     },
   },
 });
 
-export const {
-  addTactics,
-  updateTactics,
-  updateSettings,
-  addSheet,
-  updateSheet,
-  deleteSheet,
-} = mitreSlice.actions;
+export const { updateSettings, addSheet, updateSheet, deleteSheet } =
+  mitreSlice.actions;
 
 export default mitreSlice.reducer;

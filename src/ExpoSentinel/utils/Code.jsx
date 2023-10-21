@@ -1,15 +1,20 @@
+import { useTheme } from "@mui/material/styles";
+
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 import IconButton from "../../common/utils/IconButton";
+import Confirm from "../../common/utils/Comfirm";
 
 import useToasts from "../../common/hooks/useToast";
 
 export default function Code({ children }) {
   const { push } = useToasts();
+  const t = useTheme();
 
-  const __chi = children.trim();
+  const __chi = children.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   if (__chi.startsWith("```") && __chi.endsWith("```")) {
     const real = __chi.substring(3, __chi.length - 3);
@@ -43,7 +48,8 @@ export default function Code({ children }) {
     };
 
     let ch = "";
-    real.split(/\n/).map((l, i) => {
+    let lines = 0;
+    real.split(/\n/).map((l, i, arr) => {
       let go = l.replace(/ /g, "&nbsp;");
       let ind = l.indexOf("//");
 
@@ -62,7 +68,10 @@ export default function Code({ children }) {
       } else ind = -1;
 
       const commStart = ind !== -1 ? ind : go.length;
-      let ugo = go.substring(0, commStart);
+      let ugo = go
+        .substring(0, commStart)
+        .replace(/ /g, "&nbsp;")
+        .replace(/\t/g, "&nbsp;".repeat(4));
 
       const reg = ugo.matchAll(/["'`](.*?)["'`]/g);
       [...reg].map((re) => {
@@ -105,38 +114,81 @@ export default function Code({ children }) {
             "string",
             "real",
             "contains",
+            "let",
+            "const",
+            "var",
+            "function",
+            "import",
           ].includes(_word)
-            ? `<span style="color:#00f">${_word + _end}</span>`
+            ? `<span style="color:#0096FF">${_word + _end}</span>`
             : !isNaN(_word) || ["true", "false"].includes(_word)
             ? `<span style="color:#437700">${_word + _end}</span>`
             : word;
         })
         .join("&nbsp;");
 
-      ch += `<div style="display:flex"><span style="user-select:none;color:#237893">${
-        i + 1 + "&nbsp;".repeat(4 - String(i + 1).length)
-      }</span><div>${
+      const snLen = String(i + 1).length;
+
+      ch += `<div style="display:flex" onfocus="alert(90)"><span style="user-select:none;color:#237893;border-right:1px solid ${
+        arr.length > 999 ? "transparent" : t.palette.divider
+      }">${
+        i + 1 + "&nbsp;".repeat(arr.length > 999 ? 0 : 4 - snLen)
+      }</span><div style="margin-left:10px">${
         !go || go === '<span style="color:#437700"></span>' ? "&nbsp;" : go
       }</div></div>`;
+      lines++;
     });
+
+    const __code = (
+      <Box
+        style={{
+          fontFamily: "Consolas, Courier New, monospace",
+        }}
+        dangerouslySetInnerHTML={{
+          __html: ch,
+        }}
+      />
+    );
+
+    const copyButton = (
+      <IconButton
+        onClick={handleCopy}
+        Icon={ContentCopyIcon}
+        title="Copy code"
+        sx={{ bgcolor: "background.paper" }}
+      />
+    );
+
     return (
       <Box
         position="relative"
-        sx={{ "&:hover > div": { visibility: "visible" } }}
+        sx={{
+          "&:hover > div": { visibility: "visible" },
+        }}
       >
-        <div
-          style={{ fontFamily: "Consolas, Courier New, monospace" }}
-          dangerouslySetInnerHTML={{
-            __html: ch,
-          }}
-        />
+        <Box maxHeight={200} overflow="hidden">
+          {__code}
+        </Box>
+        {lines > 10 && (
+          <Confirm
+            ok_text="Close"
+            onClick={(e) => e.stopPropagation()}
+            title="Query"
+            is_alert
+            expandable
+            toolbar_extras={copyButton}
+            Clickable={(props) => (
+              <Button sx={{ mt: 1 }} {...props}>
+                View full query...
+              </Button>
+            )}
+          >
+            {__code}
+          </Confirm>
+        )}
+
         <Box position="absolute" top={0} right={0} visibility="hidden">
-          <IconButton
-            onClick={handleCopy}
-            Icon={ContentCopyIcon}
-            title="Copy code"
-            sx={{ bgcolor: "background.paper" }}
-          />
+          {copyButton}
         </Box>
       </Box>
     );

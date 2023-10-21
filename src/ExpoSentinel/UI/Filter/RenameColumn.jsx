@@ -5,6 +5,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import TextField from "../../../common/utils/form/uncontrolled/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
 
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
@@ -158,6 +159,29 @@ function RenameColumn({ column }) {
                 margin="dense"
                 type={v.type}
                 label={v.label}
+                {...(k === "fontSize" && {
+                  InputProps: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {k === "fontSize" ? "px" : "%"}
+                      </InputAdornment>
+                    ),
+                  },
+                })}
+                {...(k === "padding" && {
+                  helperText: (
+                    <>
+                      Amount of space around element.{" "}
+                      <a
+                        href="https://www.w3schools.com/css/css_padding.asp"
+                        target="_blank"
+                        style={{ textDecoration: "underline" }}
+                      >
+                        Learn more...
+                      </a>
+                    </>
+                  ),
+                })}
               />
             )
           )}

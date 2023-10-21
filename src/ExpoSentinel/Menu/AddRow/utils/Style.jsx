@@ -5,6 +5,8 @@ import { useFormikContext } from "formik";
 import InputLabel from "@mui/material/InputLabel";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import InputAdornment from "@mui/material/InputAdornment";
 
 import EditIcon from "@mui/icons-material/Edit";
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
@@ -15,6 +17,8 @@ import AutoComplete from "../../../../common/utils/form/controlled/AutoComplete"
 import SubmitButton from "../../../../common/utils/form/controlled/SubmitButton";
 import TextField from "../../../../common/utils/form/controlled/TextField";
 import Form from "../../../../common/utils/form/controlled/Form";
+import IconButton from "../../../../common/utils/IconButton";
+import Menu from "../../../../common/utils/Menu";
 
 import useSheet from "../../../hooks/useSheet";
 
@@ -30,9 +34,6 @@ import {
 
 import useFetch from "../../../../common/hooks/useFetch";
 import useToasts from "../../../../common/hooks/useToast";
-import IconButton from "../../../../common/utils/IconButton";
-import { Box } from "@mui/material";
-import Menu from "../../../../common/utils/Menu";
 
 const Style = ({ _id }) => {
   const [open, setOpen] = useState(false);
@@ -247,6 +248,29 @@ const Style = ({ _id }) => {
                       margin="dense"
                       label={_v.label}
                       type={_v.type}
+                      {...(_k === "fontSize" && {
+                        InputProps: {
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              {k === "fontSize" ? "px" : "%"}
+                            </InputAdornment>
+                          ),
+                        },
+                      })}
+                      {...(_k === "padding" && {
+                        helperText: (
+                          <>
+                            Amount of space around element.{" "}
+                            <a
+                              href="https://www.w3schools.com/css/css_padding.asp"
+                              target="_blank"
+                              style={{ textDecoration: "underline" }}
+                            >
+                              Learn more...
+                            </a>
+                          </>
+                        ),
+                      })}
                     />
                   );
                 })}

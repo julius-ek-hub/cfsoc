@@ -24,7 +24,7 @@ const Transition = forwardRef(function Transition(
 
 /**
  * Customized Dialog base component
- * @arg {typeof DialogProps & {transition: Boolean, header: ReactElement, onXClose: Function, expandable: Boolean}} props
+ * @arg {typeof DialogProps & {transition: Boolean, header: ReactElement, onXClose: Function, expandable: Boolean, toolbar_extras: [ReactElement]}} props
  */
 
 function Dialog(props) {
@@ -36,6 +36,7 @@ function Dialog(props) {
     header,
     onXClose,
     expandable,
+    toolbar_extras,
     ...rest
   } = props;
 
@@ -60,8 +61,10 @@ function Dialog(props) {
           >
             {title || <Box />}
             <Box>
+              {toolbar_extras}
               {expandable && (
                 <IconButton
+                  title={fullScreen ? "Minimize" : "Maximize"}
                   Icon={fullScreen ? CloseFullscreenIcon : FullscreenIcon}
                   onClick={() => setFs(!fullScreen)}
                 />

@@ -13,6 +13,7 @@ import CopyStyle from "./CopyStyle";
 import PasteStyle from "./PasteStyle";
 import Form from "../Form";
 import BlancRows from "../BlancRows";
+import MoveRow from "./MoveRow";
 
 import useSheet from "../../../hooks/useSheet";
 import useAddModify from "../../../hooks/useAddModify";
@@ -79,6 +80,7 @@ const ActionButtons = () => {
                 </>
               )}
               <PasteStyle />
+              {selected.length === 1 && <MoveRow _id={selected[0]} />}
             </>
           )}
           {permission.includes("delete") && (
@@ -93,19 +95,6 @@ const ActionButtons = () => {
               )}
             >
               Delete selected row{selected.length === 1 ? "" : "s"}?
-              {key === "l3_uc" && (
-                <Typography color="error" mt={1} display="flex">
-                  <PriorityHighIcon fontSize="small" />
-                  All realated {sheets.l4_uc.name} would be deleted as well.
-                </Typography>
-              )}
-              {key === "l2_uc" && (
-                <Typography color="error" mt={1} display="flex">
-                  <PriorityHighIcon fontSize="small" />
-                  All realated {sheets.l3_uc.name} &amp; {sheets.l4_uc.name}{" "}
-                  would be deleted as well.
-                </Typography>
-              )}
             </Confirm>
           )}
         </>
