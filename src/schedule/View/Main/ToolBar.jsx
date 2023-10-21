@@ -102,8 +102,9 @@ const ToolBar = () => {
     (s) => s.approved
   );
   const locked = active.locked || has_approved;
+  const guest = uname === "guest";
 
-  const deleteButton = (mine || admin) && (
+  const deleteButton = (mine || admin) && !guest && (
     <Confirm
       ok_color="error"
       ok_text="Delete"
@@ -116,8 +117,9 @@ const ToolBar = () => {
       Are you sure you want to delete{" "}
       {mine
         ? "your"
-        : (active_by === "sys" ? "SYSTEM" : getName(active_by).split(" ")[0]) +
-          "'s"}{" "}
+        : (active_by === "system"
+            ? "SYSTEM"
+            : getName(active_by).split(" ")[0]) + "'s"}{" "}
       suggestion?
       {Object.keys(active.suggestions).length === 1 && (
         <Typography
@@ -136,7 +138,7 @@ const ToolBar = () => {
     </Confirm>
   );
 
-  const saveButton = user && !locked && (
+  const saveButton = user && !locked && !guest && (
     <IconButton Icon={SaveIcon} onClick={saveSchedule} title="Save" />
   );
 
@@ -152,7 +154,8 @@ const ToolBar = () => {
     <IconButton Icon={Refresh} onClick={loadSchedule} title="Refresh" />
   );
   const approve = admin &&
-    ((locked && has_approved) || (!locked && !has_approved)) && (
+    ((locked && has_approved) || (!locked && !has_approved)) &&
+    !guest && (
       <Confirm
         ok_color={approved ? "error" : "primary"}
         ok_text={approved ? "Unapprove" : "Approve"}
@@ -177,7 +180,7 @@ const ToolBar = () => {
         </Typography>
       </Confirm>
     );
-  const copyButton = may_create_own() && (
+  const copyButton = may_create_own() && !guest && (
     <IconButton
       Icon={ContentCopyIcon}
       onClick={() => generateSchedule(true)}
@@ -185,7 +188,7 @@ const ToolBar = () => {
     />
   );
 
-  const likeButton = user && (
+  const likeButton = user && !guest && (
     <IconButton
       Icon={liked_this ? FavoriteIcon : FavoriteBorderIcon}
       title={
@@ -199,8 +202,8 @@ const ToolBar = () => {
       onClick={update_like}
     />
   );
-  const send = user && <EmailSchedule />;
-  const lock = admin && !has_approved && (
+  const send = user && !guest && <EmailSchedule />;
+  const lock = admin && !has_approved && !guest && (
     <Confirm
       ok_color={locked ? "primary" : "error"}
       ok_text={locked ? "Unlock" : "Lock"}
@@ -229,10 +232,10 @@ const ToolBar = () => {
     </Confirm>
   );
 
-  const undo = user && historyLevel > 0 && (
+  const undo = user && !guest && historyLevel > 0 && (
     <IconButton Icon={UndoIcon} title="Undo" onClick={() => setHistory(-1)} />
   );
-  const redo = user && historyLevel < history.length - 1 && (
+  const redo = user && !guest && historyLevel < history.length - 1 && (
     <IconButton Icon={RedoIcon} title="Redo" onClick={() => setHistory(1)} />
   );
 
@@ -247,7 +250,7 @@ const ToolBar = () => {
         return (
           <Tooltip
             key={staff}
-            title={staff === uname ? "You" : staff === "sys" ? "SYSTEM" : n}
+            title={staff === uname ? "You" : staff === "system" ? "SYSTEM" : n}
           >
             <Avatar alt={n}>
               {n

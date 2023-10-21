@@ -12,18 +12,35 @@ import useSheet from "../../hooks/useSheet";
 const Form = ({ Button, edit }) => {
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState({});
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
   const { active_sheet } = useSheet();
 
   const { cols, save, for_edit } = useAddModify();
 
   const df = for_edit(edit);
+  const pc = active_sheet.primary_column;
+  const hasError = Object.values(errors).some((e) => e);
 
   const handleClose = () => setOpen(false);
 
   const handleSubmit = () => {
-    setError(null);
+    if (hasError) return;
     save(values, edit, handleClose);
+  };
+
+  const handleChange = (value, k) => {
+    setValues({
+      ...values,
+      [k]: { ...values[k], value },
+    });
+    if (
+      pc &&
+      pc === k &&
+      value.trim() &&
+      active_sheet.content.find((c) => c[k].value === value.trim())
+    )
+      setErrors({ ...errors, [k]: "PRIMARY_KEY_ERROR: This value exists" });
+    else setErrors({ ...errors, [k]: null });
   };
 
   useEffect(() => {
@@ -37,6 +54,7 @@ const Form = ({ Button, edit }) => {
         })
       )
     );
+    setErrors({});
   }, [open]);
 
   return (
@@ -52,33 +70,25 @@ const Form = ({ Button, edit }) => {
             <MuiButton color="inherit" onClick={handleClose}>
               Cancel
             </MuiButton>
-            <MuiButton
-              color="primary"
-              variant="contained"
-              onClick={handleSubmit}
-            >
-              Save
-            </MuiButton>
+            {!hasError && (
+              <MuiButton
+                color="primary"
+                variant="contained"
+                onClick={handleSubmit}
+              >
+                Save
+              </MuiButton>
+            )}
           </>
         }
       >
-        {error && (
-          <Typography color="error" mb={1}>
-            {error}
-          </Typography>
-        )}
         {cols.map(([k, v]) => {
           const _v = values[k];
           return (
             <TextField
               multiline
               fullWidth
-              onChange={(e) =>
-                setValues({
-                  ...values,
-                  [k]: { ...values[k], value: e.target.value },
-                })
-              }
+              onChange={(e) => handleChange(e.target.value, k)}
               key={k}
               value={_v?.value || ""}
               margin="dense"
@@ -89,6 +99,10 @@ const Form = ({ Button, edit }) => {
                 value: _v.image,
                 helperText: "Can't change image",
                 onChange: () => false,
+              })}
+              {...(errors[k] && {
+                error: true,
+                helperText: errors[k],
               })}
             />
           );

@@ -140,7 +140,7 @@ const addContent = async (collection, content, unique_key) => {
       duplicates = exists.map((ex) => ex[unique_key].value);
       data = data.filter((d) => !duplicates.includes(d[unique_key].value));
       warnings.push(
-        `The following Use Cases exist: ${duplicates.join(
+        `The following rows for primary column exist: ${duplicates.join(
           ", "
         )}, and have been ignored`
       );
@@ -155,11 +155,6 @@ const addContent = async (collection, content, unique_key) => {
     };
 
   const { insertedIds } = await db.collection(collection).insertMany(data);
-
-  await updateSheet({
-    key: collection,
-    update: { num_rows: data.length + old_content.length },
-  });
 
   return {
     data: data.map((d, ind) => ({

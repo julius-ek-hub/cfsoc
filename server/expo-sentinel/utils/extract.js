@@ -1,4 +1,3 @@
-const { getContent } = require("../db/content");
 const { getCellValue } = require("./extract_utils");
 
 const is_col_match = (col, key) => {
@@ -8,8 +7,6 @@ const is_col_match = (col, key) => {
     key.toLowerCase().trim() === col.toLowerCase().trim()
   );
 };
-
-const _l = (v) => v.toLowerCase();
 
 const _arr = (v) => {
   try {
@@ -23,39 +20,17 @@ const _arr = (v) => {
   }
 };
 
-module.exports = async ({ columns, unique_key, type, worker, sheet }) => {
+module.exports = async ({ columns, type, worker, sheet }) => {
   const data = [];
-  let verify = [];
   const warnings = [];
   const col_locations = Object.fromEntries(
     Object.entries(columns).map(([k]) => [k, ""])
   );
 
-  if (sheet === "l1_uc") verify = await getContent("l2_uc");
-
   const analize = (k, value) => {
     const _data = {};
-    if (sheet !== "l1_uc" && typeof value === "object")
-      value = JSON.stringify(value);
-    else if (sheet === "l1_uc" && k === "l2_uc_identifiers") {
-      const _v = String(value)
-        .split(",")
-        .map((tac) => {
-          let find = verify.find(
-            (v) =>
-              new RegExp(_l(v.name.value), "i").test(_l(tac)) ||
-              new RegExp(_l(v.identifier.value), "i").test(_l(tac))
-          );
-          if (!find) return null;
-          return find.identifier.value;
-        })
-        .filter((v) => v);
-      if (_v.length === 0) {
-        _data.error = true;
-        warnings.push(`Tactic "${value}" not found in the db, hence ignored.`);
-      } else value = _v;
-    } else value = String(value);
-    if (k === unique_key) value = value.toUpperCase();
+    if (typeof value === "object") value = JSON.stringify(value);
+    else value = String(value);
     _data[k] = _arr(value);
     return _data;
   };

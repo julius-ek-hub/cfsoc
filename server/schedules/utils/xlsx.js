@@ -16,7 +16,7 @@ const { getStatus } = require("../db/statuses");
 module.exports = async ({ from, to, by }) => {
   let bys;
 
-  if (!by) bys = ["sys"];
+  if (!by) bys = ["system"];
   bys = Array.isArray(by) ? by : by.split("_");
 
   const sug = await getSchedule(from, to);
@@ -36,7 +36,7 @@ module.exports = async ({ from, to, by }) => {
     const ths = create_th(assiduity);
     const acc = accepted === b ? " (Used)" : "";
     const ws = wb.addWorksheet(
-      u(b === "sys" ? "SYSTEM" : b.split(".")[0]) + acc
+      u(b === "system" ? "SYSTEM" : b.split(".")[0]) + acc
     );
 
     let currentRow = 1;

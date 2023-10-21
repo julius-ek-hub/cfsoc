@@ -76,7 +76,7 @@ const WithSuggested = ({ Icon, onChoose, okText, ...rest }) => {
               />
             }
             label={
-              staff === "sys"
+              staff === "system"
                 ? "SYSTEM"
                 : staff === uname
                 ? "You"

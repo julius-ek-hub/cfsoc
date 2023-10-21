@@ -140,7 +140,7 @@ function Table() {
         {Object.keys(active_sheet.columns).length > 0 && (
           <TableHead>
             <TableRow>
-              {pted.length > 1 && (
+              {pted.length > 1 && ordered && (
                 <TableCell
                   sx={{
                     py: 0.5,
@@ -279,11 +279,11 @@ function Table() {
           </TableBody>
         )}
       </TableMui>
-      {!locked && (
+      {/* {!locked && (
         <Middle py={4} flexGrow={1}>
           <Upload />
         </Middle>
-      )}
+      )} */}
     </TableContainer>
   );
 }

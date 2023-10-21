@@ -3,12 +3,14 @@ import TableCell from "@mui/material/TableCell";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import KeyIcon from "@mui/icons-material/Key";
 
 import IconButton from "../../../common/utils/IconButton";
 import Position from "./Position";
 import Filter from "./Filter";
 import RenameColumn from "./RenameColumn";
 import DeleteColumn from "./Delelete";
+import PrimaryColumn from "./PrimaryColumn";
 
 function FilterButton({
   column,
@@ -18,6 +20,7 @@ function FilterButton({
   label,
   sx,
   permission,
+  is_primary,
 }) {
   return (
     <TableCell
@@ -39,10 +42,27 @@ function FilterButton({
         {...(has_filter && { title: "Has filter" })}
       >
         {has_filter && <FilterAltIcon fontSize="15px" sx={{ mr: 0.3 }} />}
+        {is_primary && (
+          <IconButton
+            disabled
+            title="Primary Column"
+            Icon={KeyIcon}
+            size="small"
+            sx={{ mr: 0.3, transform: "rotate(90deg)" }}
+            iprop={{ fontSize: "15px" }}
+          />
+        )}
         {label}
         <Position column={column} />
-        {permission.includes("modify") && <RenameColumn column={column} />}
-        {permission.includes("delete") && <DeleteColumn column={column} />}
+        {permission.includes("modify") && (
+          <>
+            <RenameColumn column={column} />
+            <PrimaryColumn column={column} />
+          </>
+        )}
+        {permission.includes("delete") && !is_primary && (
+          <DeleteColumn column={column} />
+        )}
         {onHide && (
           <Box visibility="hidden">
             <IconButton

@@ -2,7 +2,7 @@ const { getSchedule } = require("../db/schedules");
 
 module.exports = async (req, res) => {
   const range = req.params.range;
-  const by = req.query.by || "sys";
+  const by = req.query.by || "system";
 
   const fixed = { suggestions: {}, by };
 

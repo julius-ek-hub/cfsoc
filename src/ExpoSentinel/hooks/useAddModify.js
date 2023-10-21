@@ -29,9 +29,9 @@ const useAddModify = () => {
       error,
       del = 0;
 
-    await Promise.allSettled(
+    await Promise.all(
       selected.map(async (sel) => {
-        const { json } = await dlete(`/data?sheet=${key}&_id=` + sel);
+        const { json } = await dlete(`/data?sheet=${key}&_id=${sel}`);
         if (json.error) {
           error = json.error;
           failed.push(sel);
@@ -74,6 +74,12 @@ const useAddModify = () => {
     onDone,
     should_include_primary_key = true
   ) => {
+    if (!edit && active_content.length >= 5000)
+      return push({
+        message: `Maximum of 5000 rows allowed per sheet`,
+        severity: "error",
+      });
+
     if (Array.isArray(data)) {
       let error = 0;
       const jsons = await Promise.all(

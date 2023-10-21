@@ -20,11 +20,9 @@ const Upload = () => {
   const { extractFromFile } = useFetcher();
   const [maps, setMaps] = useState({});
 
-  const { columns, name, key } = active_sheet;
+  const { columns, name, key, primary_column } = active_sheet;
 
   const cols = Object.entries(columns || {}).filter((c) => !c[1].calculate);
-
-  const uniqueKey = (cols.find((c) => c[1].unique) || [])[0];
 
   const resetMaps = () =>
     setMaps(Object.fromEntries(cols.map(([k, v]) => [k, v.label])));
@@ -35,7 +33,7 @@ const Upload = () => {
     changeState?.call();
   };
   const doSubmit = async (changeState) => {
-    const submitted = await extractFromFile(maps, uniqueKey);
+    const submitted = await extractFromFile(maps, primary_column);
     submitted && handleClose(changeState);
   };
 

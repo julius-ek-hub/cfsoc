@@ -126,9 +126,7 @@ const useFetcher = () => {
 
       const blob = await f.blob();
 
-      const filename = `CFSOC UC Management.${
-        format === "json" ? "json" : "xlsx"
-      }`;
+      const filename = `Expo Sentinel.${format === "json" ? "json" : "xlsx"}`;
       const download_url = window.URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = download_url;

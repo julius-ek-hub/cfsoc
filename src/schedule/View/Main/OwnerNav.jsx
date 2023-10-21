@@ -67,14 +67,14 @@ const OwnerNav = () => {
             label={
               sk === uname
                 ? "You"
-                : sk === "sys"
+                : sk === "system"
                 ? "SYSTEM"
                 : u(sk.split(".")[0])
             }
           />
         ))}
 
-        {may_create_own() && (
+        {may_create_own() && uname !== "guest" && (
           <Tab
             label="Create blanc"
             icon={<Add fontSize="small" />}

@@ -29,19 +29,12 @@ function DeleteColumn({ column }) {
     const newContent = [];
 
     const { json } = await patch(`/update-structure`, [
-      [
-        key,
-        {
-          [`columns`]: newCols,
-        },
-      ],
+      [key, { columns: newCols }],
     ]);
 
     if (json.error) return push({ message: json.error, severity: "error" });
 
-    content.map((c) => {
-      newContent.push(objectExcept(c, [column]));
-    });
+    content.map((c) => newContent.push(objectExcept(c, [column])));
 
     updateSheet(`${key + fs}columns`, newCols);
     updateSheet(`${key + fs}content`, newContent);
@@ -58,6 +51,7 @@ function DeleteColumn({ column }) {
     <Box visibility="hidden">
       <Confirm
         fullWidth
+        ok_color="error"
         onConfirm={handleDelete}
         Clickable={(props) => (
           <IconButton

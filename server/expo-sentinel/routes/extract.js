@@ -46,7 +46,6 @@ module.exports = async (req, res) => {
 
   const data = await extract({
     columns: columns_parsed,
-    unique_key,
     type,
     worker,
     sheet,

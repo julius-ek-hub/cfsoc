@@ -23,6 +23,7 @@ const Card = ({
   status,
   onDelete,
   onEdit,
+  user,
   _id,
 }) => {
   const [menu, setMenu] = useState(false);
@@ -53,54 +54,56 @@ const Card = ({
         },
       }}
     >
-      <Box position="absolute" top={0} right={0} visibility="hidden">
-        <Menu
-          open={menu}
-          onClose={() => setMenu(false)}
-          Clickable={(props) => (
-            <IconButton
-              Icon={MoreVertIcon}
-              onClick={(e) => {
-                setMenu(true);
-                props.onClick(e);
-              }}
-            />
-          )}
-        >
-          <Box px={2}>
-            <Button
-              color="inherit"
-              fullWidth
-              sx={{ justifyContent: "start" }}
-              startIcon={<Edit />}
-              onClick={() => {
-                onEdit(_id);
-                setMenu(false);
-              }}
-            >
-              Edit
-            </Button>
-            <Confirm
-              onConfirm={() => onDelete(_id)}
-              fullWidth
-              ok_text="Yes"
-              Clickable={(props) => (
-                <Button
-                  color="error"
-                  fullWidth
-                  sx={{ justifyContent: "start" }}
-                  startIcon={<Delete />}
-                  {...props}
-                >
-                  Delete
-                </Button>
-              )}
-            >
-              Delete App?
-            </Confirm>
-          </Box>
-        </Menu>
-      </Box>
+      {user !== "guest" && (
+        <Box position="absolute" top={0} right={0} visibility="hidden">
+          <Menu
+            open={menu}
+            onClose={() => setMenu(false)}
+            Clickable={(props) => (
+              <IconButton
+                Icon={MoreVertIcon}
+                onClick={(e) => {
+                  setMenu(true);
+                  props.onClick(e);
+                }}
+              />
+            )}
+          >
+            <Box px={2}>
+              <Button
+                color="inherit"
+                fullWidth
+                sx={{ justifyContent: "start" }}
+                startIcon={<Edit />}
+                onClick={() => {
+                  onEdit(_id);
+                  setMenu(false);
+                }}
+              >
+                Edit
+              </Button>
+              <Confirm
+                onConfirm={() => onDelete(_id)}
+                fullWidth
+                ok_text="Yes"
+                Clickable={(props) => (
+                  <Button
+                    color="error"
+                    fullWidth
+                    sx={{ justifyContent: "start" }}
+                    startIcon={<Delete />}
+                    {...props}
+                  >
+                    Delete
+                  </Button>
+                )}
+              >
+                Delete App?
+              </Confirm>
+            </Box>
+          </Menu>
+        </Box>
+      )}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant="h6">{title}</Typography>

@@ -120,7 +120,7 @@ const useFetcher = () => {
     return fetchSheetContent(
       active_sheet.key,
       false,
-      active_sheet.num_rows > 1000 ? 1 : undefined
+      active_sheet.num_rows > 5000 ? 1 : undefined
     );
   };
 

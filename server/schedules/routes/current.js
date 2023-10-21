@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
   const schedule = await getSchedule(_d.from, _d.to);
   res.json(
     schedule || {
-      by: "sys",
+      by: "system",
       error: "Oops! Not found",
       stack: __filename,
       errorCode: 404,

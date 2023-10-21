@@ -25,7 +25,7 @@ const Apps = () => {
     to: { label: "Location", value: "" },
     status: { label: "Status", value: "" },
   };
-  const { user, apps, update } = useCommonSettings();
+  const { user, uname, apps, update } = useCommonSettings();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({});
   const [error, setError] = useState(null);
@@ -112,7 +112,7 @@ const Apps = () => {
     if (_apps.length === 0) getApps();
   }, []);
 
-  if (!user) return null;
+  if (!uname) return null;
 
   return (
     <Box display="flex" flexDirection="column" height="100vh">
@@ -142,11 +142,12 @@ const Apps = () => {
               key={app._id}
               onDelete={handleDelete}
               onEdit={handleEdit}
+              user={uname}
               {...app}
             />
           ))}
         </Box>
-        {user.username === "julius.ekane" && (
+        {uname === "julius.ekane" && (
           <Middle>
             <Button color="inherit" endIcon={<Add />} onClick={handleOpen}>
               Add App
@@ -174,12 +175,18 @@ const Apps = () => {
         {Object.entries(form).map(([key, value]) => (
           <TextField
             key={key}
+            name={key}
             multiline
             margin="dense"
             label={value.label}
             fullWidth
             value={value.value}
             onChange={(e) => handleChange(e.target.value, key)}
+            {...(key === "to" &&
+              uname !== "julius.ekane" && {
+                disabled: true,
+                helperText: `Can't edit ${value.label}`,
+              })}
           />
         ))}
       </Dialog>

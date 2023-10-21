@@ -44,6 +44,12 @@ module.exports = async ({ columns, unique_key, type, worker, sheet }) => {
           let find = verify.find(
             (v) =>
               new RegExp(_l(v.name.value), "i").test(_l(tac)) ||
+              new RegExp(_l(v.name.value).split(" ").join(""), "i").test(
+                _l(tac)
+              ) ||
+              new RegExp(_l(v.name.value).split(" ").join("-"), "i").test(
+                _l(tac)
+              ) ||
               new RegExp(_l(v.identifier.value), "i").test(_l(tac))
           );
           if (!find) return null;

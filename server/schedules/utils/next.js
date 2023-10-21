@@ -56,6 +56,7 @@ module.exports = async () => {
 
   const staffs = await getStaff();
   delete staffs["marc.hervieux"];
+  delete staffs.system;
   const shifts = await getShifs();
 
   const { from, to } = generateDateRange({
@@ -67,14 +68,14 @@ module.exports = async () => {
   const $new = {
     ...range,
     suggestions: {
-      sys: {
+      system: {
         assiduity: await generateAssiduity({
           ...range,
           staffs,
           shifts,
           previous_schedule: previous_schedule.suggestions[accepted],
         }),
-        votes: ["sys"],
+        votes: ["system"],
       },
     },
   };

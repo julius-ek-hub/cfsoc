@@ -14,6 +14,7 @@ module.exports = async (req, res) => {
   } else {
     const staffs = await getStaff();
     delete staffs["marc.hervieux"];
+    delete staffs.system;
     shifts = await getShifs();
     assiduity = await generateAssiduity({
       from,

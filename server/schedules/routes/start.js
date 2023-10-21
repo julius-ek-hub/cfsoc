@@ -12,6 +12,7 @@ module.exports = async (req, res) => {
   if (d.length === 0) {
     const staffs = await getStaff();
     delete staffs["marc.hervieux"];
+    delete staffs.system;
     const shifts = await getShifs();
     const statuses = await getStatus();
     if (Object.keys(staffs).length === 0)
@@ -30,9 +31,9 @@ module.exports = async (req, res) => {
     const $new = {
       ...range,
       suggestions: {
-        sys: {
+        system: {
           assiduity: await generateAssiduity({ ...range, staffs, shifts }),
-          votes: ["sys"],
+          votes: ["system"],
           generated_on: Date.now(),
         },
       },

@@ -36,7 +36,7 @@ const Td = ({ date, shift_swap, comments, id }) => {
     setSel([]);
   };
 
-  const can_select = !shift_swap && user && !active.locked;
+  const can_select = !shift_swap && user && uname !== "guest" && !active.locked;
   const status = statuses.find((s) => s.name === date.status);
 
   const com = has_comments(comments) && user;

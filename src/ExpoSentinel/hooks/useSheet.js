@@ -74,7 +74,9 @@ const useSheet = () => {
         ]);
 
       pushes.push({
-        message: `Added ${json.length || 1} new ${sheets[key].name}`,
+        message: `Added ${
+          typeof json.length === "number" ? json.length : 1
+        } new ${sheets[key].name}`,
         severity: "success",
       });
       _return = true;

@@ -7,7 +7,7 @@ const schedulesSlice = createSlice({
   initialState: {
     schedules: [],
     active: null,
-    active_by: "sys",
+    active_by: "system",
     shifts: [],
     statuses: [],
     selected: [],

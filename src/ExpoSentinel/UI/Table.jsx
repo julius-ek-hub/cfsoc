@@ -17,6 +17,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import Middle from "../../common/utils/Middle";
 import FilterButton from "./Filter/Button";
 import Upload from "../Menu/Upload";
+import Code from "../utils/Code";
 
 import { field_separator as fs, objectExcept, getSX } from "../utils/utils";
 
@@ -53,7 +54,7 @@ const Tc = ({ link, value, image, sheet, selected, ...rest }) => {
           alt={image}
         />
       ) : (
-        value
+        <Code>{value}</Code>
       )}
     </TableCell>
   );
@@ -65,7 +66,14 @@ const validURL = (url) =>
 function Table() {
   const { active_sheet, updateSheet, sheets, permission } = useSheet();
 
-  const { selected, key, columns: c, filters, ordered: ord } = active_sheet;
+  const {
+    selected,
+    key,
+    columns: c,
+    filters,
+    ordered: ord,
+    primary_column,
+  } = active_sheet;
   const ordered = typeof ord === "boolean" ? ord : true;
 
   const {
@@ -168,6 +176,7 @@ function Table() {
                 return (
                   <FilterButton
                     permission={permission}
+                    is_primary={primary_column === k[0]}
                     sx={getSX(k[1].sx)}
                     key={k[0]}
                     column={k[0]}

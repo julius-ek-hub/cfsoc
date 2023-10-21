@@ -75,7 +75,7 @@ const useActiveSchedule = () => {
     if (!date_param) return;
     const { json } = await get(`/${date_param}`, "schedule");
     dispatch(setActive(json));
-    set_active_by(sp.get("by") || "sys");
+    set_active_by(sp.get("by") || "system");
   };
 
   const downloadSchedule = async (by) => {
@@ -131,7 +131,7 @@ const useActiveSchedule = () => {
 
     if (json.errorCode === 404) {
       dispatch(setActive(json));
-      dispatch(setActiveBy("sys"));
+      dispatch(setActiveBy("system"));
     }
     dispatch(removeSuggestion(active_by));
   };

@@ -5,6 +5,11 @@ const { updateSheet } = require("../db/sheets");
 const { addContent: ac } = require("../db/special_extract");
 
 module.exports = async (req, res) => {
+  return res.json({
+    length: 0,
+    warnings: [],
+  });
+
   const { sheet, sheet_index = 0, columns, unique_key } = req.body;
   let columns_parsed = JSON.parse(columns);
   let new_sheet = Object.keys(columns_parsed).length === 0;
