@@ -43,14 +43,21 @@ export default function Code({ children }) {
     let ch = "";
     real.split(/\n/).map((l, i) => {
       let go = l.replace(/ /g, "&nbsp;");
-      const ind = l.indexOf("//");
-      if (ind !== -1) {
+      let ind = l.indexOf("//");
+
+      if (
+        ind !== -1 &&
+        !(
+          ind !== 0 &&
+          ["http:", "https:"].some((h) => l.split("//")[0].endsWith(h))
+        )
+      ) {
         let com = l.split("");
         com[ind] = '<span style="color:#437700">/';
         com = com.join("");
         com += "</span>";
         go = com;
-      }
+      } else ind = -1;
 
       const commStart = ind !== -1 ? ind : go.length;
       let ugo = go.substring(0, commStart);
@@ -94,6 +101,8 @@ export default function Code({ children }) {
             "sartswith",
             "union",
             "string",
+            "real",
+            "contains",
           ].includes(_word)
             ? `<span style="color:#00f">${_word + _end}</span>`
             : !isNaN(_word) || ["true", "false"].includes(_word)
