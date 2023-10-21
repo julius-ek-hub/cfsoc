@@ -25,7 +25,16 @@ import useFilter from "../hooks/useFilter";
 import useSheet from "../hooks/useSheet";
 import useFetch from "../../common/hooks/useFetch";
 
-const Tc = ({ link, value, image, sheet, selected, ...rest }) => {
+const Tc = ({
+  link,
+  value,
+  image,
+  sheet,
+  selected,
+  has_selected,
+  ordered,
+  ...rest
+}) => {
   const { serverURL } = useFetch();
   const sx = getSX(rest.sx);
 
@@ -54,7 +63,9 @@ const Tc = ({ link, value, image, sheet, selected, ...rest }) => {
           alt={image}
         />
       ) : (
-        <Code>{value}</Code>
+        <Code has_selected={has_selected} ordered={ordered}>
+          {value}
+        </Code>
       )}
     </TableCell>
   );
@@ -260,6 +271,8 @@ function Table() {
                       sheet={active_sheet.key}
                       selected={_selected}
                       colSpan={cp.colspan + 1}
+                      ordered={ordered}
+                      has_selected={selected.length > 0}
                     />
                   ))}
                 </TableRow>

@@ -10,9 +10,14 @@ import Confirm from "../../common/utils/Comfirm";
 
 import useToasts from "../../common/hooks/useToast";
 
-export default function Code({ children }) {
+export default function Code({ children, has_selected, ordered }) {
   const { push } = useToasts();
+
   const t = useTheme();
+
+  const maxWidth = `calc(100vw - ${
+    40 + (has_selected ? 80 : 0) + (ordered ? 60 : 0)
+  }px);`;
 
   const __chi = children.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -141,8 +146,10 @@ export default function Code({ children }) {
 
     const __code = (
       <Box
-        style={{
+        sx={{
           fontFamily: "Consolas, Courier New, monospace",
+          maxWidth,
+          overflow: "auto",
         }}
         dangerouslySetInnerHTML={{
           __html: ch,
@@ -164,6 +171,8 @@ export default function Code({ children }) {
         position="relative"
         sx={{
           "&:hover > div": { visibility: "visible" },
+          maxWidth,
+          overflow: "hidden",
         }}
       >
         <Box maxHeight={200} overflow="hidden">
