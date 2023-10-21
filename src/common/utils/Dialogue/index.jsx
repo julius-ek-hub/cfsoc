@@ -69,7 +69,7 @@ function Dialog(props) {
                   onClick={() => setFs(!fullScreen)}
                 />
               )}
-              <IconButton Icon={CloseIcon} onClick={onXClose} />
+              <IconButton Icon={CloseIcon} onClick={onXClose} title="Close" />
             </Box>
           </DialogTitle>
           {header}

@@ -8,13 +8,14 @@ import Ui from "./UI";
 import Menu from "./Menu";
 import Nav from "../common/utils/Nav";
 import Sections from "./utils/Section";
+import SearchParamFilter from "./UI/Filter/SearchParamFilter";
 
 import useFetcher from "./hooks/useFetcher";
 import useLoading from "../common/hooks/useLoading";
 import useSheet from "./hooks/useSheet";
+import useCommonSettings from "../common/hooks/useSettings";
 
 import { field_separator as fs } from "./utils/utils";
-import useCommonSettings from "../common/hooks/useSettings";
 
 const ExpoSentinel = () => {
   const { fetchAllFromDB } = useFetcher();
@@ -41,6 +42,7 @@ const ExpoSentinel = () => {
       <Box>
         <Nav app="Expo Sentinel" />
       </Box>
+      <SearchParamFilter />
       {!hide_header && <Menu />}
       <Ui />
       <Sections />

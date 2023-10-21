@@ -166,7 +166,7 @@ export default function Code({ children, has_selected, ordered }) {
         onClick={handleCopy}
         Icon={ContentCopyIcon}
         title="Copy code"
-        sx={{ bgcolor: "background.paper" }}
+        // sx={{ bgcolor: "background.paper" }}
       />
     );
 

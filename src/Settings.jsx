@@ -43,6 +43,7 @@ export default function Settings({ children }) {
         }}
       >
         <IconButton
+          sx={{ bgcolor: "background.paper" }}
           Icon={hide_header ? ArrowDownwardIcon : ArrowUpwardIcon}
           title={hide_header ? "Show headers" : "Hide headers"}
           onClick={() => update("hide_header", !Boolean(hide_header))}

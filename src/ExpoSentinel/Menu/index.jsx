@@ -9,6 +9,7 @@ import ActionButtons from "./AddRow/utils/ActionButtons";
 import IconButton from "../../common/utils/IconButton";
 import Security from "../utils/Security";
 import SheetInfo from "../utils/SheetInfo";
+import ViewRelated from "./AddRow/utils/ViewRelated";
 
 import useFetcher from "../hooks/useFetcher";
 import useSheet from "../hooks/useSheet";
@@ -27,7 +28,7 @@ const Menu = () => {
 
   if (!active_sheet) return null;
 
-  const { selected, key, ordered: o } = active_sheet;
+  const { selected, key, ordered: o, primary_column } = active_sheet;
   const ordered = typeof o === "boolean" ? o : true;
 
   const hasSelected = selected.length > 0;
@@ -55,9 +56,16 @@ const Menu = () => {
 
   return (
     <Box>
-      <Flex fontSize="small" color="text.secondary">
-        <SheetInfo />
-      </Flex>
+      {!hasSelected && (
+        <Flex fontSize="small" color="text.secondary" ml={1.5}>
+          <SheetInfo />
+        </Flex>
+      )}
+      {selected.length > 0 && primary_column && (
+        <Flex>
+          <ViewRelated _ids={selected} />
+        </Flex>
+      )}
       <Flex>
         <Security />
         {permission.includes("modify") && (

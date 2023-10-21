@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 import {
   addSheet as as,
@@ -25,6 +25,11 @@ const useSheet = () => {
   const { push } = useToasts();
   const dispatch = useDispatch();
   const { uname } = useCommonSettings();
+  const [sp, setSp] = useSearchParams();
+
+  const sp_filter = [...new Set([...sp.getAll("q")])].filter((v) => v);
+
+  const removeSP = () => setSp({});
 
   const active_sheet = sheets[path];
 
@@ -48,6 +53,15 @@ const useSheet = () => {
   const permission = is_creator
     ? _keys(all_permissions)
     : ((active_sheet || {}).permissions || {})[uname] || [];
+
+  const filterBySP = (content) => {
+    if (sp_filter.length === 0) return content;
+    return content.filter((c) =>
+      sp_filter.some((spv) =>
+        _entr(c).some((_c) => new RegExp(spv, "i").test(_c[1].value))
+      )
+    );
+  };
 
   const updateSheet = (key, value) => dispatch(us({ key, value }));
   const deleteSheet = (key) => dispatch(ds({ key }));
@@ -93,14 +107,16 @@ const useSheet = () => {
 
   return {
     sheets,
+    sp_filter,
     active_sheet,
     primary_field,
     permission,
     is_creator,
-    active_content: active_sheet?.content || [],
+    active_content: filterBySP(active_sheet?.content || []),
     sheet_names,
     sheet_names_except_current,
     updateSheetWithDataFromDb,
+    removeSP,
     addSheet,
     updateSheet,
     deleteSheet,

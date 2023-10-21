@@ -9,11 +9,13 @@ import Table from "./Table";
 import useLoading from "../../common/hooks/useLoading";
 import useSheet from "../hooks/useSheet";
 import useSettings from "../hooks/useSettings";
+import useCommonSettings from "../../common/hooks/useSettings";
 
 const Ui = () => {
   const { active_sheet, sp_filter } = useSheet();
   const { settings } = useSettings();
   const { loading } = useLoading();
+  const { hide_header } = useCommonSettings();
 
   const { error } = settings;
 
@@ -35,14 +37,8 @@ const Ui = () => {
   return (
     <>
       {active_sheet && (
-        <Box
-          display="flex"
-          flexGrow={1}
-          flexDirection="column"
-          overflow="auto"
-          mt={1}
-        >
-          <ExcludedColumns />
+        <Box display="flex" flexGrow={1} flexDirection="column" overflow="auto">
+          {!hide_header && <ExcludedColumns />}
           <Box
             id="main_table"
             sx={{
@@ -53,7 +49,6 @@ const Ui = () => {
                   border: (t) => `1px solid ${t.palette.divider}`,
                 },
               },
-              mt: 1,
               flexGrow: 1,
               overflow: "auto",
             }}

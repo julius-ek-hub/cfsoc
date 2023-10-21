@@ -215,6 +215,7 @@ const useCalculator = (sheets) => {
       const l1_uc_name = {};
       const l1_uc_identifiers = {};
       const l2_uc_identifiers = {};
+      const l3_uc_identifiers = {};
       const mitre_url = {};
 
       content.map((c) => {
@@ -251,6 +252,7 @@ const useCalculator = (sheets) => {
         //   l2.map((l) => _l(l.name.value).split(" ").join("-")).join(", ") ||
         //   "Unknown";
         l2_uc_identifiers[_id] = c.l2_uc_identifiers.value.join(", ");
+        l3_uc_identifiers[_id] = l3id.join(", ");
 
         coverage[uc] = fix_percent(c.coverage.value) + "%";
         effectiveness[uc] = fix_percent(c.effectiveness.value) + "%";
@@ -265,6 +267,7 @@ const useCalculator = (sheets) => {
         effectiveness,
         l1_uc_name,
         l1_uc_identifiers,
+        l3_uc_identifiers,
         mitre_url,
       };
     }

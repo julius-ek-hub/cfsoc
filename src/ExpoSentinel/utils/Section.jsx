@@ -317,7 +317,7 @@ const Sections = () => {
           size="small"
           onClick={addBlanc}
         >
-          Add New
+          Create New
         </Button>
       )}
     </>

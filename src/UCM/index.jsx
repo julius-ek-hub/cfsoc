@@ -14,6 +14,7 @@ import useFetcher from "./hooks/useFetcher";
 import useLoading from "../common/hooks/useLoading";
 import useSheet from "./hooks/useSheet";
 import useSettings from "./hooks/useSettings";
+import useCommonSettings from "../common/hooks/useSettings";
 
 import { field_separator as fs } from "./utils/utils";
 
@@ -22,6 +23,7 @@ const UCM = () => {
   const { loading } = useLoading();
   const { active_sheet, updateSheet } = useSheet();
   const { settings, updateSettings } = useSettings();
+  const { hide_header } = useCommonSettings();
 
   const key = active_sheet?.key;
 
@@ -51,7 +53,7 @@ const UCM = () => {
         <Nav app="Use Case Management" />
       </Box>
       <SearchParamFilter />
-      <Menu />
+      {!hide_header && <Menu />}
       <Ui />
       <Sections />
       <Backdrop open={Boolean(loading.all_mitre)} sx={{ zIndex: 10000 }}>

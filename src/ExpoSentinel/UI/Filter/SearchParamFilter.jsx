@@ -7,7 +7,7 @@ import useSheet from "../../hooks/useSheet";
 const SearchParamFilter = () => {
   const { active_sheet, sp_filter, removeSP } = useSheet();
 
-  if (!sp_filter) return null;
+  if (sp_filter.length === 0) return null;
 
   const { columns } = active_sheet;
 
@@ -17,13 +17,10 @@ const SearchParamFilter = () => {
         title="Click on the X icon to remove filter"
         label={
           <>
-            Showing only rows where
-            {Object.entries(sp_filter).map(
-              ([k, v]) =>
-                `${columns[k].label} ${
-                  v.length > 1 ? "matches any of:" : "="
-                } ${v.join(", ")}`
-            )}
+            Showing only rows where there is at least one column that contains{" "}
+            {sp_filter.length > 1 && "any of"}
+            {": "}
+            {sp_filter.join(", ")}
           </>
         }
         onDelete={removeSP}
