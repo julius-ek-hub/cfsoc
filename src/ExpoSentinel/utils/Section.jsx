@@ -198,7 +198,7 @@ const Sections = () => {
   const navigate = useNavigate();
   const { updateSheet } = useSheet();
 
-  const { key, num_rows } = active_sheet || {};
+  const { key, num_rows = 0 } = active_sheet || {};
 
   const handleChange = (e, newSection) => {
     navigate("/expo-sentinel/" + newSection);

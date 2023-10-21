@@ -75,7 +75,7 @@ export default function Code({ children }) {
           }
           return [
             "where",
-            "summerize",
+            "summarize",
             "by",
             "datetime",
             "and",
