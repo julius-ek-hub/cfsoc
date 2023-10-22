@@ -9,9 +9,12 @@ export default function SheetInfo() {
 
   const { creator, date_created } = active_sheet;
 
+  const d = new Date(date_created);
+
   return (
     <>
-      Created by {getName(creator)} on {date_created}
+      Created on {d.toDateString()}, {d.toLocaleTimeString()} by{" "}
+      {getName(creator)}
     </>
   );
 }

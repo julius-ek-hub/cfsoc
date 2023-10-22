@@ -42,9 +42,11 @@ const useCommonSettings = () => {
     const t = lget("theme");
     const a = lget("alarm");
     const pn = lget("push_notification");
+    const hh = lget("hide_header");
     update("theme", t || "system");
     update("alarm", a);
     update("push_notification", pn, false);
+    update("hide_header", Boolean(hh));
     await getUser();
     await getStaffs();
   };

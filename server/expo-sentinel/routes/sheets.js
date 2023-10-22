@@ -8,7 +8,7 @@ const {
 } = require("../db/sheets");
 
 const getSheets = async (req, res) => {
-  const data = await gs({}, req.query.staff);
+  const data = await gs({}, req.query.staff, req.query.by);
   res.json(data);
 };
 

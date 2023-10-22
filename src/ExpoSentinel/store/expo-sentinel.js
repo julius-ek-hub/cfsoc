@@ -21,29 +21,32 @@ const mitreSlice = createSlice({
         state.sheets[sheet.key] = sheet;
       });
     },
+
+    replaceSheet(state, { payload }) {
+      state.sheets = {};
+      arr(payload).map((sheet) => {
+        if (state.sheets[sheet.key]) return;
+        state.sheets[sheet.key] = sheet;
+      });
+    },
     deleteSheet(state, { payload }) {
       delete state.sheets[payload.key];
     },
     updateSheet(state, { payload }) {
       const key = payload.key;
-      const _key = key.split(fs)[0];
+      // const _key = key.split(fs)[0];
       const { object, lastKey } = deepKey(key, state.sheets, true);
       object[lastKey] = payload.value;
-      if (["content", "place_after"].some((ew) => key.endsWith(ew))) {
-        const content = state.sheets[_key].content;
-
-        state.sheets[_key].content = content
-          .map((c, i) => {
-            const sn = c.sn?.value;
-            return { ...c, sn: { value: sn || i } };
-          })
-          .sort((a, b) => a.sn.value - b.sn.value);
-      }
     },
   },
 });
 
-export const { updateSettings, addSheet, updateSheet, deleteSheet } =
-  mitreSlice.actions;
+export const {
+  updateSettings,
+  addSheet,
+  updateSheet,
+  deleteSheet,
+  replaceSheet,
+} = mitreSlice.actions;
 
 export default mitreSlice.reducer;

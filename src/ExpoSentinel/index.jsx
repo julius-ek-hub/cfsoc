@@ -15,25 +15,25 @@ import useLoading from "../common/hooks/useLoading";
 import useSheet from "./hooks/useSheet";
 import useCommonSettings from "../common/hooks/useSettings";
 
-import { field_separator as fs } from "./utils/utils";
+import { _keys, _values, field_separator as fs } from "./utils/utils";
 
 const ExpoSentinel = () => {
   const { fetchAllFromDB } = useFetcher();
   const { loading } = useLoading();
-  const { active_sheet, updateSheet } = useSheet();
+  const { active_sheet, updateSheet, sheets_by, sheets } = useSheet();
   const { uname, staffs, hide_header } = useCommonSettings();
 
   const key = active_sheet?.key;
 
   useEffect(() => {
-    fetchAllFromDB();
+    fetchAllFromDB(key);
     if (key) {
       document.querySelector(
         "title"
       ).textContent = `Expo Sentinel - ${active_sheet.name}`;
       updateSheet(`${key + fs}selected`, []);
     }
-  }, [key, uname]);
+  }, [key, uname, sheets_by.join("")]);
 
   if (!uname || !staffs) return null;
 

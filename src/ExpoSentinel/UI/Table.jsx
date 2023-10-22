@@ -32,6 +32,7 @@ const Tc = ({
   sheet,
   selected,
   has_selected,
+  search,
   ordered,
   ...rest
 }) => {
@@ -63,7 +64,7 @@ const Tc = ({
           alt={image}
         />
       ) : (
-        <Code has_selected={has_selected} ordered={ordered}>
+        <Code has_selected={has_selected} ordered={ordered} search={search}>
           {value}
         </Code>
       )}
@@ -75,7 +76,8 @@ const validURL = (url) =>
   Yup.object({ url: Yup.string().url() }).isValidSync({ url });
 
 function Table() {
-  const { active_sheet, updateSheet, sheets, permission } = useSheet();
+  const { active_sheet, updateSheet, sheets, permission, sp_filter } =
+    useSheet();
 
   const {
     selected,
@@ -273,6 +275,7 @@ function Table() {
                       colSpan={cp.colspan + 1}
                       ordered={ordered}
                       has_selected={selected.length > 0}
+                      search={sp_filter}
                     />
                   ))}
                 </TableRow>

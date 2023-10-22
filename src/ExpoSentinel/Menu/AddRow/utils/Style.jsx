@@ -48,6 +48,7 @@ const Style = ({ _id }) => {
 
   const targetIndex = active_content.findIndex((ac) => ac._id.value === _id);
   const target = active_content[targetIndex];
+  if (!target) return;
 
   const default_sx = entr_(
     cols

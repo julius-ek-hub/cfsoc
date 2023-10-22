@@ -5,6 +5,7 @@ import {
   addSheet as as,
   updateSheet as us,
   deleteSheet as ds,
+  replaceSheet as rs,
 } from "../store/expo-sentinel";
 
 import {
@@ -24,12 +25,17 @@ const useSheet = () => {
   const { path } = useParams();
   const { push } = useToasts();
   const dispatch = useDispatch();
-  const { uname } = useCommonSettings();
+  const { uname, staffs } = useCommonSettings();
   const [sp, setSp] = useSearchParams();
 
   const sp_filter = [...new Set([...sp.getAll("q")])].filter((v) => v);
+  const sheets_by = [...new Set([...sp.getAll("by")])].filter(
+    (s) => staffs && staffs[s]
+  );
 
-  const removeSP = () => setSp({});
+  const removeSP = () => setSp({ ...sp, q: [] });
+  const setSheetsBy = (_staffs) =>
+    setSp({ ...sp, by: _staffs.filter((s) => staffs[s]) });
 
   const active_sheet = sheets[path];
 
@@ -58,7 +64,11 @@ const useSheet = () => {
     if (sp_filter.length === 0) return content;
     return content.filter((c) =>
       sp_filter.some((spv) =>
-        _entr(c).some((_c) => new RegExp(spv, "i").test(_c[1].value))
+        _entr(c).some((_c) =>
+          new RegExp(spv.replace(/[\[\]]/g, ""), "i").test(
+            String(_c[1].value).replace(/[\[\]]/g, "")
+          )
+        )
       )
     );
   };
@@ -66,6 +76,7 @@ const useSheet = () => {
   const updateSheet = (key, value) => dispatch(us({ key, value }));
   const deleteSheet = (key) => dispatch(ds({ key }));
   const addSheet = (sheet) => dispatch(as(sheet));
+  const replaceSheet = (sheet) => dispatch(rs(sheet));
 
   const updateSheetWithDataFromDb = (json, key, update = true) => {
     const pushes = [];
@@ -112,7 +123,17 @@ const useSheet = () => {
     primary_field,
     permission,
     is_creator,
-    active_content: filterBySP(active_sheet?.content || []),
+    sheets_by,
+    sorted_columns,
+    active_content: filterBySP(
+      (() => {
+        const go = [];
+        (active_sheet?.content || []).map(
+          (a) => !go.includes(a._id.value) && go.push(a)
+        );
+        return go;
+      })()
+    ),
     sheet_names,
     sheet_names_except_current,
     updateSheetWithDataFromDb,
@@ -120,7 +141,8 @@ const useSheet = () => {
     addSheet,
     updateSheet,
     deleteSheet,
-    sorted_columns,
+    setSheetsBy,
+    replaceSheet,
   };
 };
 

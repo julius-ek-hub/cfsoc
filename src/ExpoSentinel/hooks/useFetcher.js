@@ -19,7 +19,8 @@ const useFetcher = () => {
     active_sheet,
     updateSheet,
     sheets,
-    addSheet,
+    sheets_by,
+    replaceSheet,
     updateSheetWithDataFromDb,
   } = useSheet();
 
@@ -77,15 +78,17 @@ const useFetcher = () => {
     return true;
   };
 
-  const fetchAllFromDB = async () => {
-    if (Object.keys(sheets).length === 0 && uname) {
-      const { json: sh } = await get(`/sheets?staff=${uname}`, "all_mitre");
-
+  const fetchAllFromDB = async (__key) => {
+    if (uname) {
+      const { json: sh } = await get(
+        `/sheets?staff=${uname}&by=${JSON.stringify(sheets_by)}`,
+        "all_mitre"
+      );
       if (!sh.error)
-        addSheet(
+        replaceSheet(
           sh.map((sheet) => ({
             ...sheet,
-            content: [],
+            content: sheets[sheet.key]?.content || [],
             pagination: sheet.pagination || [],
             filters: sheet.filters || [],
             excluded_columns: sheet.excluded_columns || [],
@@ -99,16 +102,16 @@ const useFetcher = () => {
     }
     if (!active_sheet) return;
 
-    return fetchSheetContent(
-      active_sheet.key,
-      false,
-      active_sheet.num_rows > 1000 ? 1 : undefined
-    );
+    if (sheets[__key || key].content.length === 0)
+      return fetchSheetContent(
+        active_sheet.key,
+        false,
+        active_sheet.num_rows > 1000 ? 1 : undefined
+      );
   };
 
-  const downloadData = async (format, _sheets) => {
-    await Promise.all(_sheets.map(fetchSheetContent));
-    const payload = _sheets.map((_sheet) => ({
+  const downloadData = async (format) => {
+    const payload = [key].map((_sheet) => ({
       sheet: _sheet,
       columns: sheets[_sheet].columns,
       data: sheets[_sheet].content,

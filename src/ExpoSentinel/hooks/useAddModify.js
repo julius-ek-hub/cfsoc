@@ -116,6 +116,7 @@ const useAddModify = () => {
     const _data = fix_data(data);
 
     if (edit) {
+      console.log(edit);
       const { json } = await patch(`/data?sheet=${key}`, {
         _id: edit,
         update: _data,

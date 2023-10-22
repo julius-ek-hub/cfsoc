@@ -10,8 +10,8 @@ const useFilter = () => {
   const { pagination, excluded_columns } = active_sheet;
   const { page = 0, rowsPerPage: rpp = 30 } = pagination;
 
-  const filtered = () =>
-    active_content.filter((t) => {
+  const filtered = () => {
+    return active_content.filter((t) => {
       return Object.entries(t).every(([_key, _value]) => {
         const f = active_sheet.filters[_key];
         if (!f) return true;
@@ -19,6 +19,7 @@ const useFilter = () => {
         return v_f.includes(_l(_value.value));
       });
     });
+  };
 
   const hideColumn = (column) => {
     updateSheet(`${active_sheet.key + field_separator}excluded_columns`, [
@@ -53,8 +54,11 @@ const useFilter = () => {
     return { widths };
   };
 
-  const paginated = () =>
-    rpp > 0 ? filtered().slice(page * rpp, page * rpp + rpp) : filtered();
+  const paginated = () => {
+    return rpp > 0
+      ? filtered().slice(page * rpp, page * rpp + rpp)
+      : filtered();
+  };
 
   return {
     paginated,

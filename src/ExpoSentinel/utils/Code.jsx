@@ -10,7 +10,7 @@ import Confirm from "../../common/utils/Comfirm";
 
 import useToasts from "../../common/hooks/useToast";
 
-export default function Code({ children, has_selected, ordered }) {
+export default function Code({ children, has_selected, ordered, search }) {
   const { push } = useToasts();
 
   const t = useTheme();
@@ -19,7 +19,7 @@ export default function Code({ children, has_selected, ordered }) {
     40 + (has_selected ? 80 : 0) + (ordered ? 60 : 0)
   }px);`;
 
-  const __chi = children.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  let __chi = children.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   if (__chi.startsWith("```") && __chi.endsWith("```")) {
     const real = __chi.substring(3, __chi.length - 3);
@@ -76,7 +76,8 @@ export default function Code({ children, has_selected, ordered }) {
       let ugo = go
         .substring(0, commStart)
         .replace(/ /g, "&nbsp;")
-        .replace(/\t/g, "&nbsp;".repeat(4));
+        .replace(/\t/g, "&nbsp;".repeat(4))
+        .replace(/---bs---/g, " ");
 
       const reg = ugo.matchAll(/["'`](.*?)["'`]/g);
       [...reg].map((re) => {
@@ -144,6 +145,15 @@ export default function Code({ children, has_selected, ordered }) {
       lines++;
     });
 
+    search &&
+      search.map((spv) => {
+        const _spv = spv.replace(/[\[\]]/g, "");
+        ch = ch.replace(
+          new RegExp(_spv, "ig"),
+          `<span style="color:red;background-color: yellow">${spv}</span>`
+        );
+      });
+
     const codeProps = {
       sx: {
         fontFamily: "Consolas, Courier New, monospace",
@@ -166,7 +176,6 @@ export default function Code({ children, has_selected, ordered }) {
         onClick={handleCopy}
         Icon={ContentCopyIcon}
         title="Copy code"
-        // sx={{ bgcolor: "background.paper" }}
       />
     );
 
@@ -207,5 +216,14 @@ export default function Code({ children, has_selected, ordered }) {
     );
   }
 
-  return __chi;
+  search &&
+    search.map((spv) => {
+      const _spv = spv.replace(/[\[\]]/g, "");
+      __chi = __chi.replace(
+        new RegExp(_spv, "ig"),
+        `<span style="color:red;background-color: yellow">${spv}</span>`
+      );
+    });
+
+  return <Box dangerouslySetInnerHTML={{ __html: __chi }} />;
 }

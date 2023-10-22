@@ -7,6 +7,9 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
+import Avatar from "@mui/material/Avatar";
+import AvatarGroup from "@mui/material/AvatarGroup";
+import Checkbox from "@mui/material/Checkbox";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
@@ -14,6 +17,7 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import CloseIcon from "@mui/icons-material/Close";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 import IconButton from "../../common/utils/IconButton";
 import Confirm from "../../common/utils/Comfirm";
@@ -27,8 +31,7 @@ import useSettings from "../hooks/useSettings";
 import useDimension from "../../common/hooks/useDimensions";
 import UseCommonSettings from "../../common/hooks/useSettings";
 
-import { field_separator as fs, _entr, _u } from "./utils";
-import { Avatar } from "@mui/material";
+import { field_separator as fs, _entr, _u, _values, _keys } from "./utils";
 
 const Menu = ({ sheet }) => {
   const [open, setOpen] = useState(false);
@@ -191,18 +194,35 @@ const Menu = ({ sheet }) => {
 };
 
 const Sections = () => {
-  const { sheet_names, addSheet, active_sheet, active_content } = useSheet();
+  const {
+    sheet_names,
+    addSheet,
+    active_sheet,
+    active_content,
+    sheets_by,
+    setSheetsBy,
+  } = useSheet();
   const { post } = useFetch("/expo-sentinel");
   const [open, setOpen] = useState(false);
+  const [openStaffs, setOpenStaffs] = useState(false);
   const { up } = useDimension();
-  const { uname, getName } = UseCommonSettings();
+  const { uname, getName, staffs } = UseCommonSettings();
   const navigate = useNavigate();
+  const { search } = useLocation();
   const { updateSheet } = useSheet();
+  const [selectdStaffsSheets, setSelectedStaffsSheet] = useState([]);
+
+  const _satffs = _values(staffs).filter(
+    (st) => st.username !== uname && st.username !== "system"
+  );
+  const allSelected =
+    _satffs.length === selectdStaffsSheets.length ||
+    selectdStaffsSheets.length === 0;
 
   const { key, num_rows = 0 } = active_sheet || {};
 
   const handleChange = (e, newSection) => {
-    navigate("/expo-sentinel/" + newSection);
+    navigate("/expo-sentinel/" + newSection + search);
     updateSheet(`${newSection + fs}filters`, {});
   };
 
@@ -243,7 +263,7 @@ const Sections = () => {
       date_created: new Date().toUTCString(),
     });
 
-    navigate("/expo-sentinel/" + sheet.key);
+    navigate("/expo-sentinel/" + sheet.key + search);
   };
 
   const Sheets = ({ orientation = "horizontal" }) => (
@@ -323,8 +343,105 @@ const Sections = () => {
     </>
   );
 
+  const handleSheetsByChange = () => {
+    setOpenStaffs(false);
+    setSheetsBy(allSelected ? [] : selectdStaffsSheets);
+  };
+
+  useEffect(() => {
+    setSelectedStaffsSheet(sheets_by);
+  }, [sheets_by.join("")]);
+
   return (
     <Box display="flex" alignItems="center">
+      <MyMenu
+        no_tip
+        open={openStaffs}
+        onClose={() => setOpen(setOpenStaffs(false))}
+        Clickable={(props) => (
+          <Button
+            color="inherit"
+            sx={{ ml: 1 }}
+            endIcon={<KeyboardArrowUpIcon />}
+            onClick={(e) => {
+              setOpen(setOpenStaffs(true));
+              props.onClick(e);
+            }}
+          >
+            {
+              <AvatarGroup
+                max={4}
+                sx={{
+                  ".MuiAvatar-root": { height: 20, width: 20, fontSize: 10 },
+                }}
+              >
+                {(allSelected ? _keys(staffs) : selectdStaffsSheets).map(
+                  (staff) => (
+                    <Avatar key={staff}>
+                      {getName(staff)
+                        .split(" ")
+                        .map((_n) => _n[0])
+                        .join("")}
+                    </Avatar>
+                  )
+                )}
+              </AvatarGroup>
+            }
+          </Button>
+        )}
+      >
+        <Box
+          maxWidth={250}
+          maxHeight="calc(80vh - 0px)"
+          px={2}
+          display="flex"
+          flexDirection="column"
+        >
+          <Box m={2} color="text.secondary" fontSize="small">
+            Sheets created by you and system are fetched, regardless.
+          </Box>
+          <Box mx={2} mb={2}>
+            Fetch only sheets created by:
+          </Box>
+          <Box flexGrow={1} overflow="auto">
+            <Checkbox
+              size="small"
+              sx={{ ml: 1 }}
+              checked={allSelected}
+              onChange={() => {
+                !allSelected && setSelectedStaffsSheet([]);
+              }}
+            />
+            All
+            {_satffs.map((st) => {
+              const selted = selectdStaffsSheets.includes(st.username);
+              return (
+                <Button
+                  color="inherit"
+                  key={st.username}
+                  fullWidth
+                  sx={{ justifyContent: "start", whiteSpace: "nowrap" }}
+                  onClick={() => {
+                    setSelectedStaffsSheet(
+                      selted
+                        ? selectdStaffsSheets.filter((s) => s !== st.username)
+                        : [...selectdStaffsSheets, st.username]
+                    );
+                  }}
+                >
+                  <Checkbox size="small" checked={allSelected || selted} />{" "}
+                  {st.name}
+                </Button>
+              );
+            })}
+          </Box>
+          <Box display="flex">
+            <Button sx={{ ml: "auto" }} onClick={handleSheetsByChange}>
+              Done
+            </Button>
+          </Box>
+        </Box>
+      </MyMenu>
       {shouldDraw ? (
         <>
           <IconButton Icon={MenuOpenIcon} onClick={() => setOpen(true)} />
