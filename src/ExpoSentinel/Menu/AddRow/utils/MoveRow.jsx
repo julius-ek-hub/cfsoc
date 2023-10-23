@@ -1,5 +1,7 @@
 import Box from "@mui/material/Box";
 
+import AutoComplete from "../../../../common/utils/form/uncontrolled/AutoComplete";
+
 import { _entr, field_separator as fs } from "../../../utils/utils";
 
 import useFetch from "../../../../common/hooks/useFetch";
@@ -12,14 +14,18 @@ const MoveRow = ({ _id }) => {
   const { key } = active_sheet;
 
   const targetIndex = active_content.findIndex((ac) => ac._id.value === _id);
-  const sns = [...new Array(active_content.length)].map((i, j) => j);
+  const sns = [...new Array(active_content.length)].map((i, j) =>
+    String(j + 1)
+  );
 
-  const placeAfter = async (sn) => {
-    const _sn = Number(sn);
-    await patch(`/data?sheet=${key}`, {
-      _id,
-      update: { "sn.value": _sn },
-    });
+  const placeAfter = async (e, sn) => {
+    if (!sn) return;
+    const _sn = Number(sn) - 1;
+    if (targetIndex === _sn) return;
+    // await patch(`/data?sheet=${key}`, {
+    //   _id,
+    //   update: { "sn.value": _sn },
+    // });
 
     updateSheet(`${key + fs}content${fs + targetIndex + fs}sn`, {
       value: _sn,
@@ -27,27 +33,17 @@ const MoveRow = ({ _id }) => {
   };
 
   return (
-    <>
-      <span>Move row to: </span>
-      <Box
-        component="select"
-        onChange={(e) => placeAfter(e.target.value)}
-        value={targetIndex + 1}
-        sx={{
-          border: (t) => `1px solid ${t.palette.divider}`,
-          borderRadius: 10,
-          "&:focus &:selected": {
-            border: (t) => `1px solid ${t.palette.divider}`,
-          },
-        }}
-      >
-        {sns.map((sn) => (
-          <option key={sn} value={sn + 1}>
-            {sn + 1}
-          </option>
-        ))}
-      </Box>
-    </>
+    <Box display="flex" alignItems="center" gap={1}>
+      SN:
+      <AutoComplete
+        options={sns}
+        size="small"
+        placeholder="Place row at SN?"
+        value={String(targetIndex + 1)}
+        multiple={false}
+        onChange={placeAfter}
+      />
+    </Box>
   );
 };
 

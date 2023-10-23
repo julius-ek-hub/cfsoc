@@ -32,6 +32,8 @@ import useDimension from "../../common/hooks/useDimensions";
 import UseCommonSettings from "../../common/hooks/useSettings";
 
 import { field_separator as fs, _entr, _u, _values, _keys } from "./utils";
+import Middle from "../../common/utils/Middle";
+import { Divider } from "@mui/material";
 
 const Menu = ({ sheet }) => {
   const [open, setOpen] = useState(false);
@@ -255,82 +257,64 @@ const Sections = () => {
     navigate("/expo-sentinel/" + sheet.key);
   };
 
-  const Sheets = ({ orientation = "horizontal" }) => (
-    <>
-      {sheet_names.length > 0 && (
-        <Tabs
-          variant="scrollable"
-          onChange={handleChange}
-          value={active_sheet ? key : ""}
-          scrollButtons={true}
-          orientation={orientation}
-        >
-          {sheet_names.map((sn, index) => (
-            <Tab
-              label={
-                <>
-                  {sn.name}
-                  <Avatar
-                    title={`Created by ${getName(sn.creator)}`}
-                    sx={{
-                      height: 18,
-                      width: 18,
-                      ml: 0.5,
-                      fontSize: "x-small",
-                    }}
-                  >
-                    {getName(sn.creator)
-                      .split(" ")
-                      .map((n) => _u(n[0]))
-                      .join("")}
-                  </Avatar>
-                </>
-              }
-              value={sn.key}
-              key={sn.key}
-              sx={{
-                "&:hover > div": {
-                  visibility: "visible",
-                },
-                position: "relative",
-                ...(orientation === "vertical" && {
-                  alignItems: "start!important",
-                  justifyContent: "start!important",
-                  ml: 1,
-                }),
-              }}
-              iconPosition="end"
-              {...((sn.creator === uname || uname === "system") && {
-                icon: (
-                  <Menu
-                    sheet={{
-                      ...sn,
-                      index,
-                    }}
-                  />
-                ),
-              })}
-            />
-          ))}
-        </Tabs>
-      )}
-      {uname !== "guest" && (
-        <Button
-          sx={{
-            whiteSpace: "nowrap",
-            flexShrink: 0,
-            ...(sheet_names.length === 0 && { m: 3 }),
-          }}
-          color="inherit"
-          endIcon={<AddIcon />}
-          size="small"
-          onClick={addBlanc}
-        >
-          Create New
-        </Button>
-      )}
-    </>
-  );
+  const Sheets = ({ orientation = "horizontal" }) =>
+    sheet_names.length > 0 && (
+      <Tabs
+        variant="scrollable"
+        onChange={handleChange}
+        value={active_sheet ? key : ""}
+        scrollButtons={true}
+        orientation={orientation}
+      >
+        {sheet_names.map((sn, index) => (
+          <Tab
+            label={
+              <>
+                {sn.name}
+                <Avatar
+                  title={`Created by ${getName(sn.creator)}`}
+                  sx={{
+                    height: 18,
+                    width: 18,
+                    ml: 0.5,
+                    fontSize: "x-small",
+                  }}
+                >
+                  {getName(sn.creator)
+                    .split(" ")
+                    .map((n) => _u(n[0]))
+                    .join("")}
+                </Avatar>
+              </>
+            }
+            value={sn.key}
+            key={sn.key}
+            sx={{
+              "&:hover > div": {
+                visibility: "visible",
+              },
+              position: "relative",
+              ...(orientation === "vertical" && {
+                alignItems: "start!important",
+                justifyContent: "start!important",
+                ml: 1,
+              }),
+            }}
+            iconPosition="end"
+            {...((sn.creator === uname || uname === "system") && {
+              icon: (
+                <Menu
+                  sheet={{
+                    ...sn,
+                    index,
+                  }}
+                />
+              ),
+            })}
+          />
+        ))}
+      </Tabs>
+    );
 
   const handleSheetsByChange = () => {
     setOpenStaffs(false);
@@ -341,96 +325,115 @@ const Sections = () => {
     setSelectedStaffsSheet(settings.sheets_by || []);
   }, [(settings.sheets_by || []).join("")]);
 
-  return (
-    <Box display="flex" alignItems="center">
-      <MyMenu
-        no_tip
-        open={openStaffs}
-        onClose={() => setOpen(setOpenStaffs(false))}
-        Clickable={(props) => (
-          <Button
-            color="inherit"
-            sx={{ ml: 1, flexShrink: 0 }}
-            endIcon={<KeyboardArrowUpIcon />}
-            onClick={(e) => {
-              setOpen(setOpenStaffs(true));
-              props.onClick(e);
+  const staffs__ = (
+    <MyMenu
+      no_tip
+      open={openStaffs}
+      onClose={() => setOpen(setOpenStaffs(false))}
+      Clickable={(props) => (
+        <Button
+          color="inherit"
+          sx={{ ml: 1, flexShrink: 0 }}
+          endIcon={<KeyboardArrowUpIcon />}
+          onClick={(e) => {
+            setOpenStaffs(true);
+            props.onClick(e);
+          }}
+        >
+          {
+            <AvatarGroup
+              max={4}
+              sx={{
+                ".MuiAvatar-root": { height: 20, width: 20, fontSize: 10 },
+              }}
+            >
+              {(allSelected ? _keys(staffs) : selectdStaffsSheets).map(
+                (staff) => (
+                  <Avatar key={staff}>
+                    {getName(staff)
+                      .split(" ")
+                      .map((_n) => _n[0])
+                      .join("")}
+                  </Avatar>
+                )
+              )}
+            </AvatarGroup>
+          }
+        </Button>
+      )}
+    >
+      <Box
+        maxWidth={250}
+        maxHeight="calc(80vh - 0px)"
+        px={2}
+        display="flex"
+        flexDirection="column"
+      >
+        <Box m={2} color="text.secondary" fontSize="small">
+          Sheets created by system are fetched, regardless.
+        </Box>
+        <Box mx={2} mb={2}>
+          Fetch only sheets created by:
+        </Box>
+        <Box flexGrow={1} overflow="auto">
+          <Checkbox
+            size="small"
+            sx={{ ml: 1 }}
+            checked={allSelected}
+            onChange={() => {
+              !allSelected && setSelectedStaffsSheet([]);
             }}
-          >
-            {
-              <AvatarGroup
-                max={4}
-                sx={{
-                  ".MuiAvatar-root": { height: 20, width: 20, fontSize: 10 },
+          />
+          All
+          {_satffs.map((st) => {
+            const selted = selectdStaffsSheets.includes(st.username);
+            return (
+              <Button
+                color="inherit"
+                key={st.username}
+                fullWidth
+                sx={{ justifyContent: "start", whiteSpace: "nowrap" }}
+                onClick={() => {
+                  setSelectedStaffsSheet(
+                    selted
+                      ? selectdStaffsSheets.filter((s) => s !== st.username)
+                      : [...selectdStaffsSheets, st.username]
+                  );
                 }}
               >
-                {(allSelected ? _keys(staffs) : selectdStaffsSheets).map(
-                  (staff) => (
-                    <Avatar key={staff}>
-                      {getName(staff)
-                        .split(" ")
-                        .map((_n) => _n[0])
-                        .join("")}
-                    </Avatar>
-                  )
-                )}
-              </AvatarGroup>
-            }
-          </Button>
-        )}
-      >
-        <Box
-          maxWidth={250}
-          maxHeight="calc(80vh - 0px)"
-          px={2}
-          display="flex"
-          flexDirection="column"
-        >
-          <Box m={2} color="text.secondary" fontSize="small">
-            Sheets created by system are fetched, regardless.
-          </Box>
-          <Box mx={2} mb={2}>
-            Fetch only sheets created by:
-          </Box>
-          <Box flexGrow={1} overflow="auto">
-            <Checkbox
-              size="small"
-              sx={{ ml: 1 }}
-              checked={allSelected}
-              onChange={() => {
-                !allSelected && setSelectedStaffsSheet([]);
-              }}
-            />
-            All
-            {_satffs.map((st) => {
-              const selted = selectdStaffsSheets.includes(st.username);
-              return (
-                <Button
-                  color="inherit"
-                  key={st.username}
-                  fullWidth
-                  sx={{ justifyContent: "start", whiteSpace: "nowrap" }}
-                  onClick={() => {
-                    setSelectedStaffsSheet(
-                      selted
-                        ? selectdStaffsSheets.filter((s) => s !== st.username)
-                        : [...selectdStaffsSheets, st.username]
-                    );
-                  }}
-                >
-                  <Checkbox size="small" checked={allSelected || selted} />{" "}
-                  {st.username === uname ? "You" : st.name}
-                </Button>
-              );
-            })}
-          </Box>
-          <Box display="flex">
-            <Button sx={{ ml: "auto" }} onClick={handleSheetsByChange}>
-              Done
-            </Button>
-          </Box>
+                <Checkbox size="small" checked={allSelected || selted} />{" "}
+                {st.username === uname ? "You" : st.name}
+              </Button>
+            );
+          })}
         </Box>
-      </MyMenu>
+        <Box display="flex">
+          <Button sx={{ ml: "auto" }} onClick={handleSheetsByChange}>
+            Done
+          </Button>
+        </Box>
+      </Box>
+    </MyMenu>
+  );
+
+  const create_blanc = uname !== "guest" && (
+    <Button
+      variant="contained"
+      sx={{
+        whiteSpace: "nowrap",
+        flexShrink: 0,
+        ...(sheet_names.length === 0 && { m: 3 }),
+      }}
+      endIcon={<AddIcon />}
+      size="small"
+      onClick={addBlanc}
+    >
+      Create New
+    </Button>
+  );
+
+  return (
+    <Box display="flex" alignItems="center" pr={2}>
       {shouldDraw ? (
         <>
           <IconButton Icon={MenuOpenIcon} onClick={() => setOpen(true)} />
@@ -442,11 +445,20 @@ const Sections = () => {
             <Box display="flex" justifyContent="end" my={1} mr={2}>
               <IconButton Icon={CloseIcon} onClick={handleClose} />
             </Box>
+            <Middle>{create_blanc}</Middle>
+            <Divider sx={{ pb: 2 }} />
             <Sheets orientation="vertical" />
+            <Middle mt="auto" mb={2}>
+              {staffs__}
+            </Middle>
           </Drawer>
         </>
       ) : (
-        <Sheets />
+        <>
+          {staffs__}
+          <Sheets />
+          {create_blanc}
+        </>
       )}
       {active_sheet && (
         <Pagination __key={`${key + fs}content`} content={active_content} />

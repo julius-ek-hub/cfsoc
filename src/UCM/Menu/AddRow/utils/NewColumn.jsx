@@ -42,14 +42,17 @@ function NewColumn({ Button }) {
       },
     };
 
-    const { json } = await patch(`/update-structure`, [
+    const { json } = await patch(
+      `/update-structure?add_column_${key}=${_key}`,
       [
-        key,
-        {
-          columns: _columns,
-        },
-      ],
-    ]);
+        [
+          key,
+          {
+            columns: _columns,
+          },
+        ],
+      ]
+    );
 
     if (json.error) return push({ message: json.error, severity: "error" });
 

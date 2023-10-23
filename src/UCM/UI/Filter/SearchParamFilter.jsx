@@ -17,7 +17,7 @@ const SearchParamFilter = () => {
         title="Click on the X icon to remove filter"
         label={
           <>
-            Showing only rows where
+            Showing only rows where{" "}
             {Object.entries(sp_filter).map(
               ([k, v]) =>
                 `${columns[k].label} ${

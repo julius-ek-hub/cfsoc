@@ -1,6 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { _entr, _values, deepKey, entr_ } from "../utils/utils";
+import {
+  _entr,
+  _values,
+  deepKey,
+  entr_,
+  field_separator as fs,
+} from "../utils/utils";
 
 const arr = (doubt) => (!Array.isArray(doubt) ? [doubt] : doubt);
 
@@ -42,6 +48,15 @@ const mitreSlice = createSlice({
       const key = payload.key;
       const { object, lastKey } = deepKey(key, state.sheets, true);
       object[lastKey] = payload.value;
+      // if (["content", "sn"].includes(lastKey)) {
+      //   const nc = [];
+      //   const oc = state.sheets[key.split(fs)[0]].content;
+      //   [...new Array(oc.length)].map((i, j) => {
+      //     const oc_ = oc[j];
+      //     const oc_sn = oc.find()
+      //     console.log(j, payload.value);
+      //   });
+      // }
     },
   },
 });

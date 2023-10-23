@@ -302,7 +302,7 @@ const Sections = () => {
         <>
           <IconButton Icon={MenuOpenIcon} onClick={() => setOpen(true)} />
           <Drawer
-            sx={{ ".MuiPaper-root": { width: "30%" } }}
+            sx={{ ".MuiPaper-root": { width: 300, maxWidth: "100%" } }}
             open={open}
             onClose={handleClose}
           >

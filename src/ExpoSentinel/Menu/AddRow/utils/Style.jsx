@@ -255,7 +255,7 @@ const Style = ({ _id }) => {
                         InputProps: {
                           endAdornment: (
                             <InputAdornment position="end">
-                              {k === "fontSize" ? "px" : "%"}
+                              {_k === "fontSize" ? "px" : "%"}
                             </InputAdornment>
                           ),
                         },

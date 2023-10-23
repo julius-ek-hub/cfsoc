@@ -42,7 +42,7 @@ const useFilter = () => {
       const _keys = Object.keys(ac);
       _keys.map((key) => {
         const ok = widths[key];
-        const nk = ac[key].value?.length;
+        const nk = ac[key]?.value?.length;
         if (!ok) widths[key] = 0;
         if (nk > ok) widths[key] = nk;
       });

@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MenuList from "@mui/material/MenuList";
@@ -16,15 +14,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MyMenu from "../../common/utils/Menu";
 
 const Download = ({ onChange }) => {
-  const [open, setOpen] = useState(false);
-
-  const handleDownload = (format) => {
-    setOpen(false);
-    onChange(format);
-  };
-
   const MenuOption = ({ Icon, id = "json" }) => (
-    <MenuItem onClick={() => handleDownload(id)}>
+    <MenuItem onClick={() => onChange(id)}>
       <ListItemIcon>
         <Icon fontSize="small" />
       </ListItemIcon>
@@ -37,17 +28,13 @@ const Download = ({ onChange }) => {
 
   return (
     <MyMenu
-      open={open}
-      onClose={() => setOpen(false)}
+      stateless
       Clickable={(props) => (
         <Button
           color="inherit"
-          onClick={(e) => {
-            setOpen(true);
-            props.onClick(e);
-          }}
           startIcon={<DownloadIcon />}
           endIcon={<KeyboardArrowDownIcon />}
+          {...props}
         >
           Download
         </Button>

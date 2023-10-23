@@ -87,7 +87,7 @@ const Menu = () => {
           <ViewRelated _ids={selected} />
         </Flex>
       )}
-      <Flex>
+      <Flex mb={1}>
         <Security />
         {!settings.search && !hasSelected && (
           <IconButton

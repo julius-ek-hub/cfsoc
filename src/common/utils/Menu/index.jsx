@@ -7,30 +7,36 @@ import Dialog from "../Dialogue";
 export default function Menu({
   Clickable,
   onClose,
-  open,
+  open: op,
   dialog,
   backdrop_color,
   no_tip,
+  stateless,
   ...rest
 }) {
   const [cords, setCords] = useState(null);
+  const [_open, setOpen] = useState(false);
+
+  const open = stateless ? _open : op;
 
   const handleClick = (event) => {
     setCords({
       top: event.clientY + 12,
       left: event.clientX + 16,
     });
+    stateless && setOpen(true);
   };
+  const handleClose = stateless ? () => setOpen(false) : onClose;
 
   return (
     <>
       <Clickable onClick={handleClick} />
       {dialog ? (
-        <Dialog open={open} onClose={onClose} {...rest} />
+        <Dialog open={open} onClose={handleClose} {...rest} />
       ) : (
         <MenuMUI
           open={open}
-          onClose={onClose}
+          onClose={handleClose}
           {...(cords && {
             anchorPosition: {
               top: cords.top,

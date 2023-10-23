@@ -21,11 +21,27 @@ const updateSheetLocation = async (sheets) => {
   );
   return sheets;
 };
-const updateStructure = async (sheets) => {
+const updateStructure = async (sheets, query) => {
   await Promise.all(
-    sheets.map(async ([sheet, update]) =>
-      db.collection("sheets").updateOne({ key: sheet }, { $set: update })
-    )
+    sheets.map(async ([sheet, update]) => {
+      await db.collection("sheets").updateOne({ key: sheet }, { $set: update });
+      const dc = query[`delete_column_${sheet}`];
+      const ac = query[`add_column_${sheet}`];
+      if (dc) {
+        if (Object.keys(update.columns).length === 0)
+          await db.collection(sheet).drop();
+        else
+          await db.collection(sheet).updateMany({}, { $unset: { [dc]: "" } });
+      }
+      if (ac) {
+        await db
+          .collection(sheet)
+          .updateMany(
+            {},
+            { $set: { [ac]: { value: update.columns[ac].default_value } } }
+          );
+      }
+    })
   );
   return {};
 };

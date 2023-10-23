@@ -35,7 +35,7 @@ export default function AutoComplete(props) {
       renderInput={(params) => (
         <TextField
           {...params}
-          label={placeholder || label}
+          label={label}
           placeholder={placeholder || label}
           helperText={helperText}
           size={size}

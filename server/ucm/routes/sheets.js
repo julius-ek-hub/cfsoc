@@ -18,12 +18,12 @@ const newSheet = async (req, res) => {
 };
 
 const updateSheet = async (req, res) => {
-  const $new = await us(req.body);
+  const $new = await us(req.body, req.query);
   res.json($new);
 };
 
 const updateStructure = async (req, res) => {
-  const $new = await ustr(req.body);
+  const $new = await ustr(req.body, req.query);
   res.json($new);
 };
 const updateSheetLocation = async (req, res) => {

@@ -31,8 +31,9 @@ const ExpoSentinel = () => {
   const key = active_sheet?.key;
 
   useEffect(() => {
-    if (settings.sheets_by) fetchAllFromDB(key);
-    else updateSettings("sheets_by", get("sheets_by") || []);
+    if (!settings.sheets_by)
+      updateSettings("sheets_by", get("sheets_by") || []);
+    fetchAllFromDB(key);
 
     if (key) {
       document.querySelector(

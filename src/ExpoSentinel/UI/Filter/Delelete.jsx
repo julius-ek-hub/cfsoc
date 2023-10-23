@@ -28,9 +28,10 @@ function DeleteColumn({ column }) {
     const newCols = objectExcept(columns, [column]);
     const newContent = [];
 
-    const { json } = await patch(`/update-structure`, [
-      [key, { columns: newCols }],
-    ]);
+    const { json } = await patch(
+      `/update-structure?delete_column_${key}=${column}`,
+      [[key, { columns: newCols }]]
+    );
 
     if (json.error) return push({ message: json.error, severity: "error" });
 

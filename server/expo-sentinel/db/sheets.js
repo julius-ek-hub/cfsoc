@@ -33,38 +33,26 @@ const updateSheetLocation = async (sheets) => {
   );
   return sheets;
 };
-const updateStructure = async (sheets) => {
+const updateStructure = async (sheets, query) => {
   await Promise.all(
     sheets.map(async ([sheet, update]) => {
-      const doUpdate = () =>
-        db.collection("sheets").updateOne({ key: sheet }, { $set: update });
-      const content = await db.collection(sheet).find().toArray();
-      if (update.columns && content.length > 0) {
-        const old = await db.collection("sheets").findOne({ key: sheet });
-        doUpdate();
-        const o_c = Object.entries(old);
-        const n_c = Object.entries(update.columns);
-        if (o_c.length > n_c.length)
-          return Promise.all(
-            o_c
-              .filter(([k]) => !update.columns[k] && k !== "_id")
-              .map(([k]) =>
-                db.collection(sheet).updateMany({}, { $unset: { [k]: 1 } })
-              )
-          );
-        else if (n_c.length > o_c.length)
-          return Promise.all(
-            n_c
-              .filter(([k]) => !o_c[k] && k !== "_id")
-              .map(([k, v]) =>
-                db
-                  .collection(sheet)
-                  .updateMany({}, { $set: { [k]: v.default_value } })
-              )
-          );
-        return;
+      await db.collection("sheets").updateOne({ key: sheet }, { $set: update });
+      const dc = query[`delete_column_${sheet}`];
+      const ac = query[`add_column_${sheet}`];
+      if (dc) {
+        if (Object.keys(update.columns).length === 0)
+          await db.collection(sheet).drop();
+        else
+          await db.collection(sheet).updateMany({}, { $unset: { [dc]: "" } });
       }
-      return doUpdate();
+      if (ac) {
+        await db
+          .collection(sheet)
+          .updateMany(
+            {},
+            { $set: { [ac]: { value: update.columns[ac].default_value } } }
+          );
+      }
     })
   );
   return {};

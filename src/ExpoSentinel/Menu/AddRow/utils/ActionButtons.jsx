@@ -1,10 +1,8 @@
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 
 import Confirm from "../../../../common/utils/Comfirm";
 import NewColumn from "./NewColumn";
@@ -19,10 +17,10 @@ import useSheet from "../../../hooks/useSheet";
 import useAddModify from "../../../hooks/useAddModify";
 
 const ActionButtons = () => {
-  const { active_sheet, sheets, permission } = useSheet();
+  const { active_sheet, permission } = useSheet();
   const { _delete } = useAddModify();
 
-  const { selected, key, columns, name } = active_sheet;
+  const { selected, columns, name } = active_sheet;
 
   const has_olumns = Object.keys(columns || {}).length > 0;
 
@@ -80,7 +78,7 @@ const ActionButtons = () => {
                 </>
               )}
               <PasteStyle />
-              {selected.length === 1 && <MoveRow _id={selected[0]} />}
+              {/* {selected.length === 1 && <MoveRow _id={selected[0]} />} */}
             </>
           )}
           {permission.includes("delete") && (
