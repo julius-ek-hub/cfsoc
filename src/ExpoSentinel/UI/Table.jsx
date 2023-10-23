@@ -34,10 +34,24 @@ const Tc = ({
   has_selected,
   search,
   ordered,
+  columnName,
+  sp_i,
   ...rest
 }) => {
   const { serverURL } = useFetch();
   const sx = getSX(rest.sx);
+
+  const code = (
+    <Code
+      has_selected={has_selected}
+      ordered={ordered}
+      search={search}
+      sp_i={sp_i}
+      columnName={columnName}
+    >
+      {value}
+    </Code>
+  );
 
   return (
     <TableCell
@@ -55,7 +69,7 @@ const Tc = ({
           target="_blank"
           sx={{ display: "flex", gap: 1 }}
         >
-          {value} <OpenInNewIcon fontSize="small" />
+          {code} <OpenInNewIcon fontSize="small" />
         </Link>
       ) : image ? (
         <img
@@ -64,9 +78,7 @@ const Tc = ({
           alt={image}
         />
       ) : (
-        <Code has_selected={has_selected} ordered={ordered} search={search}>
-          {value}
-        </Code>
+        code
       )}
     </TableCell>
   );
@@ -76,7 +88,7 @@ const validURL = (url) =>
   Yup.object({ url: Yup.string().url() }).isValidSync({ url });
 
 function Table() {
-  const { active_sheet, updateSheet, sheets, permission, sp_filter } =
+  const { active_sheet, updateSheet, sheets, permission, sp_filter, sp_i } =
     useSheet();
 
   const {
@@ -119,7 +131,6 @@ function Table() {
   };
 
   const handleSelect = (_id) => {
-    if (!["delete", "modify"].some((p) => permission.includes(p))) return;
     if (selected.includes(_id))
       return setSelected(selected.filter((f) => f !== _id));
     setSelected([...selected, _id]);
@@ -227,6 +238,7 @@ function Table() {
                     value: v,
                     colspan: 0,
                     key: k[0],
+                    label: k[1].label,
                   });
                 }
                 lastVal = v;
@@ -276,6 +288,8 @@ function Table() {
                       ordered={ordered}
                       has_selected={selected.length > 0}
                       search={sp_filter}
+                      sp_i={sp_i}
+                      columnName={cp.label}
                     />
                   ))}
                 </TableRow>

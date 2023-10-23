@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 
 import SaveIcon from "@mui/icons-material/Save";
+import Search from "@mui/icons-material/Search";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 
@@ -11,20 +12,27 @@ import Security from "../utils/Security";
 import SheetInfo from "../utils/SheetInfo";
 import ViewRelated from "./AddRow/utils/ViewRelated";
 
-import useFetcher from "../hooks/useFetcher";
 import useSheet from "../hooks/useSheet";
+import useFetcher from "../hooks/useFetcher";
 import useSettings from "../hooks/useSettings";
 import useFetch from "../../common/hooks/useFetch";
 import useCommonSettings from "../../common/hooks/useSettings";
 
-import { field_separator as fs } from "../utils/utils";
+import { _entr, _values, field_separator as fs } from "../utils/utils";
 
 const Menu = () => {
   const { downloadData, saveChanges } = useFetcher();
-  const { active_sheet, active_content, updateSheet, permission } = useSheet();
-  const { settings } = useSettings();
+  const {
+    active_sheet,
+    active_content,
+    updateSheet,
+    sheets,
+    permission,
+    initial_state,
+  } = useSheet();
   const { patch } = useFetch("/expo-sentinel");
   const { uname } = useCommonSettings();
+  const { updateSettings, settings } = useSettings();
 
   if (!active_sheet) return null;
 
@@ -32,6 +40,19 @@ const Menu = () => {
   const ordered = typeof o === "boolean" ? o : true;
 
   const hasSelected = selected.length > 0;
+
+  const sameState = _values(sheets).every((sheet) => {
+    const is = initial_state[sheet.key] || {};
+    const iec = is.excluded_columns || [];
+    return (
+      sheet.location === is.location &&
+      _entr(sheet.columns).every(
+        ([k, v]) => v.position === (is.columns || {})[k]
+      ) &&
+      sheet.excluded_columns.length === iec.length &&
+      sheet.excluded_columns.every((ec) => iec.includes(ec))
+    );
+  });
 
   const handleSort = async () => {
     const nO = !ordered;
@@ -61,13 +82,20 @@ const Menu = () => {
           <SheetInfo />
         </Flex>
       )}
-      {selected.length > 0 && primary_column && (
+      {hasSelected && primary_column && (
         <Flex>
           <ViewRelated _ids={selected} />
         </Flex>
       )}
       <Flex>
         <Security />
+        {!settings.search && !hasSelected && (
+          <IconButton
+            Icon={Search}
+            onClick={() => updateSettings("search", true)}
+            title="Search anything within this sheet"
+          />
+        )}
         {permission.includes("modify") && (
           <IconButton
             Icon={ordered ? FormatListNumberedIcon : FormatListBulletedIcon}
@@ -77,7 +105,7 @@ const Menu = () => {
         )}
         {uname !== "guest" && (
           <>
-            {settings.changed && !hasSelected && (
+            {!sameState && !hasSelected && (
               <IconButton
                 Icon={SaveIcon}
                 onClick={saveChanges}

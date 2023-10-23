@@ -19,23 +19,24 @@ import {
 
 import useToasts from "../../common/hooks/useToast";
 import useCommonSettings from "../../common/hooks/useSettings";
+import useLocalStorage from "../../common/hooks/useLocalStorage";
 
 const useSheet = () => {
-  const { sheets } = useSelector(({ expo_sentinel }) => expo_sentinel);
+  const { sheets, initial_state } = useSelector(
+    ({ expo_sentinel }) => expo_sentinel
+  );
   const { path } = useParams();
   const { push } = useToasts();
   const dispatch = useDispatch();
-  const { uname, staffs } = useCommonSettings();
+  const { uname } = useCommonSettings();
   const [sp, setSp] = useSearchParams();
+  const { get } = useLocalStorage();
 
   const sp_filter = [...new Set([...sp.getAll("q")])].filter((v) => v);
-  const sheets_by = [...new Set([...sp.getAll("by")])].filter(
-    (s) => staffs && staffs[s]
-  );
+  const sp_i = get("case_sensitive_search") ? "" : "i";
 
   const removeSP = () => setSp({ ...sp, q: [] });
-  const setSheetsBy = (_staffs) =>
-    setSp({ ...sp, by: _staffs.filter((s) => staffs[s]) });
+  const setSearch = (q, cs) => setSp({ ...sp, q });
 
   const active_sheet = sheets[path];
 
@@ -65,7 +66,7 @@ const useSheet = () => {
     return content.filter((c) =>
       sp_filter.some((spv) =>
         _entr(c).some((_c) =>
-          new RegExp(spv.replace(/[\[\]]/g, ""), "i").test(
+          new RegExp(spv.replace(/[\[\]]/g, sp_i)).test(
             String(_c[1].value).replace(/[\[\]]/g, "")
           )
         )
@@ -122,14 +123,15 @@ const useSheet = () => {
     active_sheet,
     primary_field,
     permission,
+    initial_state,
     is_creator,
-    sheets_by,
+    sp_i,
     sorted_columns,
     active_content: filterBySP(
       (() => {
         const go = [];
         (active_sheet?.content || []).map(
-          (a) => !go.includes(a._id.value) && go.push(a)
+          (a) => !go.find((g) => g._id.value === a._id.value) && go.push(a)
         );
         return go;
       })()
@@ -138,10 +140,10 @@ const useSheet = () => {
     sheet_names_except_current,
     updateSheetWithDataFromDb,
     removeSP,
+    setSearch,
     addSheet,
     updateSheet,
     deleteSheet,
-    setSheetsBy,
     replaceSheet,
   };
 };

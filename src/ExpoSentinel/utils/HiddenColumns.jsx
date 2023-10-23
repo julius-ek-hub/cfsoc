@@ -10,12 +10,9 @@ import IconButton from "../../common/utils/IconButton";
 
 import { field_separator as fs } from "./utils";
 
-import useSettings from "../hooks/useSettings";
-
 export default function ExcludedColumns() {
   const { active_sheet, updateSheet } = useSheet();
   const { unHideColumn, excluded_columns } = useFilter();
-  const { updateSettings } = useSettings();
 
   if (!active_sheet) return null;
 
@@ -27,7 +24,6 @@ export default function ExcludedColumns() {
 
   const unhideAll = () => {
     updateSheet(`${key + fs}excluded_columns`, []);
-    updateSettings("changed", true);
   };
 
   return (

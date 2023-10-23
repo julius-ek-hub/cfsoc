@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { deepKey, field_separator as fs } from "../utils/utils";
+import { _entr, _values, deepKey, entr_ } from "../utils/utils";
 
 const arr = (doubt) => (!Array.isArray(doubt) ? [doubt] : doubt);
 
@@ -8,6 +8,7 @@ const mitreSlice = createSlice({
   name: "expo_sentinel",
   initialState: {
     sheets: {},
+    initial_state: {},
     settings: {},
   },
   reducers: {
@@ -27,6 +28,11 @@ const mitreSlice = createSlice({
       arr(payload).map((sheet) => {
         if (state.sheets[sheet.key]) return;
         state.sheets[sheet.key] = sheet;
+        state.initial_state[sheet.key] = {
+          columns: entr_(_entr(sheet.columns).map(([k, v]) => [k, v.position])),
+          location: sheet.location,
+          excluded_columns: sheet.excluded_columns,
+        };
       });
     },
     deleteSheet(state, { payload }) {
@@ -34,7 +40,6 @@ const mitreSlice = createSlice({
     },
     updateSheet(state, { payload }) {
       const key = payload.key;
-      // const _key = key.split(fs)[0];
       const { object, lastKey } = deepKey(key, state.sheets, true);
       object[lastKey] = payload.value;
     },

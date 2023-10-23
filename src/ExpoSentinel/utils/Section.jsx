@@ -41,8 +41,6 @@ const Menu = ({ sheet }) => {
   const { patch, dlete } = useFetch("/expo-sentinel");
 
   const navigate = useNavigate();
-  const { search } = useLocation();
-  const { updateSettings } = useSettings();
 
   const name_exists = sheet_names_except_current.some((s) => s.name === name);
 
@@ -70,7 +68,7 @@ const Menu = ({ sheet }) => {
   const handleDelete = async () => {
     const { json } = await dlete(`/sheets/${sheet.key}`);
 
-    navigate("/expo-sentinel/" + (prevSheet?.key || "") + search);
+    navigate("/expo-sentinel/" + (prevSheet?.key || ""));
     !json.error && deleteSheet(sheet.key);
 
     setOpen(false);
@@ -97,7 +95,6 @@ const Menu = ({ sheet }) => {
 
   const beginRepositoning = (dir) => {
     repositionColumn(dir);
-    updateSettings("changed", true);
     hanldeClose();
   };
 
@@ -194,27 +191,19 @@ const Menu = ({ sheet }) => {
 };
 
 const Sections = () => {
-  const {
-    sheet_names,
-    addSheet,
-    active_sheet,
-    active_content,
-    sheets_by,
-    setSheetsBy,
-  } = useSheet();
+  const { sheet_names, addSheet, active_sheet, active_content, updateSheet } =
+    useSheet();
   const { post } = useFetch("/expo-sentinel");
   const [open, setOpen] = useState(false);
   const [openStaffs, setOpenStaffs] = useState(false);
   const { up } = useDimension();
   const { uname, getName, staffs } = UseCommonSettings();
+  const { updateSettings, settings } = useSettings();
   const navigate = useNavigate();
-  const { search } = useLocation();
-  const { updateSheet } = useSheet();
   const [selectdStaffsSheets, setSelectedStaffsSheet] = useState([]);
 
-  const _satffs = _values(staffs).filter(
-    (st) => st.username !== uname && st.username !== "system"
-  );
+  const _satffs = _values(staffs).filter((st) => st.username !== "system");
+
   const allSelected =
     _satffs.length === selectdStaffsSheets.length ||
     selectdStaffsSheets.length === 0;
@@ -222,7 +211,7 @@ const Sections = () => {
   const { key, num_rows = 0 } = active_sheet || {};
 
   const handleChange = (e, newSection) => {
-    navigate("/expo-sentinel/" + newSection + search);
+    navigate("/expo-sentinel/" + newSection);
     updateSheet(`${newSection + fs}filters`, {});
   };
 
@@ -263,7 +252,7 @@ const Sections = () => {
       date_created: new Date().toUTCString(),
     });
 
-    navigate("/expo-sentinel/" + sheet.key + search);
+    navigate("/expo-sentinel/" + sheet.key);
   };
 
   const Sheets = ({ orientation = "horizontal" }) => (
@@ -345,12 +334,12 @@ const Sections = () => {
 
   const handleSheetsByChange = () => {
     setOpenStaffs(false);
-    setSheetsBy(allSelected ? [] : selectdStaffsSheets);
+    updateSettings("sheets_by", allSelected ? [] : selectdStaffsSheets);
   };
 
   useEffect(() => {
-    setSelectedStaffsSheet(sheets_by);
-  }, [sheets_by.join("")]);
+    setSelectedStaffsSheet(settings.sheets_by || []);
+  }, [(settings.sheets_by || []).join("")]);
 
   return (
     <Box display="flex" alignItems="center">
@@ -361,7 +350,7 @@ const Sections = () => {
         Clickable={(props) => (
           <Button
             color="inherit"
-            sx={{ ml: 1 }}
+            sx={{ ml: 1, flexShrink: 0 }}
             endIcon={<KeyboardArrowUpIcon />}
             onClick={(e) => {
               setOpen(setOpenStaffs(true));
@@ -398,7 +387,7 @@ const Sections = () => {
           flexDirection="column"
         >
           <Box m={2} color="text.secondary" fontSize="small">
-            Sheets created by you and system are fetched, regardless.
+            Sheets created by system are fetched, regardless.
           </Box>
           <Box mx={2} mb={2}>
             Fetch only sheets created by:
@@ -430,7 +419,7 @@ const Sections = () => {
                   }}
                 >
                   <Checkbox size="small" checked={allSelected || selted} />{" "}
-                  {st.name}
+                  {st.username === uname ? "You" : st.name}
                 </Button>
               );
             })}
@@ -446,7 +435,7 @@ const Sections = () => {
         <>
           <IconButton Icon={MenuOpenIcon} onClick={() => setOpen(true)} />
           <Drawer
-            sx={{ ".MuiPaper-root": { width: "30%" } }}
+            sx={{ ".MuiPaper-root": { width: 300, maxWidth: "100%" } }}
             open={open}
             onClose={handleClose}
           >

@@ -3,7 +3,7 @@ import useCommonSettings from "../../common/hooks/useSettings";
 
 export default function SheetInfo() {
   const { active_sheet } = useSheet();
-  const { getName } = useCommonSettings();
+  const { getName, uname } = useCommonSettings();
 
   if (!active_sheet) return null;
 
@@ -14,7 +14,7 @@ export default function SheetInfo() {
   return (
     <>
       Created on {d.toDateString()}, {d.toLocaleTimeString()} by{" "}
-      {getName(creator)}
+      {uname === creator ? "You" : getName(creator)}
     </>
   );
 }

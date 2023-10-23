@@ -13,7 +13,6 @@ import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 
 import useSheet from "../hooks/useSheet";
 
-import useSettings from "../hooks/useSettings";
 import useFilter from "../hooks/useFilter";
 
 import { field_separator as fs } from "../utils/utils";
@@ -91,7 +90,6 @@ const HeaveSheetPagination = () => {
 export default function Pagination() {
   const { active_sheet, updateSheet } = useSheet();
   const { filtered } = useFilter(true);
-  const { updateSettings } = useSettings();
 
   const f = filtered();
 
@@ -103,7 +101,6 @@ export default function Pagination() {
       ...active_sheet.pagination,
       page: newPage,
     });
-    updateSettings("changed", true);
   };
   const handleChangeRowsPerPage = (event) => {
     updateSheet(`${key + fs}pagination`, {
@@ -111,7 +108,6 @@ export default function Pagination() {
       rowsPerPage: parseInt(event.target.value, 10),
       page: 0,
     });
-    updateSettings("changed", true);
   };
 
   useEffect(() => {

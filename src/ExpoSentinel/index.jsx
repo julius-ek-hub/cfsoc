@@ -8,32 +8,39 @@ import Ui from "./UI";
 import Menu from "./Menu";
 import Nav from "../common/utils/Nav";
 import Sections from "./utils/Section";
+import ManualSearch from "./UI/Filter/ManualSeach";
 import SearchParamFilter from "./UI/Filter/SearchParamFilter";
 
-import useFetcher from "./hooks/useFetcher";
-import useLoading from "../common/hooks/useLoading";
 import useSheet from "./hooks/useSheet";
+import useFetcher from "./hooks/useFetcher";
+import useSettings from "./hooks/useSettings";
+import useLoading from "../common/hooks/useLoading";
 import useCommonSettings from "../common/hooks/useSettings";
+import useLocalStorage from "../common/hooks/useLocalStorage";
 
 import { _keys, _values, field_separator as fs } from "./utils/utils";
 
 const ExpoSentinel = () => {
   const { fetchAllFromDB } = useFetcher();
   const { loading } = useLoading();
-  const { active_sheet, updateSheet, sheets_by, sheets } = useSheet();
+  const { active_sheet, updateSheet } = useSheet();
   const { uname, staffs, hide_header } = useCommonSettings();
+  const { settings, updateSettings } = useSettings();
+  const { get } = useLocalStorage();
 
   const key = active_sheet?.key;
 
   useEffect(() => {
-    fetchAllFromDB(key);
+    if (settings.sheets_by) fetchAllFromDB(key);
+    else updateSettings("sheets_by", get("sheets_by") || []);
+
     if (key) {
       document.querySelector(
         "title"
       ).textContent = `Expo Sentinel - ${active_sheet.name}`;
       updateSheet(`${key + fs}selected`, []);
     }
-  }, [key, uname, sheets_by.join("")]);
+  }, [key, uname, (settings.sheets_by || []).join("")]);
 
   if (!uname || !staffs) return null;
 
@@ -42,6 +49,7 @@ const ExpoSentinel = () => {
       <Box>
         <Nav app="Expo Sentinel" />
       </Box>
+      <ManualSearch />
       <SearchParamFilter />
       {!hide_header && <Menu />}
       <Ui />

@@ -45,8 +45,6 @@ function DeleteColumn({ column }) {
     push({ message: "Column deleted", severity: "success" });
   };
 
-  if (_entr(columns).length === 1) return null;
-
   return (
     <Box visibility="hidden">
       <Confirm

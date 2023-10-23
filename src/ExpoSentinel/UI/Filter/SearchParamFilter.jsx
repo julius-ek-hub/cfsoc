@@ -5,9 +5,9 @@ import Middle from "../../../common/utils/Middle";
 import useSheet from "../../hooks/useSheet";
 
 const SearchParamFilter = () => {
-  const { sp_filter, removeSP } = useSheet();
+  const { sp_filter, removeSP, active_sheet } = useSheet();
 
-  if (sp_filter.length === 0) return null;
+  if (sp_filter.length === 0 || !active_sheet) return null;
 
   return (
     <Middle flexDirection="row" mx={2} my={1}>

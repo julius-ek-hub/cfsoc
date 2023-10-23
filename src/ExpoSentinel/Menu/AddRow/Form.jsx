@@ -37,10 +37,11 @@ const Form = ({ Button, edit }) => {
       pc &&
       pc === k &&
       value.trim() &&
-      !edit &&
-      active_sheet.content.find((c) => c[k].value === value.trim())
+      active_sheet.content.find(
+        (c) => c._id.value !== edit && c[k].value === value.trim()
+      )
     )
-      setErrors({ ...errors, [k]: "PRIMARY_KEY_ERROR: This value exists" });
+      setErrors({ ...errors, [k]: "PRIMARY_COLUMN_ERROR: This value exists" });
     else setErrors({ ...errors, [k]: null });
   };
 

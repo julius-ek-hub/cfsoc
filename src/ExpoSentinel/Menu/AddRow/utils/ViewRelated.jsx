@@ -35,7 +35,7 @@ function ViewRelated({ _ids }) {
     <>
       Search selected {columns[primary_column].label} in:
       {_values(sheets)
-        .filter((sheet) => sheet.key !== key)
+        .filter((sheet) => sheet.key !== key && sheet.key !== "welcome")
         .map((sheet) => (
           <Button
             key={sheet.key}

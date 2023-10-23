@@ -30,11 +30,18 @@ const useCommonSettings = () => {
 
   const logout = async () => {
     const was = user.username;
-    ["user", "x-auth-token", "max_days", "show_profile", "theme", "view"].map(
-      (k) => {
-        update(k, k === "theme" ? "system" : undefined);
-      }
-    );
+    [
+      "user",
+      "x-auth-token",
+      "max_days",
+      "show_profile",
+      "theme",
+      "view",
+      "sheets_by",
+      "case_sensitive_search",
+    ].map((k) => {
+      update(k, k === "theme" ? "system" : undefined);
+    });
     was !== "guest" && window.location.reload();
   };
 

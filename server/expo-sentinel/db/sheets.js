@@ -5,13 +5,12 @@ const path = require("path");
 const db = mongoose.connection.useDb("expo-sentinel");
 
 const getSheets = async (filter, staff, by) => {
-  const _by = JSON.parse(by);
+  const _by = JSON.parse(by || "[]");
   const sheets = await db.collection("sheets").find(filter).toArray();
   return sheets.filter((sheet) => {
     if (
       (sheet.key !== "welcome" && staff === "guest") ||
       (_by.length > 0 &&
-        sheet.creator !== staff &&
         sheet.creator !== "system" &&
         !_by.includes(sheet.creator))
     )

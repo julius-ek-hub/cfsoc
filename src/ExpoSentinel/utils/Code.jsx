@@ -7,10 +7,64 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 import IconButton from "../../common/utils/IconButton";
 import Confirm from "../../common/utils/Comfirm";
+import Middle from "../../common/utils/Middle";
 
 import useToasts from "../../common/hooks/useToast";
 
-export default function Code({ children, has_selected, ordered, search }) {
+const Cell = ({
+  toolbar_extras,
+  for_cell,
+  for_dialog,
+  show_dialog,
+  title,
+  maxWidth,
+}) => (
+  <Box
+    maxHeight={600}
+    overflow="hidden"
+    position="relative"
+    maxWidth={maxWidth}
+  >
+    {for_cell}
+    {show_dialog && (
+      <Confirm
+        ok_text="Close"
+        onClick={(e) => e.stopPropagation()}
+        title={title}
+        is_alert
+        expandable
+        toolbar_extras={toolbar_extras}
+        Clickable={(props) => (
+          <Middle
+            height={100}
+            position="absolute"
+            bottom={0}
+            width="100%"
+            display="flex"
+            title="Click to View full cell..."
+            sx={{
+              backgroundImage: (t) =>
+                `linear-gradient(transparent, ${t.palette.background.paper})`,
+            }}
+          >
+            <Button {...props}>Show complete...</Button>
+          </Middle>
+        )}
+      >
+        {for_dialog}
+      </Confirm>
+    )}
+  </Box>
+);
+
+export default function Code({
+  children,
+  has_selected,
+  ordered,
+  search,
+  sp_i = "",
+  columnName,
+}) {
   const { push } = useToasts();
 
   const t = useTheme();
@@ -20,6 +74,24 @@ export default function Code({ children, has_selected, ordered, search }) {
   }px);`;
 
   let __chi = children.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  search &&
+    search.map((spv) => {
+      const _go = spv.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const _spv = spv.replace(/[\[\]]/g, "");
+      __chi = __chi.replace(
+        new RegExp(
+          _spv.replace(/</g, "&lt;").replace(/>/g, "&gt;"),
+          sp_i + "g"
+        ),
+        `---ss---${_go}---se---`
+      );
+    });
+
+  const highlightSearch = (val) =>
+    val
+      .replace(/---ss---/g, `<span style="background-color:yellow">`)
+      .replace(/---se---/g, `</span>`);
 
   if (__chi.startsWith("```") && __chi.endsWith("```")) {
     const real = __chi.substring(3, __chi.length - 3);
@@ -76,8 +148,7 @@ export default function Code({ children, has_selected, ordered, search }) {
       let ugo = go
         .substring(0, commStart)
         .replace(/ /g, "&nbsp;")
-        .replace(/\t/g, "&nbsp;".repeat(4))
-        .replace(/---bs---/g, " ");
+        .replace(/\t/g, "&nbsp;".repeat(4));
 
       const reg = ugo.matchAll(/["'`](.*?)["'`]/g);
       [...reg].map((re) => {
@@ -135,7 +206,7 @@ export default function Code({ children, has_selected, ordered, search }) {
 
       const snLen = String(i + 1).length;
 
-      ch += `<div style="display:flex" onfocus="alert(90)"><span style="user-select:none;color:#237893;border-right:1px solid ${
+      ch += `<div style="display:flex"><span style="user-select:none;color:#237893;border-right:1px solid ${
         arr.length > 999 ? "transparent" : t.palette.divider
       }">${
         i + 1 + "&nbsp;".repeat(arr.length > 999 ? 0 : 4 - snLen)
@@ -145,21 +216,12 @@ export default function Code({ children, has_selected, ordered, search }) {
       lines++;
     });
 
-    search &&
-      search.map((spv) => {
-        const _spv = spv.replace(/[\[\]]/g, "");
-        ch = ch.replace(
-          new RegExp(_spv, "ig"),
-          `<span style="color:red;background-color: yellow">${spv}</span>`
-        );
-      });
-
     const codeProps = {
       sx: {
         fontFamily: "Consolas, Courier New, monospace",
       },
       dangerouslySetInnerHTML: {
-        __html: ch,
+        __html: highlightSearch(ch),
       },
     };
 
@@ -184,31 +246,17 @@ export default function Code({ children, has_selected, ordered, search }) {
         position="relative"
         sx={{
           "&:hover > div": { visibility: "visible" },
-          maxWidth,
           overflow: "hidden",
         }}
       >
-        <Box maxHeight={200} overflow="hidden">
-          {codeCell}
-        </Box>
-        {lines > 10 && (
-          <Confirm
-            ok_text="Close"
-            onClick={(e) => e.stopPropagation()}
-            title="Query"
-            is_alert
-            expandable
-            toolbar_extras={copyButton}
-            Clickable={(props) => (
-              <Button sx={{ mt: 1 }} {...props}>
-                View full query...
-              </Button>
-            )}
-          >
-            {codeDialog}
-          </Confirm>
-        )}
-
+        <Cell
+          for_cell={codeCell}
+          for_dialog={codeDialog}
+          toolbar_extras={copyButton}
+          show_dialog={lines >= 30}
+          title={columnName}
+          maxWidth={maxWidth}
+        />
         <Box position="absolute" top={0} right={0} visibility="hidden">
           {copyButton}
         </Box>
@@ -216,14 +264,26 @@ export default function Code({ children, has_selected, ordered, search }) {
     );
   }
 
-  search &&
-    search.map((spv) => {
-      const _spv = spv.replace(/[\[\]]/g, "");
-      __chi = __chi.replace(
-        new RegExp(_spv, "ig"),
-        `<span style="color:red;background-color: yellow">${spv}</span>`
-      );
-    });
+  const forBoth = (
+    <Box
+      dangerouslySetInnerHTML={{
+        __html: highlightSearch(
+          __chi
+            .replace(/\n/g, "<br/>")
+            .replace(/ /g, "&nbsp;")
+            .replace(/\t/g, "&nbsp;".repeat(4))
+        ),
+      }}
+    />
+  );
 
-  return <Box dangerouslySetInnerHTML={{ __html: __chi }} />;
+  return (
+    <Cell
+      for_cell={forBoth}
+      for_dialog={forBoth}
+      show_dialog={__chi.split(/\n/).length > 20 || __chi.length > 5000}
+      title={columnName}
+      maxWidth={maxWidth}
+    />
+  );
 }

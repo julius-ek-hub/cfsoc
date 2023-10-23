@@ -13,13 +13,12 @@ const useFetcher = () => {
   const { update } = useLoading();
   const { get, post, serverURL, patch } = useFetch("/expo-sentinel");
   const { push } = useToasts();
-  const { updateSettings } = useSettings();
+  const { updateSettings, settings } = useSettings();
   const { uname } = useCommonSettings();
   const {
     active_sheet,
     updateSheet,
     sheets,
-    sheets_by,
     replaceSheet,
     updateSheetWithDataFromDb,
   } = useSheet();
@@ -27,20 +26,6 @@ const useFetcher = () => {
   const { key } = active_sheet || {};
 
   const { pickFile } = useFile();
-
-  const saveChanges = async () => {
-    const changes = _entr(sheets).map(([k, v]) => [
-      k,
-      {
-        location: v.location,
-        excluded_columns: v.excluded_columns,
-        pagination: v.pagination,
-        columns: v.columns,
-      },
-    ]);
-    const { json } = await patch(`/update-structure`, changes);
-    if (!json.error) updateSettings("changed", false);
-  };
 
   const fetchSheetContent = async (_key = key, force, page) => {
     if (!_key || !sheets[_key]) return;
@@ -81,7 +66,7 @@ const useFetcher = () => {
   const fetchAllFromDB = async (__key) => {
     if (uname) {
       const { json: sh } = await get(
-        `/sheets?staff=${uname}&by=${JSON.stringify(sheets_by)}`,
+        `/sheets?staff=${uname}&by=${JSON.stringify(settings.sheets_by || [])}`,
         "all_mitre"
       );
       if (!sh.error)
@@ -146,6 +131,20 @@ const useFetcher = () => {
     } finally {
       update(false);
     }
+  };
+
+  const saveChanges = async () => {
+    const changes = _entr(sheets).map(([k, v]) => [
+      k,
+      {
+        location: v.location,
+        excluded_columns: v.excluded_columns,
+        pagination: v.pagination,
+        columns: v.columns,
+      },
+    ]);
+    const { json } = await patch(`/update-structure`, changes);
+    if (!json.error) fetchAllFromDB(key);
   };
 
   return {

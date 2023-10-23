@@ -1,11 +1,9 @@
 import useSheet from "./useSheet";
 
 import { field_separator, _l } from "../utils/utils";
-import useSettings from "./useSettings";
 
 const useFilter = () => {
   const { active_sheet, updateSheet, active_content } = useSheet();
-  const { updateSettings } = useSettings();
 
   const { pagination, excluded_columns } = active_sheet;
   const { page = 0, rowsPerPage: rpp = 30 } = pagination;
@@ -26,7 +24,6 @@ const useFilter = () => {
       ...active_sheet.excluded_columns,
       column,
     ]);
-    updateSettings("changed", true);
   };
 
   const unHideColumn = (column) => {
@@ -34,7 +31,6 @@ const useFilter = () => {
       `${active_sheet.key + field_separator}excluded_columns`,
       active_sheet.excluded_columns.filter((c) => c !== column)
     );
-    updateSettings("changed", true);
   };
 
   const has_filter = (column) =>

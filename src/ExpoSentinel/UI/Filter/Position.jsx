@@ -6,13 +6,11 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import IconButton from "../../../common/utils/IconButton";
 
 import useSheet from "../../hooks/useSheet";
-import useSettings from "../../hooks/useSettings";
 
 import { field_separator } from "../../utils/utils";
 
 function Position({ column }) {
   const { active_sheet, updateSheet, sorted_columns } = useSheet();
-  const { updateSettings } = useSettings();
 
   const { key, columns, excluded_columns } = active_sheet;
 
@@ -35,11 +33,6 @@ function Position({ column }) {
     updateSheet(`${key + field_separator}columns`, Object.fromEntries(entr));
   };
 
-  const beginRepositoning = (dir) => {
-    repositionColumn(dir);
-    updateSettings("changed", true);
-  };
-
   if (Object.keys(columns).length - excluded_columns.length <= 1) return null;
 
   return (
@@ -47,13 +40,13 @@ function Position({ column }) {
       <IconButton
         title="Move column to the left"
         Icon={KeyboardArrowLeftIcon}
-        onClick={() => beginRepositoning(-1)}
+        onClick={() => repositionColumn(-1)}
         size="small"
         sx={{ ml: 0.5 }}
       />
       <IconButton
         title="Move column to the right"
-        onClick={() => beginRepositoning(1)}
+        onClick={() => repositionColumn(1)}
         Icon={KeyboardArrowRightIcon}
         size="small"
         sx={{ ml: 0.5 }}
