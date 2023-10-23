@@ -39,10 +39,12 @@ const Style = ({ _id }) => {
   const { patch } = useFetch("/ucm");
   const { push } = useToasts();
 
-  const { active_content, active_sheet, updateSheet } = useSheet();
-  const { columns } = active_sheet;
-
-  const cols = _entr(columns);
+  const {
+    active_content,
+    active_sheet,
+    updateSheet,
+    sorted_columns: cols,
+  } = useSheet();
 
   const targetIndex = active_content.findIndex((ac) => ac._id.value === _id);
   const target = active_content[targetIndex];
