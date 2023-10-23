@@ -23,6 +23,9 @@ const theme = (mode = "light") => {
         main: "#1D6F42",
       },
     },
+    typography: {
+      fontSize: 16,
+    },
     components: {
       MuiButtonBase: defaultProps({
         disableRipple: true,
