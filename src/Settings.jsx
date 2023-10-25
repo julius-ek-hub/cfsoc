@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -6,7 +6,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -22,17 +21,18 @@ export default function Settings({ children }) {
   const { initializeCommonSettings, theme, hide_header, update } =
     useSettings();
   const prefers_dark = useMediaQuery("(prefers-color-scheme: dark)");
-  const [top, setTop] = useState(-100);
   const timer = useRef();
+  const boxRef = useRef();
 
   const is_theme = ["dark", "light"].includes(theme);
   const t = is_theme ? theme : prefers_dark ? "dark" : "light";
 
   const handleMouseMove = () => {
-    setTop(0);
+    const br = boxRef.current;
+    br.style.top = 0;
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
-      setTop(-100);
+      br.style.top = "-100px";
     }, 3000);
   };
 
@@ -47,9 +47,10 @@ export default function Settings({ children }) {
     <ThemeProvider theme={theme_conf(t)}>
       <CssBaseline enableColorScheme />
       <Box
+        ref={boxRef}
         sx={{
           position: "fixed",
-          top,
+          top: -100,
           left: "50%",
           zIndex: 100,
           transform: "translate(-50%, 0)",

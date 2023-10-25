@@ -41,7 +41,9 @@ const Ui = () => {
             id="main_table"
             sx={{
               "& .MuiTableContainer-root": {
+                display: "flex",
                 height: "100%",
+                flexDirection: "column",
                 table: { borderCollapse: "collapse" },
                 "& .MuiTableCell-root": {
                   border: (t) => `1px solid ${t.palette.divider}`,

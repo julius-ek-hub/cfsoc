@@ -11,6 +11,41 @@ import Middle from "../../common/utils/Middle";
 
 import useToasts from "../../common/hooks/useToast";
 
+const __match = (word, exp) =>
+  word.match(new RegExp(`[(),;*=]${exp}[(),;*=]?`)) ||
+  word.match(new RegExp(`[(),;*=]?${exp}[(),;*=]`));
+
+const key_words = [
+  "where",
+  "summarize",
+  "by",
+  "datetime",
+  "and",
+  "or",
+  "extend",
+  "join",
+  "lookup",
+  "project",
+  "project-rename",
+  "on",
+  "has",
+  "between",
+  "includes",
+  "count",
+  "mv-apply",
+  "sartswith",
+  "union",
+  "string",
+  "real",
+  "contains",
+  "let",
+  "const",
+  "var",
+  "function",
+  "import",
+  "table",
+];
+
 const Cell = ({
   toolbar_extras,
   for_cell,
@@ -33,6 +68,7 @@ const Cell = ({
         title={title}
         is_alert
         expandable
+        fullScreen
         toolbar_extras={toolbar_extras}
         Clickable={(props) => (
           <Middle
@@ -41,6 +77,7 @@ const Cell = ({
             bottom={0}
             width="100%"
             display="flex"
+            justifyContent="end"
             title="Click to View full cell..."
             sx={{
               backgroundImage: (t) =>
@@ -62,7 +99,6 @@ export default function Code({
   has_selected,
   ordered,
   search,
-  sp_i = "",
   columnName,
 }) {
   const { push } = useToasts();
@@ -70,7 +106,7 @@ export default function Code({
   const t = useTheme();
 
   const maxWidth = `calc(100vw - ${
-    40 + (has_selected ? 80 : 0) + (ordered ? 60 : 0)
+    55 + (has_selected ? 85 : 0) + (ordered ? 60 : 0)
   }px);`;
 
   let __chi = children.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -80,10 +116,7 @@ export default function Code({
       const _go = spv.replace(/</g, "&lt;").replace(/>/g, "&gt;");
       const _spv = spv.replace(/[\[\]]/g, "");
       __chi = __chi.replace(
-        new RegExp(
-          _spv.replace(/</g, "&lt;").replace(/>/g, "&gt;"),
-          sp_i + "g"
-        ),
+        new RegExp(_spv.replace(/</g, "&lt;").replace(/>/g, "&gt;"), "ig"),
         `---ss---${_go}---se---`
       );
     });
@@ -162,45 +195,24 @@ export default function Code({
       go = (ugo + go.substring(commStart))
         .split("&nbsp;")
         .map((word) => {
-          let _word = word;
-          let _end = "";
-          if (_word.endsWith(";")) {
-            _word = _word.substring(0, _word.length - 1);
-            _end = ";";
-          }
-          return [
-            "where",
-            "summarize",
-            "by",
-            "datetime",
-            "and",
-            "or",
-            "extend",
-            "join",
-            "lookup",
-            "project",
-            "project-rename",
-            "on",
-            "has",
-            "between",
-            "includes",
-            "count",
-            "mv-apply",
-            "sartswith",
-            "union",
-            "string",
-            "real",
-            "contains",
-            "let",
-            "const",
-            "var",
-            "function",
-            "import",
-          ].includes(_word)
-            ? `<span style="color:#0096FF">${_word + _end}</span>`
-            : !isNaN(_word) || ["true", "false"].includes(_word)
-            ? `<span style="color:#437700">${_word + _end}</span>`
-            : word;
+          let _w = word;
+          key_words.map((kw) => {
+            if (kw === word || __match(word, kw))
+              _w = _w.replace(kw, `<span style="color:#0096FF">${kw}</span>`);
+          });
+
+          const bool = __match(
+            word,
+            "(([0-9]+([-+*/])?[0-9]+(([-+*/])?[0-9]+)?)|true|false)"
+          );
+
+          if (bool)
+            _w = _w.replace(
+              bool[2],
+              `<span style="color:#437700">${bool[2]}</span>`
+            );
+
+          return _w;
         })
         .join("&nbsp;");
 
@@ -266,6 +278,7 @@ export default function Code({
 
   const forBoth = (
     <Box
+      maxWidth={maxWidth}
       dangerouslySetInnerHTML={{
         __html: highlightSearch(
           __chi

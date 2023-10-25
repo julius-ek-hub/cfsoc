@@ -19,7 +19,6 @@ import {
 
 import useToasts from "../../common/hooks/useToast";
 import useCommonSettings from "../../common/hooks/useSettings";
-import useLocalStorage from "../../common/hooks/useLocalStorage";
 
 const useSheet = () => {
   const { sheets, initial_state } = useSelector(
@@ -30,10 +29,8 @@ const useSheet = () => {
   const dispatch = useDispatch();
   const { uname } = useCommonSettings();
   const [sp, setSp] = useSearchParams();
-  const { get } = useLocalStorage();
 
   const sp_filter = [...new Set([...sp.getAll("q")])].filter((v) => v);
-  const sp_i = get("case_sensitive_search") ? "" : "i";
 
   const removeSP = () => setSp({ ...sp, q: [] });
   const setSearch = (q, cs) => setSp({ ...sp, q });
@@ -66,7 +63,7 @@ const useSheet = () => {
     return content.filter((c) =>
       sp_filter.some((spv) =>
         _entr(c).some((_c) =>
-          new RegExp(spv.replace(/[\[\]]/g, sp_i)).test(
+          new RegExp(spv.replace(/[\[\]]/g, ""), "i").test(
             String(_c[1].value).replace(/[\[\]]/g, "")
           )
         )
@@ -125,7 +122,6 @@ const useSheet = () => {
     permission,
     initial_state,
     is_creator,
-    sp_i,
     sorted_columns,
     active_content: filterBySP(
       (() => {

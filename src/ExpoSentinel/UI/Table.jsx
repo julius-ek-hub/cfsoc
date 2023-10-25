@@ -27,6 +27,7 @@ import useFetch from "../../common/hooks/useFetch";
 
 const Tc = ({
   link,
+  email,
   value,
   image,
   sheet,
@@ -35,7 +36,6 @@ const Tc = ({
   search,
   ordered,
   columnName,
-  sp_i,
   ...rest
 }) => {
   const { serverURL } = useFetch();
@@ -46,7 +46,6 @@ const Tc = ({
       has_selected={has_selected}
       ordered={ordered}
       search={search}
-      sp_i={sp_i}
       columnName={columnName}
     >
       {value}
@@ -61,15 +60,15 @@ const Tc = ({
         bgcolor: selected ? "inherit" : sx.bgcolor,
       }}
     >
-      {link ? (
+      {link || email ? (
         <Link
           rel="noreferrer"
           underline="always"
-          href={link}
+          href={link ? link : `mailto:${email}`}
           target="_blank"
           sx={{ display: "flex", gap: 1 }}
         >
-          {code} <OpenInNewIcon fontSize="small" />
+          {code} {link && <OpenInNewIcon fontSize="small" />}
         </Link>
       ) : image ? (
         <img
@@ -87,8 +86,11 @@ const Tc = ({
 const validURL = (url) =>
   Yup.object({ url: Yup.string().url() }).isValidSync({ url });
 
+const validEmail = (email) =>
+  Yup.object({ email: Yup.string().email() }).isValidSync({ email });
+
 function Table() {
-  const { active_sheet, updateSheet, sheets, permission, sp_filter, sp_i } =
+  const { active_sheet, updateSheet, sheets, permission, sp_filter } =
     useSheet();
 
   const {
@@ -105,7 +107,6 @@ function Table() {
     paginated,
     rowsPerPage,
     page,
-    columns,
     excluded_columns,
     hideColumn,
     has_filter,
@@ -119,7 +120,6 @@ function Table() {
     page,
   ]);
 
-  const { widths } = columns();
   const has_select = selected.length > 0;
 
   const sorted_columns = Object.entries(c)
@@ -148,7 +148,8 @@ function Table() {
     const v = _v?.value;
     const value = v || "";
     const link = row[key]?.link || (validURL(v) ? v : false);
-    return { ...(_v || {}), value, link };
+    const email = validEmail(v) ? v : false;
+    return { ...(_v || {}), value, link, email };
   };
 
   useEffect(() => {
@@ -157,9 +158,7 @@ function Table() {
   }, [pted]);
 
   return (
-    <TableContainer
-      sx={{ height: "100%", display: "flex", flexDirection: "column" }}
-    >
+    <TableContainer>
       <TableMui stickyHeader>
         {Object.keys(active_sheet.columns).length > 0 && (
           <TableHead>
@@ -210,7 +209,6 @@ function Table() {
                       onHide: () => hideColumn(k[0]),
                     })}
                     has_filter={has_filter(k[0])}
-                    mw={widths[k[0]]}
                   />
                 );
               })}
@@ -288,7 +286,6 @@ function Table() {
                       ordered={ordered}
                       has_selected={selected.length > 0}
                       search={sp_filter}
-                      sp_i={sp_i}
                       columnName={cp.label}
                     />
                   ))}

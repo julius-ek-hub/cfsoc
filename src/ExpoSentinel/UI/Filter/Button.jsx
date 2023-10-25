@@ -16,7 +16,6 @@ function FilterButton({
   column,
   onHide,
   has_filter,
-  mw,
   label,
   sx,
   permission,
@@ -27,7 +26,6 @@ function FilterButton({
       sx={{
         py: 0.5,
         whiteSpace: "nowrap",
-        minWidth: (mw > 1000 ? 1000 : mw) + "px",
         ...sx,
       }}
     >

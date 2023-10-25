@@ -40,7 +40,7 @@ function Dialog(props) {
     ...rest
   } = props;
 
-  const [fullScreen, setFs] = useState(false);
+  const [fullScreen, setFs] = useState(rest.fullScreen || false);
 
   return (
     <MuiDialog

@@ -36,20 +36,6 @@ const useFilter = () => {
   const has_filter = (column) =>
     (active_sheet.filters[column] || []).length > 0;
 
-  const columns = () => {
-    let widths = {};
-    active_content.map((ac) => {
-      const _keys = Object.keys(ac);
-      _keys.map((key) => {
-        const ok = widths[key];
-        const nk = ac[key]?.value?.length;
-        if (!ok) widths[key] = 0;
-        if (nk > ok) widths[key] = nk;
-      });
-    });
-    return { widths };
-  };
-
   const paginated = () => {
     return rpp > 0
       ? filtered().slice(page * rpp, page * rpp + rpp)
@@ -64,7 +50,6 @@ const useFilter = () => {
     excluded_columns: excluded_columns,
     page,
     has_filter,
-    columns,
     hideColumn,
     unHideColumn,
   };
