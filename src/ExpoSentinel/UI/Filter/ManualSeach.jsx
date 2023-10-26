@@ -7,6 +7,7 @@ import IconButton from "../../../common/utils/IconButton";
 import TextField from "../../../common/utils/form/uncontrolled/TextField";
 
 import Search from "@mui/icons-material/Search";
+import Close from "@mui/icons-material/Close";
 
 import useSheet from "../../hooks/useSheet";
 import useSettings from "../../hooks/useSettings";
@@ -19,6 +20,10 @@ const ManualSearch = () => {
   const handleSearch = () => {
     updateSettings("search", false);
     setSearch(value);
+  };
+  const handleClose = () => {
+    updateSettings("search", false);
+    setSearch([]);
   };
 
   if (!settings.search) return null;
@@ -36,6 +41,11 @@ const ManualSearch = () => {
           endAdornment: (
             <InputAdornment position="end">
               <IconButton Icon={Search} onClick={handleSearch} />
+            </InputAdornment>
+          ),
+          startAdornment: (
+            <InputAdornment position="start">
+              <IconButton Icon={Close} onClick={handleClose} />
             </InputAdornment>
           ),
         }}

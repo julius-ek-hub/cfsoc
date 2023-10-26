@@ -33,7 +33,7 @@ const useSheet = () => {
   const sp_filter = [...new Set([...sp.getAll("q")])].filter((v) => v);
 
   const removeSP = () => setSp({ ...sp, q: [] });
-  const setSearch = (q, cs) => setSp({ ...sp, q });
+  const setSearch = (q) => setSp({ ...sp, q });
 
   const active_sheet = sheets[path];
 
