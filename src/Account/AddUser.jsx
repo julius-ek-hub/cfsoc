@@ -76,31 +76,38 @@ const AddUser = ({ ClickComponent, edit }) => {
           startIcon={<AddIcon />}
           variant="contained"
         >
-          Add
+          {edit ? "Update" : "Add"}
         </Button>
       )}
-
-      <Dialog
-        TransitionProps={{ direction: "right" }}
-        open={open}
-        sx={{ ".MuiPaper-root": { maxWidth: 400 } }}
-        onClose={handleClose}
+      <Form
+        validationSchema={schema}
+        initialValues={{
+          name: edit?.name || "",
+          position: edit?.position || "",
+          level: typeof edit?.level === "number" ? edit.level : "",
+          email: edit?.email || "",
+        }}
+        onSubmit={onSubmit}
       >
-        <Typography p={2} variant="h6">
-          {edit ? "Edit Staff Info" : "Add Staff"}
-        </Typography>
-        <Divider />
-        <Form
-          validationSchema={schema}
-          initialValues={{
-            name: edit?.name || "",
-            position: edit?.position || "",
-            level: typeof edit?.level === "number" ? edit.level : "",
-            email: edit?.email || "",
-          }}
-          onSubmit={onSubmit}
+        <Dialog
+          TransitionProps={{ direction: "right" }}
+          open={open}
+          sx={{ ".MuiPaper-root": { maxWidth: 400 } }}
+          onClose={handleClose}
+          onXClose={handleClose}
+          title={edit ? "Edit Staff Info" : "Add Staff"}
+          action={
+            <>
+              <Button onClick={handleClose} type="button" sx={{ ml: 2 }}>
+                Cancel
+              </Button>
+              <SubmitButton variant="contained">
+                {edit ? "Update" : "Add"}
+              </SubmitButton>
+            </>
+          }
         >
-          <TextField name="name" fullWidth label="Full Names" />
+          <TextField name="name" fullWidth label="Full Names" margin="dense" />
           <TextField
             name="position"
             fullWidth
@@ -122,14 +129,8 @@ const AddUser = ({ ClickComponent, edit }) => {
             />{" "}
             Admin
           </Box>
-          <SubmitButton variant="contained" size="large">
-            Add
-          </SubmitButton>
-          <Button onClick={handleClose} type="button" sx={{ ml: 2 }}>
-            Cancel
-          </Button>
-        </Form>
-      </Dialog>
+        </Dialog>
+      </Form>
     </>
   );
 };

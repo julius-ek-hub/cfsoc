@@ -1,5 +1,3 @@
-import { useParams } from "react-router-dom";
-
 import Box from "@mui/material/Box";
 
 import ExcludedColumns from "../utils/HiddenColumns";
@@ -17,8 +15,6 @@ const Ui = () => {
 
   const { error } = settings;
 
-  const { path } = useParams();
-
   if (!active_sheet && !loading.all_mitre)
     return (
       <Err_404
@@ -27,7 +23,7 @@ const Ui = () => {
         errorMessage={
           error
             ? error.error
-            : `Sheet '${path}' either does not exist or have been deleted`
+            : `This sheet does not exist or have been deleted.`
         }
       />
     );
