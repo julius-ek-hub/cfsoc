@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
@@ -10,9 +10,9 @@ import Drawer from "@mui/material/Drawer";
 import Avatar from "@mui/material/Avatar";
 import AvatarGroup from "@mui/material/AvatarGroup";
 import Checkbox from "@mui/material/Checkbox";
+import Divider from "@mui/material/Divider";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import AddIcon from "@mui/icons-material/Add";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
@@ -21,6 +21,8 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 import IconButton from "../../common/utils/IconButton";
 import Confirm from "../../common/utils/Comfirm";
+import Middle from "../../common/utils/Middle";
+import NewSheet from "./NewSheet";
 import Pagination from "../utils/Pagination";
 import MyMenu from "../../common/utils/Menu";
 import TextField from "../../common/utils/form/uncontrolled/TextField";
@@ -32,8 +34,6 @@ import useDimension from "../../common/hooks/useDimensions";
 import UseCommonSettings from "../../common/hooks/useSettings";
 
 import { field_separator as fs, _entr, _u, _values, _keys } from "./utils";
-import Middle from "../../common/utils/Middle";
-import { Divider } from "@mui/material";
 
 const Menu = ({ sheet }) => {
   const [open, setOpen] = useState(false);
@@ -193,9 +193,7 @@ const Menu = ({ sheet }) => {
 };
 
 const Sections = () => {
-  const { sheet_names, addSheet, active_sheet, active_content, updateSheet } =
-    useSheet();
-  const { post } = useFetch("/expo-sentinel");
+  const { sheet_names, active_sheet, active_content, updateSheet } = useSheet();
   const [open, setOpen] = useState(false);
   const [openStaffs, setOpenStaffs] = useState(false);
   const { up } = useDimension();
@@ -224,38 +222,6 @@ const Sections = () => {
   }, [up]);
 
   const handleClose = () => setOpen(false);
-
-  const addBlanc = async () => {
-    let max = sheet_names.map((sh, i) => {
-      const last_num = sh.key.split("_").at(-1);
-      return Number(isNaN(last_num) ? i : last_num);
-    });
-
-    if (max.length === 0) max = [0];
-
-    const { json } = await post(`/sheets?creator=${uname}`, [
-      `Sheet ${Math.max(...max) + 1}`,
-    ]);
-
-    if (json.error) return;
-
-    const sheet = json[0];
-    if (sheet.error) return;
-
-    addSheet({
-      ...sheet,
-      content: [],
-      pagination: {},
-      filters: {},
-      excluded_columns: [],
-      selected: [],
-      columns: {},
-      creator: uname,
-      date_created: new Date().toUTCString(),
-    });
-
-    navigate("/expo-sentinel/" + sheet.key);
-  };
 
   const Sheets = ({ orientation = "horizontal" }) =>
     sheet_names.length > 0 && (
@@ -416,22 +382,6 @@ const Sections = () => {
     </MyMenu>
   );
 
-  const create_blanc = uname !== "guest" && (
-    <Button
-      variant="contained"
-      sx={{
-        whiteSpace: "nowrap",
-        flexShrink: 0,
-        ...(sheet_names.length === 0 && { m: 3 }),
-      }}
-      endIcon={<AddIcon />}
-      size="small"
-      onClick={addBlanc}
-    >
-      Create New
-    </Button>
-  );
-
   return (
     <Box display="flex" alignItems="center" pr={2}>
       {shouldDraw ? (
@@ -445,7 +395,9 @@ const Sections = () => {
             <Box display="flex" justifyContent="end" my={1} mr={2}>
               <IconButton Icon={CloseIcon} onClick={handleClose} />
             </Box>
-            <Middle>{create_blanc}</Middle>
+            <Middle>
+              <NewSheet />
+            </Middle>
             <Divider sx={{ pb: 2 }} />
             <Sheets orientation="vertical" />
             <Middle mt="auto" mb={2}>
@@ -457,7 +409,7 @@ const Sections = () => {
         <>
           {staffs__}
           <Sheets />
-          {create_blanc}
+          <NewSheet />
         </>
       )}
       {active_sheet && (

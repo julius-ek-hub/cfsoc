@@ -1,6 +1,7 @@
 const express = require("express");
 
 const login = require("./login");
+const reset = require("./reset");
 const createPass = require("./create");
 const { verifyToken, verifyUser } = require("./verify");
 const {
@@ -18,6 +19,7 @@ const Router = express.Router();
 Router.post("/login", try_catch(login));
 Router.post("/verify-user", try_catch(verifyUser));
 Router.post("/create-pass", try_catch(createPass));
+Router.patch("/reset-pass", try_catch(reset));
 Router.get("/verify-token", try_catch(verifyToken));
 Router.get("/staffs", try_catch(getStaffs));
 Router.get("/user", try_catch(getUser));

@@ -9,11 +9,12 @@ module.exports = async (req, res) => {
   const users = await getStaff({ username });
   let user = users[username];
   if (!user) return res.json({ error: "User not found", field: "username" });
+
   if (!user.hash)
     return res.json({
       field: "password",
       error:
-        "Password has not been created for this user, click Reset to create one",
+        "Password has not been created for this user! Please contact an admin.",
     });
   try {
     const app_versions = await check();

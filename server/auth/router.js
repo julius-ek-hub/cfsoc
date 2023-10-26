@@ -17,13 +17,7 @@ const getStaffs = async (req, res) => {
 const getUser = async (req, res) => {
   const app_versions = await check();
   const { token } = req.query;
-  const loginError = {
-    error: "Login failed",
-    errorCode: 400,
-    stack: "",
-  };
 
-  // if (!token) return res.json(loginError);
   try {
     const { username } = jwt.verify(token, env("JWT_KEY"));
     const user = await gs({ username }, "-hash -__v");

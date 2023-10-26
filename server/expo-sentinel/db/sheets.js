@@ -75,27 +75,24 @@ const newSheet = async ($new, creator) => {
   const sheets = Array.isArray($new) ? $new : [$new];
   const _sheets = await getSheets();
   return Promise.all(
-    sheets.map(async (name, index) => {
-      const key = name.toLowerCase().split(/[ -]/).join("_");
-      let max = _sheets.map((sh, i) => {
-        const last_num = sh.key.split("_").at(-1);
-        return Number(isNaN(last_num) ? i : last_num);
-      });
+    sheets.map(async ({ sheet: name, description }) => {
+      let key = name.toLowerCase().split(/[ -]/).join("_");
+      const exists = _sheets.find((sh) => sh.key === key);
+      if (exists)
+        key = `${key}_${Math.round(Date.now() + Math.random(10000))}_${creator
+          .split(".")
+          .join("_")}`;
 
-      if (max.length === 0) max = [0];
-      const _newLoc = Math.max(...max) + index;
-      const exist = _sheets.find((sh) => sh.key === key);
-      if (exist) return { error: `Sheet ${name} already exists.` };
       await db.collection("sheets").insertOne({
         key,
         name,
-        location: _newLoc,
-        pagination: {},
+        location: _sheets.length,
         columns: {},
         user_added: true,
         num_rows: 0,
         creator,
         date_created: new Date().toUTCString(),
+        description,
       });
       return { key, name };
     })

@@ -70,7 +70,12 @@ const AddUser = ({ ClickComponent, edit }) => {
       {ClickComponent ? (
         <ClickComponent onClick={handleOpen} />
       ) : (
-        <Button sx={{ px: 2 }} onClick={handleOpen} startIcon={<AddIcon />}>
+        <Button
+          sx={{ px: 2 }}
+          onClick={handleOpen}
+          startIcon={<AddIcon />}
+          variant="contained"
+        >
           Add
         </Button>
       )}

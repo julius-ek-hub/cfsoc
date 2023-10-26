@@ -24,6 +24,7 @@ import { field_separator as fs, objectExcept, getSX } from "../utils/utils";
 import useFilter from "../hooks/useFilter";
 import useSheet from "../hooks/useSheet";
 import useFetch from "../../common/hooks/useFetch";
+import Description from "./Description";
 
 const Tc = ({
   link,
@@ -159,6 +160,7 @@ function Table() {
 
   return (
     <TableContainer>
+      <Description />
       <TableMui stickyHeader>
         {Object.keys(active_sheet.columns).length > 0 && (
           <TableHead>

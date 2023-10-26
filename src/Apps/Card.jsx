@@ -40,8 +40,9 @@ const Card = ({
   return (
     <Box
       sx={{
-        height: 250,
+        height: 260,
         width: 300,
+        overflow: "auto",
         border: (t) => `0.8px solid ${t.palette.divider}`,
         p: 2,
         px: 3,
@@ -104,11 +105,15 @@ const Card = ({
           </Menu>
         </Box>
       )}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box>
-          <Typography variant="h6">{title}</Typography>
-        </Box>
-      </Box>
+
+      <Typography
+        variant="h6"
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+        overflow="hidden"
+      >
+        {title}
+      </Typography>
       <Box flexGrow={1} color="text.secondary" my={1}>
         {description.substring(0, 110)}.
         {description.length > 100 && (

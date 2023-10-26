@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
   try {
     const app_versions = await check();
     const hash = await bcrypt.hash(password, bcrypt.genSaltSync());
-    const user = await updateStaff({ username }, { hash });
+    const user = await updateStaff({ username }, { hash, reset: false });
     const token = jwt.sign({ username }, env("JWT_KEY"));
     res.json({
       token,

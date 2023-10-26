@@ -111,7 +111,7 @@ function NewColumn({ Button }) {
           margin="dense"
           label="Default value"
           placeholder="Default value"
-          helperText="This would be applied automatically to all existing Use cases"
+          helperText="This would be applied automatically to all existing rows"
           value={newVal}
           onChange={(e) => setNewVal(e.target.value)}
         />

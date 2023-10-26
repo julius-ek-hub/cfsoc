@@ -9,6 +9,7 @@ const staffsSchema = new mongoose.Schema({
   username: String,
   email: String,
   no_schedule: Boolean,
+  reset: Boolean,
 });
 
 staffsSchema.set("toObject", { virtuals: true });

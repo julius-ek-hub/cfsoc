@@ -1,7 +1,6 @@
-import { useState } from "react";
-
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import LockResetIcon from "@mui/icons-material/LockReset";
 
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -15,6 +14,7 @@ import Typography from "@mui/material/Typography";
 
 import IconButton from "../common/utils/IconButton";
 import Confirm from "../common/utils/Comfirm";
+import RestPass from "./ResetPass";
 import AddUser from "./AddUser";
 
 import useLoading from "../common/hooks/useLoading";
@@ -106,6 +106,17 @@ const Tr = ({ row }) => {
                     title="Edit"
                     sx={{ ml: 1 }}
                     Icon={EditIcon}
+                    {...props}
+                  />
+                )}
+              />
+              <RestPass
+                staff={row}
+                ClickComponent={(props) => (
+                  <IconButton
+                    title={`Reset ${row.name.split(" ")[0]}'s Password`}
+                    sx={{ ml: 1 }}
+                    Icon={LockResetIcon}
                     {...props}
                   />
                 )}
