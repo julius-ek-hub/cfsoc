@@ -6,7 +6,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 import useSheet from "../../../hooks/useSheet";
 
-import { _l, _values } from "../../../utils/utils";
+import { _values, objectExcept } from "../../../utils/utils";
 import useCommonSettings from "../../../../common/hooks/useSettings";
 
 function ViewRelated({ _ids }) {
@@ -14,13 +14,17 @@ function ViewRelated({ _ids }) {
   const { getName } = useCommonSettings();
   const nav = useNavigate();
 
-  const { key, primary_column, columns } = active_sheet;
+  const { key, excluded_columns } = active_sheet;
 
   const go = [
     ...new Set(
       active_content
         .filter((c) => _ids.includes(c._id.value))
-        .map((c) => c[primary_column]?.value)
+        .map((c) =>
+          _values(objectExcept(c, ["_id", ...excluded_columns])).map(
+            (v) => v.value
+          )
+        )
         .flat()
         .filter((v) => v)
     ),
@@ -33,7 +37,7 @@ function ViewRelated({ _ids }) {
 
   return (
     <>
-      Search selected {columns[primary_column].label} in:
+      Search selected row{_ids.length > 1 ? "s" : ""} in:
       {_values(sheets)
         .filter((sheet) => sheet.key !== key && sheet.key !== "welcome")
         .map((sheet) => (

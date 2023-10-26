@@ -20,7 +20,7 @@ const ActionButtons = () => {
   const { active_sheet, permission } = useSheet();
   const { _delete } = useAddModify();
 
-  const { selected, columns, name } = active_sheet;
+  const { selected, columns } = active_sheet;
 
   const has_olumns = Object.keys(columns || {}).length > 0;
 
@@ -33,14 +33,14 @@ const ActionButtons = () => {
               <Form
                 Button={(props) => (
                   <Button color="inherit" endIcon={<AddIcon />} {...props}>
-                    Add new {name} row
+                    Add row
                   </Button>
                 )}
               />
               <BlancRows
                 Button={(props) => (
                   <Button color="inherit" endIcon={<AddIcon />} {...props}>
-                    {`Add Blanc Row(s) to ${name}`}
+                    {`Add Blanc Row(s)`}
                   </Button>
                 )}
               />
@@ -49,7 +49,7 @@ const ActionButtons = () => {
           <NewColumn
             Button={(props) => (
               <Button color="inherit" endIcon={<AddIcon />} {...props}>
-                Add new {name} column
+                Add column
               </Button>
             )}
           />
