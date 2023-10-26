@@ -6,10 +6,11 @@ import Button from "@mui/material/Button";
 import Edit from "@mui/icons-material/Edit";
 
 import TextField from "../../common/utils/form/uncontrolled/TextField";
+import useCommonSettings from "../../common/hooks/useSettings";
 import IconButton from "../../common/utils/IconButton";
+import Dialog from "../../common/utils/Dialogue";
 import Confirm from "../../common/utils/Comfirm";
 import Middle from "../../common/utils/Middle";
-import Dialog from "../../common/utils/Dialogue";
 
 import useSheet from "../hooks/useSheet";
 import useFetch from "../../common/hooks/useFetch";
@@ -23,6 +24,7 @@ const Description = () => {
   const { active_sheet, updateSheet, permission } = useSheet();
   const { patch } = useFetch("/expo-sentinel");
   const { push } = useToasts();
+  const { hide_header } = useCommonSettings();
 
   let { name, key } = active_sheet;
   const dsc = active_sheet.description || "";
@@ -42,6 +44,8 @@ const Description = () => {
   useEffect(() => {
     if (open) setDescription(active_sheet.description || "");
   }, [open]);
+
+  if (hide_header) return null;
 
   return (
     <Middle mb={2} color="text.secondary" px={2} textAlign="center">
@@ -84,7 +88,7 @@ const Description = () => {
             {!dsc && `<No description>`}
           </>
         )}
-        {dsc.substring(0, 110)}.
+        {dsc.substring(0, 110)}
         {dsc.length > 100 && (
           <Confirm
             title={`${name} | description`}
