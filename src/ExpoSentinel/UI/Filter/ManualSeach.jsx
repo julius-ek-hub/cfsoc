@@ -13,7 +13,7 @@ import useSheet from "../../hooks/useSheet";
 import useSettings from "../../hooks/useSettings";
 
 const ManualSearch = () => {
-  const { setSearch } = useSheet();
+  const { setSearch, active_content } = useSheet();
   const { settings, updateSettings } = useSettings();
   const [value, setValue] = useState("");
 
@@ -26,7 +26,7 @@ const ManualSearch = () => {
     setSearch([]);
   };
 
-  if (!settings.search) return null;
+  if (!settings.search || active_content.length === 0) return null;
 
   return (
     <Middle flexDirection="row" mx={2} my={1}>
@@ -49,7 +49,6 @@ const ManualSearch = () => {
             </InputAdornment>
           ),
         }}
-        helperText="Search anything withing this sheet."
       />
     </Middle>
   );

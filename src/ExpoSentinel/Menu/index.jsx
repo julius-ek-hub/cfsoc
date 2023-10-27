@@ -89,7 +89,7 @@ const Menu = () => {
       )}
       <Flex mb={1}>
         <Security />
-        {!settings.search && !hasSelected && (
+        {!settings.search && !hasSelected && active_content.length > 0 && (
           <IconButton
             Icon={Search}
             onClick={() => updateSettings("search", true)}

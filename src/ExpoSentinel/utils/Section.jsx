@@ -395,9 +395,12 @@ const Sections = () => {
             <Box display="flex" justifyContent="end" my={1} mr={2}>
               <IconButton Icon={CloseIcon} onClick={handleClose} />
             </Box>
-            <Middle>
-              <NewSheet />
-            </Middle>
+            {uname !== "guest" && (
+              <Middle>
+                <NewSheet />
+              </Middle>
+            )}
+
             <Divider sx={{ pb: 2 }} />
             <Sheets orientation="vertical" />
             <Middle mt="auto" mb={2}>
@@ -409,7 +412,7 @@ const Sections = () => {
         <>
           {staffs__}
           <Sheets />
-          <NewSheet />
+          {uname !== "guest" && <NewSheet />}
         </>
       )}
       {active_sheet && (
