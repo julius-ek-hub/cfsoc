@@ -229,6 +229,7 @@ const getUCTable = async (filter) => {
       return {
         ...l1,
         uc,
+        uc_count: { value: uc.length },
         l2s: _l2s,
         l2_uc_names: { value: getNames(l2_uc, l1.l2_uc_identifiers.value) },
         l2_uc_related: { value: l2_uc_related },

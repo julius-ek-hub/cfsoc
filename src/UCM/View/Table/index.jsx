@@ -48,7 +48,7 @@ const TableView = ({ use, onScroll, useKey, $for = {}, dataEndTable }) => {
 
   const filterValues = useMemo(
     () =>
-      entr_(sc.map(([k]) => [k, [...new Set(rows.map((r) => r[k].value))]])),
+      entr_(sc.map(([k]) => [k, [...new Set(rows.map((r) => r[k]?.value))]])),
     [rows]
   );
 
@@ -70,7 +70,7 @@ const TableView = ({ use, onScroll, useKey, $for = {}, dataEndTable }) => {
       rows.filter((row) => {
         return _entr(filters).every(([k, v]) => {
           if (v.length === 0) return true;
-          return v.includes(String(row[k].value));
+          return v.includes(String(row[k]?.value));
         });
       }),
     [rows, filters]
