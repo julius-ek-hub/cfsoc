@@ -110,6 +110,7 @@ const Detailed = ({
         href={href}
         target="_blank"
         underline="hover"
+        sx={{ wordBreak: "break-word" }}
         color={(t) => `${t.palette.primary.main}!important`}
       >
         {text}
@@ -146,11 +147,13 @@ const Detailed = ({
                   const tac = word.match(/TA[0-9]+/);
                   const stec = word.match(/T[0-9]+\/[0-9]+/);
                   const tec = word.match(/T[0-9]+/);
+                  const url = isURL(word);
 
                   let h;
                   if (tac) h = `https://attack.mitre.org/tactics/${tac[0]}`;
                   else if (stec) h = tech_url + stec[0];
                   else if (tec) h = tech_url + tec[0];
+                  else if (word && url) h = url;
 
                   if (h)
                     return (

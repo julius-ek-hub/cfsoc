@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -26,23 +26,31 @@ const InDetailedTable = ({
       ? content
       : content.filter((c) => c[filter]?.value?.length > 0);
 
-  const title = `${name} (${content.length})`;
+  const len = (key) =>
+    content.filter((c) => (c[key]?.value || []).length > 0).length;
 
-  const filters = [
-    { label: "All", key: "*" },
-    {
-      label: "#L2 UC Related",
-      key: "l2_uc_identifiers",
-    },
-    {
-      label: "#L3 UC Related",
-      key: "l3_uc_identifiers",
-    },
-    {
-      label: "#L4 UC Related",
-      key: "l4_uc_identifiers",
-    },
-  ];
+  const filters = useMemo(
+    () => [
+      { label: "All", key: "*", length: content.length },
+      {
+        label: "#L2 UC Related",
+        key: "l2_uc_identifiers",
+        length: len("l2_uc_identifiers"),
+      },
+      {
+        label: "#L3 UC Related",
+        key: "l3_uc_identifiers",
+        length: len("l3_uc_identifiers"),
+      },
+      {
+        label: "#L4 UC Related",
+        key: "l4_uc_identifiers",
+        length: len("l4_uc_identifiers"),
+      },
+    ],
+    [content]
+  );
+
   const getFilters = (except = []) =>
     [...filters].filter((f, i) => !except.includes(i));
 
@@ -54,11 +62,13 @@ const InDetailedTable = ({
     if ($for.l3_uc_identifier) filter_buttons = getFilters([1, 2]);
 
     which = filter_buttons && (
-      <Stack sx={{ mb: 2 }} direction="row" gap={1}>
+      <Stack sx={{ mb: 2, overflow: "auto" }} direction="row" gap={1}>
         {filter_buttons.map((fb) => (
           <Chip
             key={fb.label}
-            label={fb.label}
+            label={
+              <Typography fontSize="small">{`${fb.label} (${fb.length})`}</Typography>
+            }
             onClick={() => setFilter(fb.key)}
             variant={filter === fb.key ? "filled" : "outlined"}
             color="primary"
@@ -75,7 +85,7 @@ const InDetailedTable = ({
   return (
     <Box mt={2}>
       <Typography variant="h5" py={2}>
-        {title}
+        {name}
       </Typography>
 
       {which}
@@ -94,7 +104,7 @@ const InDetailedTable = ({
         />
       </Box>
       <Draw
-        title={title}
+        title={name}
         open={showFull}
         fullScreen
         onClose={handleClose}
