@@ -26,7 +26,7 @@ const Intro = () => {
           "&:before": {
             content: '""',
             position: "absolute",
-            width: 18,
+            width: 22,
             height: 52.5,
             bgcolor: "background.paper",
             right: 45,

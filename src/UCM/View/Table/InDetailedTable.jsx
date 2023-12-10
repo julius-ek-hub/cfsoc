@@ -28,27 +28,32 @@ const InDetailedTable = ({
 
   const title = `${name} (${content.length})`;
 
-  let filter_buttons = [{ label: "All", key: "*" }],
-    which;
+  const filters = [
+    { label: "All", key: "*" },
+    {
+      label: "#L2 UC Related",
+      key: "l2_uc_identifiers",
+    },
+    {
+      label: "#L3 UC Related",
+      key: "l3_uc_identifiers",
+    },
+    {
+      label: "#L4 UC Related",
+      key: "l4_uc_identifiers",
+    },
+  ];
+  const getFilters = (except = []) =>
+    [...filters].filter((f, i) => !except.includes(i));
 
-  if ($key === "all_uc") {
-    if ($for.l1_uc_identifier)
-      filter_buttons.push({
-        label: "#L2 UC Related",
-        key: "l2_uc_identifiers",
-      });
-    if ($for.l2_uc_identifier)
-      filter_buttons.push({
-        label: "#L3 UC Related",
-        key: "l3_uc_identifiers",
-      });
-    if ($for.l3_uc_identifier)
-      filter_buttons.push({
-        label: "#L4 UC Related",
-        key: "l4_uc_identifiers",
-      });
+  let filter_buttons, which;
 
-    which = (
+  if ($key === "all_uc" && !$for.l4_uc_identifier) {
+    if ($for.l1_uc_identifier) filter_buttons = getFilters();
+    if ($for.l2_uc_identifier) filter_buttons = getFilters([1]);
+    if ($for.l3_uc_identifier) filter_buttons = getFilters([1, 2]);
+
+    which = filter_buttons && (
       <Stack sx={{ mb: 2 }} direction="row" gap={1}>
         {filter_buttons.map((fb) => (
           <Chip
