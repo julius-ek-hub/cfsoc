@@ -33,17 +33,17 @@ const InDetailedTable = ({
     () => [
       { label: "All", key: "*", length: content.length },
       {
-        label: "#L2 UC Related",
+        label: "L2 Related",
         key: "l2_uc_identifiers",
         length: len("l2_uc_identifiers"),
       },
       {
-        label: "#L3 UC Related",
+        label: "L3 Related",
         key: "l3_uc_identifiers",
         length: len("l3_uc_identifiers"),
       },
       {
-        label: "#L4 UC Related",
+        label: "L4 Related",
         key: "l4_uc_identifiers",
         length: len("l4_uc_identifiers"),
       },
@@ -62,7 +62,11 @@ const InDetailedTable = ({
     if ($for.l3_uc_identifier) filter_buttons = getFilters([1, 2]);
 
     which = filter_buttons && (
-      <Stack sx={{ mb: 2, overflow: "auto" }} direction="row" gap={1}>
+      <Stack
+        sx={{ mb: 2, overflow: "auto", flexShrink: 0 }}
+        direction="row"
+        gap={1}
+      >
         {filter_buttons.map((fb) => (
           <Chip
             key={fb.label}
