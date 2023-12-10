@@ -31,17 +31,15 @@ const UseCaseManagement = () => {
 
   useEffect(() => {
     initialize();
-    if (key) {
-      document.querySelector(
-        "title"
-      ).textContent = `CFSOC Use Case Management - ${active_sheet.name}`;
-    }
   }, [sp_filter]);
 
   return (
     <Box display="flex" flexDirection="column" height="100%" overflow="hidden">
       <Box>
-        <Nav app="Use Case Management" />
+        <Nav
+          app="Use Case Management"
+          title={`CFSOC Use Case Management - ${active_sheet?.name}`}
+        />
       </Box>
       {active_sheet && _keys(contents).length >= 5 && (
         <>

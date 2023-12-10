@@ -12,9 +12,14 @@ import IconButton from "../IconButton";
 import UpdateUI from "./UpdateUI";
 
 import useCommonSettings from "../../hooks/useSettings";
+import { useEffect } from "react";
 
-const Nav = ({ app = "All Apps" }) => {
+const Nav = ({ app = "All Apps", title }) => {
   const { user, getName, hide_header } = useCommonSettings();
+
+  useEffect(() => {
+    document.querySelector("title").textContent = title;
+  }, [title]);
 
   if (!user || hide_header) return null;
 
