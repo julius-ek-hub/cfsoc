@@ -1,6 +1,8 @@
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import useLoading from "../../hooks/useLoading";
+import Middle from "../Middle";
+import { Typography } from "@mui/material";
 
 const FullScreenLoading = () => {
   const { loading } = useLoading();
@@ -11,7 +13,10 @@ const FullScreenLoading = () => {
       unmountOnExit
       sx={{ zIndex: 10000 }}
     >
-      <CircularProgress />
+      <Middle gap={2}>
+        <CircularProgress />
+        <Typography color="text.secondary">Please wait....</Typography>
+      </Middle>
     </Backdrop>
   );
 };

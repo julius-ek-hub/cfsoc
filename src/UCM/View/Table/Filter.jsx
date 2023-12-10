@@ -6,31 +6,23 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 import IconButton from "../../../common/utils/IconButton";
 import Menu from "../../../common/utils/Menu";
 
 import useDimension from "../../../common/hooks/useDimensions";
-import useFilter from "../../hooks/useFilter";
-import useSheet from "../../hooks/useSheet";
 
-import { field_separator } from "../../utils/utils";
+import { entr_ } from "../../utils/utils";
 
-export default function Filter({ column }) {
+export default function Filter({ column, filterValues, onChange, columns }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [selected, setSelected] = useState([]);
   const [max_scroll, setMaxScroll] = useState(50);
   const [values, setValues] = useState([]);
-
-  const { unfiltered } = useFilter(true);
-
-  const { active_sheet, updateSheet } = useSheet();
-
-  const { key, filters, columns } = active_sheet;
 
   const { t } = useDimension();
 
@@ -48,7 +40,9 @@ export default function Filter({ column }) {
 
   const scrollValues = searched.slice(0, max_scroll);
 
-  const filter = filters[column] || searched;
+  const final = equal_arrays(selected, values)
+    ? []
+    : searched.filter((s) => selected.includes(s));
 
   const handleTextInput = (e) => setInput(e.target.value);
 
@@ -66,12 +60,7 @@ export default function Filter({ column }) {
   };
 
   const handleSave = () => {
-    updateSheet(`${key + field_separator}filters`, {
-      ...active_sheet.filters,
-      [column]: equal_arrays(selected, values)
-        ? undefined
-        : searched.filter((s) => selected.includes(s)),
-    });
+    onChange(column, final);
 
     handleClose();
   };
@@ -84,10 +73,8 @@ export default function Filter({ column }) {
 
   useEffect(() => {
     if (open) {
-      setValues([
-        ...new Set(unfiltered().map((d) => String(d[column]?.value || ""))),
-      ]);
-      setSelected(filter);
+      setValues(filterValues.map((v) => String(v)));
+      setSelected(final);
       setMaxScroll(50);
     }
   }, [open]);
@@ -99,9 +86,11 @@ export default function Filter({ column }) {
       onClose={handleClose}
       Clickable={(props) => (
         <IconButton
-          Icon={KeyboardArrowDownIcon}
+          Icon={FilterAltIcon}
           title="Filter"
           size="small"
+          sx={{ visibility: final.length === 0 ? "hidden" : "visible" }}
+          iprop={{ sx: { width: 20, height: 20, color: "text.secondary" } }}
           onClick={(e) => {
             handleClose();
             props.onClick(e);
@@ -117,7 +106,7 @@ export default function Filter({ column }) {
           onKeyDown={(e) => e.stopPropagation()}
           fullWidth
           size="small"
-          placeholder={`Search ${columns[column].label}...`}
+          placeholder={`Search ${entr_(columns)[column].label}...`}
           margin="dense"
         />
         <Box mt={1} maxHeight={200} overflow="auto" onScroll={handleScroll}>

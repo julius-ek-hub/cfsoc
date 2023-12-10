@@ -46,7 +46,7 @@ const theme = (mode = "light") => {
           mode === "light" ? "rgba(255, 255, 255, 0.9)" : "rgba(0, 0, 0, 0.9)",
         zIndex: 1000,
       }),
-      MuiTypography: styleOverrides({ wordBreak: "break-all" }),
+      MuiTypography: styleOverrides({ wordBreak: "normal" }),
     },
   });
 };

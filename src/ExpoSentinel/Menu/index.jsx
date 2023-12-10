@@ -11,6 +11,7 @@ import IconButton from "../../common/utils/IconButton";
 import Security from "../utils/Security";
 import SheetInfo from "../utils/SheetInfo";
 import ViewRelated from "./AddRow/utils/ViewRelated";
+import Notify from "./AddRow/utils/Notify";
 
 import useSheet from "../hooks/useSheet";
 import useFetcher from "../hooks/useFetcher";
@@ -96,6 +97,7 @@ const Menu = () => {
             title="Search anything within this sheet"
           />
         )}
+        {uname !== "guest" && <Notify />}
         {permission.includes("modify") && (
           <IconButton
             Icon={ordered ? FormatListNumberedIcon : FormatListBulletedIcon}

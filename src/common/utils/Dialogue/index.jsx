@@ -52,7 +52,7 @@ function Dialog(props) {
         fullScreen,
       })}
     >
-      {(title || expandable) && (
+      {(title || expandable || onXClose) && (
         <>
           <DialogTitle
             display="flex"

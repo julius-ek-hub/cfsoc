@@ -22,9 +22,10 @@ export default function AutoComplete(props) {
     helperText,
     size,
     sx,
-    fixed,
+    fixed = [],
     onChange: oC,
     getOptionLabel,
+    isFixed,
     ...rest
   } = props;
 
@@ -33,7 +34,17 @@ export default function AutoComplete(props) {
 
   const hasError = Boolean(error && touched[name]);
 
-  const onChange = (e, value) => {
+  const onChange = (e, val) => {
+    let value = val;
+    if (fixed?.length > 0 && multiple) {
+      value = [
+        ...fixed,
+        ...val.filter((v) => (isFixed ? !isFixed(v) : fixed.indexOf(v) === -1)),
+      ];
+    } else if (fixed?.length > 0) {
+      value = fixed;
+    }
+
     handleChange({ target: { value, name } });
     !hasError && oC?.call({}, e, value);
   };
@@ -65,16 +76,17 @@ export default function AutoComplete(props) {
           size={size}
         />
       )}
-      {...(fixed && {
-        renderTags: (tagValue, getTagProps) =>
-          tagValue.map((option, index) => (
-            <Chip
-              label={getOptionLabel ? getOptionLabel(option) : option}
-              {...getTagProps({ index })}
-              disabled={fixed.indexOf(option) !== -1}
-            />
-          )),
-      })}
+      renderTags={(tagValue, getTagProps) =>
+        tagValue.map((option, index) => (
+          <Chip
+            label={getOptionLabel ? getOptionLabel(option) : option}
+            {...getTagProps({ index })}
+            disabled={
+              isFixed ? Boolean(isFixed(option)) : fixed.indexOf(option) !== -1
+            }
+          />
+        ))
+      }
       {...rest}
     />
   );

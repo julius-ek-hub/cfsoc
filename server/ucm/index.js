@@ -11,10 +11,13 @@ const {
 } = require("./routes/sheets");
 const download = require("./routes/download");
 const {
-  getContent,
+  getUCTable,
   addContent,
   editContent,
   deleteContent,
+  getFilters,
+  addFilter,
+  removeFilter,
 } = require("./routes/content");
 const { overRide } = require("./routes/override");
 const extract = require("./routes/extract");
@@ -23,7 +26,10 @@ const fetch_site = require("./routes/fetch_site");
 const Router = express.Router();
 
 Router.post("/override", try_catch(overRide));
-Router.get("/data", try_catch(getContent));
+Router.get("/uc_table", try_catch(getUCTable));
+Router.get("/filters", try_catch(getFilters));
+Router.post("/filters", try_catch(addFilter));
+Router.delete("/filters", try_catch(removeFilter));
 Router.post("/data", try_catch(addContent));
 Router.patch("/data", try_catch(editContent));
 Router.delete("/data", try_catch(deleteContent));

@@ -3,7 +3,7 @@ import { createBrowserRouter, redirect } from "react-router-dom";
 import Schedule from "./Schedule";
 import Apps from "./Apps";
 import Account from "./Account";
-import UCM from "./UCM";
+import UseCase from "./UCM";
 import ExpoSentinel from "./ExpoSentinel";
 import Err_404 from "./common/utils/404";
 import Err_500 from "./common/utils/500";
@@ -26,7 +26,7 @@ export default createBrowserRouter([
 
   {
     path: "/use-case-management/:path",
-    element: <UCM />,
+    element: <UseCase />,
     errorElement: <Err_500 />,
   },
   {

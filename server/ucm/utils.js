@@ -24,6 +24,9 @@ const objectOnly = (obj, keys) => {
   }
   return newObject;
 };
+const _l = (str) => String(str).toLowerCase().trim();
+const _entr = (ob) => Object.entries(ob);
+
 const fixObject = (value) => {
   if (typeof value !== "object" || !value) return value;
   if (Array.isArray(value)) return value.map(fixObject);
@@ -147,4 +150,6 @@ module.exports = {
   excelBuffer,
   numberToLetters,
   fixObject,
+  _l,
+  _entr,
 };

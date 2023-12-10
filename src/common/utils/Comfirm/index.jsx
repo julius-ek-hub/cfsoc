@@ -42,7 +42,11 @@ export default function Confirm({
         {...rest}
         action={
           <>
-            {!is_alert && <Button onClick={handleClose}>Cancel</Button>}
+            {!is_alert && (
+              <Button onClick={handleClose} color="inherit">
+                Cancel
+              </Button>
+            )}
             <Button
               onClick={handleAccpet}
               color={ok_color || "primary"}

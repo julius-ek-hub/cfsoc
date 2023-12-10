@@ -1,148 +1,74 @@
+import { useMemo } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useSearchParams } from "react-router-dom";
 
-import {
-  addSheet as as,
-  updateSheet as us,
-  deleteSheet as ds,
-} from "../store/ucm";
+import { addSheet as as, setUCTable as ac } from "../store/ucm";
 
-import { _entr, _l, field_separator as fs } from "../utils/utils";
+import { _entr, _l } from "../utils/utils";
 
-import useToasts from "../../common/hooks/useToast";
-import useCalculator from "./useCalculator";
+import useSettings from "./useSettings";
 
 const useSheet = () => {
-  const { sheets } = useSelector(({ ucm }) => ucm);
+  const { sheets, contents } = useSelector(({ ucm }) => ucm);
   const { path } = useParams();
   const [sp, setSp] = useSearchParams();
   const active_sheet = sheets[path];
+  const { settings } = useSettings();
 
-  const sp_filter = {};
+  const dispatch = useDispatch();
 
-  [...sp.keys()].map((sk) => {
-    const vals = [...new Set([...sp.getAll(sk)])].filter((v) => v);
-    if (active_sheet && active_sheet.columns[sk]) sp_filter[sk] = vals;
-  });
+  const sp_filter = useMemo(() => {
+    const all_f = settings.uc_filter || [];
+    const f = {};
+
+    [...sp.keys()].map((sk) => {
+      const vals = [...new Set([...sp.getAll(sk)])];
+      if (
+        ["uc_search", "view"].includes(sk) ||
+        all_f.find((af) => af.key === sk)
+      )
+        f[sk] = vals;
+    });
+    return f;
+  }, [sp, Boolean(settings.uc_filter)]);
 
   const sorted_columns = _entr(active_sheet?.columns || {}).sort(
     (a, b) => a[1].position - b[1].position
   );
 
-  const has_sp_filter = _entr(sp_filter).length > 0;
-
   const removeSP = () => setSp({});
-
-  const { push } = useToasts();
-  const calculte = useCalculator(sheets);
-
-  const dispatch = useDispatch();
+  const resetSP = (key, value) => {
+    const _sp = { ...sp_filter };
+    if (!value || value?.length === 0) {
+      delete _sp[key];
+      return setSp({ ..._sp });
+    }
+    setSp({ ..._sp, [key]: value });
+  };
 
   const sheet_names = Object.values(sheets)
-    .map(({ key, name, location, locked, user_added }) => ({
+    .map(({ key, name, location }) => ({
       key,
       name,
       location,
-      locked,
-      user_added,
     }))
     .sort((a, b) => a.location - b.location);
 
-  const primary_field = (_entr((active_sheet || {}).columns || {}).find(
-    ([k, v]) => v.unique
-  ) || [])[0];
-
-  const sheet_names_except_current =
-    sheet_names.filter((s) => s.key != active_sheet?.key) || [];
-
-  const filterBySP = (content, key) => {
-    if (!has_sp_filter) return content;
-    return content.filter((c) =>
-      _entr(sp_filter).every(([spk, spv]) => {
-        let target = c[spk].value;
-        if (key === "l2_uc") target = _l(target).split(" ").join("-");
-        return spv.some((_spv) => new RegExp(_spv, "i").test(target));
-      })
-    );
-  };
-
-  const active_content_with_calculations = (key = active_sheet?.key) => {
-    if (!key || !sheets[key]) return [];
-    const { content } = sheets[key];
-
-    let cd = _entr(calculte(key));
-
-    return filterBySP(
-      content.map((doc) => {
-        return {
-          ...doc,
-          ...Object.fromEntries(
-            cd.map(([k, v]) => [
-              k,
-              { ...doc[k], value: v[doc._id.value] || "" },
-            ])
-          ),
-        };
-      }),
-      key
-    );
-  };
-
-  const updateSheet = (key, value) => dispatch(us({ key, value }));
-  const deleteSheet = (key) => dispatch(ds({ key }));
   const addSheet = (sheet) => dispatch(as(sheet));
-
-  const updateSheetWithDataFromDb = (json, key, update = true) => {
-    const pushes = [];
-    let _return;
-    if (!json.error) {
-      if (Object.keys(sheets[key].columns).length === 0) {
-        updateSheet(`${key + fs}columns`, json.new_columns);
-      }
-
-      if (json.warnings && json.warnings.length > 0)
-        pushes.push({
-          message: json.warnings.join(", "),
-          severity: "warning",
-        });
-
-      update &&
-        updateSheet(`${key + fs}content`, [
-          ...sheets[key].content,
-          ...json.data,
-        ]);
-
-      pushes.push({
-        message: `Added ${json.length || 1} new ${sheets[key].name}`,
-        severity: "success",
-      });
-      _return = true;
-    } else {
-      push({
-        message: json.error,
-        severity: "error",
-      });
-      _return = false;
-    }
-    pushes.length > 0 && push(pushes);
-    return _return;
-  };
+  const setUCTable = (payload) => dispatch(ac(payload));
 
   return {
     sheets,
+    contents,
     active_sheet,
-    primary_field,
-    active_content: active_sheet?.content || [],
     sheet_names,
-    sheet_names_except_current,
-    updateSheetWithDataFromDb,
-    active_content_with_calculations,
     addSheet,
-    updateSheet,
-    deleteSheet,
     removeSP,
+    setUCTable,
+    resetSP,
     sorted_columns,
-    sp_filter: has_sp_filter ? sp_filter : null,
+    sp_filter,
   };
 };
 

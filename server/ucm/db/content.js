@@ -1,25 +1,246 @@
 const mongoose = require("mongoose");
-const { fixObject, structure } = require("../utils");
-const { updateSheet } = require("./sheets");
+const { fixObject, structure, _l, _entr } = require("../utils");
 const fs = require("fs");
 const path = require("path");
 
 const db = mongoose.connection.useDb("ucm");
 
-const getContent = async (collection, filter = {}, page) => {
-  const col = db.collection(collection);
-  let docs;
-  if (page) {
-    docs = await col
-      .find(filter)
-      .skip(5000 * (Number(page) - 1))
-      .limit(5000)
-      .toArray();
-  } else docs = await col.find(filter).toArray();
+const getDoc = async (key) => {
+  const docs = await db.collection(key).find().toArray();
   return docs.map((doc) => ({
     ...doc,
     _id: { value: doc._id },
   }));
+};
+
+const getNames = (content, check) =>
+  content
+    .filter((l) => check.includes(l.identifier.value))
+    .map((l) => `${l.name.value} (${l.identifier.value})`)
+    .join(", ");
+
+const getUC = async (ucf) => {
+  const all = await getDoc("all_uc");
+
+  return all.filter((uc) => {
+    let c1, c2, c3, c4;
+    if (!ucf.source || ucf.source?.length === 0) c1 = true;
+    else c1 = ucf.source.some((ms) => _l(uc.source?.value || "") === _l(ms));
+    if (!ucf.customer || ucf.customer?.length === 0) c2 = true;
+    else
+      c2 = ucf.customer.some((mc) => _l(uc.customer?.value || "") === _l(mc));
+    if (!ucf.technology || ucf.technology?.length === 0) c4 = true;
+    else
+      c4 = ucf.technology.some(
+        (mt) => _l(uc.technology?.value || "") === _l(mt)
+      );
+
+    if (!ucf.uc_search || ucf.uc_search?.length === 0) c3 = true;
+    else {
+      c3 = _entr(uc).some((_c) =>
+        new RegExp(ucf.uc_search.join("").replace(/[\[\]]/g, ""), "i").test(
+          String(_c[1].value).replace(/[\[\]]/g, "")
+        )
+      );
+    }
+
+    return c1 && c2 && c3 && c4;
+  });
+};
+
+const getFilters = async () => {
+  // const auc = await db.collection("all_uc").find().toArray();
+  // const auc_ = auc.map((uc, i) => {
+  //   const zeros = 6 - String(i).length;
+  //   const d = new Date().toLocaleDateString("en-US").split("/");
+  //   const l1 = uc.l1_uc_identifiers.value;
+  //   const l2 = uc.l2_uc_identifiers.value;
+  //   const l3 = uc.l3_uc_identifiers.value;
+  //   const l4 = uc.l4_uc_identifiers.value;
+
+  //   return {
+  //     ...uc,
+  //     l1_uc_identifiers: {
+  //       value: uc.l1_uc_identifiers.value.filter((l1) => l1 !== "EN"),
+  //     },
+  //     technology: { value: "" },
+  //     customer: { value: "" },
+  //     ...((!uc.identifier.value ||
+  //       uc.identifier.value.split("-").length === 5) && {
+  //       identifier: {
+  //         value: `${(uc.source?.value || "").substring(0, 3).toUpperCase()}-${
+  //           d[2]
+  //         }-${d[0]}-${zeros < 0 ? i : "0".repeat(zeros) + i}`,
+  //       },
+  //     }),
+  //     ...(l1.length === 0 && {
+  //       l1_uc_identifiers: {
+  //         value: ["CO"],
+  //       },
+  //     }),
+  //   };
+  // });
+  // await db.collection("all_uc").drop();
+  // await db.collection("all_uc").insertMany(auc_);
+  return db.collection("uc_filter").find().toArray();
+};
+
+const getRelated = (l1, l) =>
+  [
+    ...new Set(
+      l
+        .filter(
+          (_l) =>
+            _l.uc.length > 0 &&
+            l1.l2_uc_identifiers.value.some((l2) =>
+              _l.l2_uc_identifiers.value.includes(l2)
+            )
+        )
+        .map((_l) => _l.uc.map((l2uc) => l2uc._id.value))
+        .flat()
+    ),
+  ].length;
+
+const getUCTable = async (filter) => {
+  const l1_uc = await getDoc("l1_uc");
+  const l2_uc = await getDoc("l2_uc");
+  const l3_uc = await getDoc("l3_uc");
+  const l4_uc = await getDoc("l4_uc");
+  const uc = await getUC(filter);
+
+  const l1l2n = Object.fromEntries(
+    l2_uc.map(({ identifier }) => {
+      const l1 = l1_uc.find((l1) =>
+        l1.l2_uc_identifiers.value.includes(identifier.value)
+      );
+      return [
+        identifier.value,
+        `${l1?.name?.value || ""} (${l1?.identifier?.value || ""})`,
+      ];
+    })
+  );
+
+  const all_uc = uc.map((auc) => {
+    const l2n = getNames(l2_uc, auc.l2_uc_identifiers.value);
+    const l3n = getNames(l3_uc, auc.l3_uc_identifiers.value);
+    const l4n = getNames(l4_uc, auc.l4_uc_identifiers.value);
+
+    return {
+      ...auc,
+      l1_uc_names: { value: getNames(l1_uc, auc.l1_uc_identifiers.value) },
+      l2_uc_names: { value: l2n },
+      l3_uc_names: { value: l3n },
+      l4_uc_names: { value: l4n },
+    };
+  });
+
+  const l4s = l4_uc.map((l4) => {
+    const uc = all_uc.filter((uc) =>
+      uc.l4_uc_identifiers.value.includes(l4.identifier.value)
+    );
+    return {
+      ...l4,
+      uc,
+      uc_count: { value: uc.length },
+      l1_uc_names: {
+        value: l4.l2_uc_identifiers.value.map((v) => l1l2n[v]).join(", "),
+      },
+      l2_uc_names: { value: getNames(l2_uc, l4.l2_uc_identifiers.value) },
+      l3_uc_names: { value: getNames(l3_uc, l4.l3_uc_identifiers.value) },
+      url: {
+        value: `https://attack.mitre.org/techniques/${l4.identifier.value
+          .split(".")
+          .join("/")}`,
+      },
+    };
+  });
+
+  const l3s = l3_uc.map((l3) => {
+    const _l4s = l4s.filter((l4) =>
+      l4.l3_uc_identifiers.value.includes(l3.identifier.value)
+    );
+    let l4_uc_related = 0;
+    const uc = all_uc.filter((uc) => {
+      if (uc.l3_uc_identifiers.value.includes(l3.identifier.value)) {
+        if (uc.l4_uc_identifiers.value.length > 0) l4_uc_related += 1;
+        return true;
+      }
+    });
+    return {
+      ...l3,
+      uc,
+      l4s: _l4s,
+      l4_uc_related: { value: l4_uc_related },
+      l2_uc_names: { value: getNames(l2_uc, l3.l2_uc_identifiers.value) },
+      l1_uc_names: {
+        value: l3.l2_uc_identifiers.value.map((v) => l1l2n[v]).join(", "),
+      },
+      uc_count: { value: uc.length },
+      url: {
+        value: `https://attack.mitre.org/techniques/${l3.identifier.value}`,
+      },
+    };
+  });
+
+  const l2s = l2_uc.map((l2) => {
+    const _l3s = l3s.filter((l3) =>
+      l3.l2_uc_identifiers.value.includes(l2.identifier.value)
+    );
+    let l3_uc_related = 0;
+    let l4_uc_related = 0;
+    const uc = all_uc.filter((uc) => {
+      if (uc.l2_uc_identifiers.value.includes(l2.identifier.value)) {
+        if (uc.l3_uc_identifiers.value.length > 0) l3_uc_related += 1;
+        if (uc.l4_uc_identifiers.value.length > 0) l4_uc_related += 1;
+        return true;
+      }
+      return false;
+    });
+    return {
+      ...l2,
+      uc,
+      l3s: _l3s,
+      l1_uc_names: { value: l1l2n[l2.identifier.value] },
+      l3_uc_related: { value: l3_uc_related },
+      l4_uc_related: { value: l4_uc_related },
+      uc_count: { value: uc.length },
+      url: { value: `https://attack.mitre.org/tactics/${l2.identifier.value}` },
+    };
+  });
+
+  return {
+    l1_uc: l1_uc.map((l1) => {
+      const _l2s = l2s.filter((l2) =>
+        l1.l2_uc_identifiers.value.includes(l2.identifier.value)
+      );
+      let l2_uc_related = 0;
+      let l3_uc_related = 0;
+      let l4_uc_related = 0;
+      let uc = all_uc.filter((uc) => {
+        if (uc.l1_uc_identifiers.value.includes(l1.identifier.value)) {
+          if (uc.l2_uc_identifiers.value.length > 0) l2_uc_related += 1;
+          if (uc.l3_uc_identifiers.value.length > 0) l3_uc_related += 1;
+          if (uc.l4_uc_identifiers.value.length > 0) l4_uc_related += 1;
+          return true;
+        }
+        return false;
+      });
+
+      return {
+        ...l1,
+        uc,
+        l2s: _l2s,
+        l2_uc_names: { value: getNames(l2_uc, l1.l2_uc_identifiers.value) },
+        l2_uc_related: { value: l2_uc_related },
+        l3_uc_related: { value: l3_uc_related },
+        l4_uc_related: { value: l4_uc_related },
+      };
+    }),
+    all_uc,
+    l2_uc: l2s,
+    l3_uc: l3s,
+    l4_uc: l4s,
+  };
 };
 
 const editContent = (collection, body) => {
@@ -32,148 +253,54 @@ const editContent = (collection, body) => {
 };
 
 const deleteContent = async (query) => {
-  const _sheet = query.sheet;
-  const sheet = db.collection(_sheet);
+  const sheet = db.collection(query.sheet);
   const _id = new mongoose.Types.ObjectId(query._id);
-  const target = await sheet.findOne({ _id });
 
-  if (!target) return {};
-
-  await sheet.findOneAndDelete({ _id });
-
-  Object.values(target)
-    .filter((v) => v.image)
-    .map((v) => {
-      const _link = path.join(
-        ...__dirname.split(path.sep).reverse().slice(2).reverse(),
-        "view",
-        "sheet_images",
-        _sheet,
-        v.image
-      );
-      if (fs.existsSync(_link)) fs.unlinkSync(_link);
-    });
-
-  await db
-    .collection("sheets")
-    .findOneAndUpdate({ key: _sheet }, { $inc: { num_rows: -1 } });
-
-  const to_arr = (col, filter) => db.collection(col).find(filter).toArray();
-  const update = (col, ...arg) => db.collection(col).findOneAndUpdate(...arg);
-
-  const target_id = target?.identifier?.value;
-
-  let l3_for_delete = [];
-  let l1_for_delete = [];
-  let l4_for_delete = [];
-
-  if (_sheet === "l2_uc") {
-    const l3s = await to_arr("l3_uc", { "l2_uc_identifiers.value": target_id });
-    const l1s = await to_arr("l1_uc", { "l2_uc_identifiers.value": target_id });
-
-    await Promise.all(
-      l3s.map(async (l3) => {
-        const l2s = l3.l2_uc_identifiers.value.filter((l2) => l2 !== target_id);
-        if (l2s.length === 0) {
-          l3_for_delete.push([l3.identifier.value, l3._id]);
-        } else {
-          await update(
-            "l3_uc",
-            { _id: l3._id },
-            { $set: { "l2_uc_identifiers.value": l2s } }
-          );
-        }
-      })
-    );
-
-    await Promise.all(
-      l1s.map(async (l1) => {
-        const l2s = l1.l2_uc_identifiers.value.filter((l2) => l2 !== target_id);
-        if (l2s.length === 0) {
-          l1_for_delete.push(l1._id);
-        } else {
-          await update(
-            "l1_uc",
-            { _id: l1._id },
-            { $set: { "l2_uc_identifiers.value": l2s } }
-          );
-        }
-      })
-    );
-  } else if (_sheet === "l3_uc") {
-    let l4s = await to_arr("l4_uc", { "l3_uc_identifier.value": target_id });
-    l4_for_delete = [...l4_for_delete, ...l4s.map((l4) => l4._id)];
-  }
-
-  await Promise.all(
-    l1_for_delete.map((_id) => deleteContent({ _id, sheet: "l1_uc" }))
-  );
-
-  await Promise.all(
-    l3_for_delete.map(async ([l3, _id]) => {
-      await deleteContent({ _id, sheet: "l3_uc" });
-      let l4s = await to_arr("l4_uc", { "l3_uc_identifier.value": l3 });
-      l4_for_delete = [...l4_for_delete, ...l4s.map((l4) => l4._id)];
-    })
-  );
-
-  await Promise.all(
-    l4_for_delete.map((_id) => deleteContent({ _id, sheet: "l4_uc" }))
-  );
-
-  return {};
+  return sheet.findOneAndDelete({ _id });
 };
 
-const addContent = async (collection, content, unique_key) => {
-  let data = fixObject(structure(content));
+const addContent = async (content) => {
+  const col = db.collection("all_uc");
+  let data = fixObject(structure(content))[0];
+  const id = data.identifier.value;
 
-  const old_content = await getContent(collection);
+  const exist = await col.findOne({ "identifier.value": id });
+  if (exist) return { error: `Use Case with identifier ${id} exists` };
 
-  let duplicates = [];
-  let warnings = [];
-  if (unique_key) {
-    const values = data.map((d) => d[unique_key].value);
-    const exists = old_content.filter((doc) =>
-      values.includes(doc[unique_key].value)
-    );
-    if (exists.length !== 0) {
-      duplicates = exists.map((ex) => ex[unique_key].value);
-      data = data.filter((d) => !duplicates.includes(d[unique_key].value));
-      warnings.push(
-        `The following Use Cases exist: ${duplicates.join(
-          ", "
-        )}, and have been ignored`
-      );
-    }
-  }
+  const d = await col.insertOne(data);
 
-  if (data.length === 0)
-    return {
-      data,
-      duplicates,
-      warnings,
-    };
+  return { ...data, _id: { value: d.insertedId } };
+};
 
-  const { insertedIds } = await db.collection(collection).insertMany(data);
+const addFilter = async (filter) => {
+  const col = db.collection("uc_filter");
 
-  await updateSheet({
-    key: collection,
-    update: { num_rows: data.length + old_content.length },
+  const exist = await col.findOne({
+    $where: `this.key === '${filter.key}' && this.options.includes('${filter.value}')`,
   });
+  if (exist) return { error: `${filter.value} exists` };
 
-  return {
-    data: data.map((d, ind) => ({
-      ...d,
-      _id: { value: insertedIds[ind].toString() },
-    })),
-    duplicates,
-    warnings,
-  };
+  const d = await col.findOneAndUpdate(
+    { key: filter.key },
+    { $push: { options: filter.value } }
+  );
+
+  return d;
 };
+const removeFilter = async (filter) =>
+  db
+    .collection("uc_filter")
+    .findOneAndUpdate(
+      { key: filter.key },
+      { $pull: { options: filter.value } }
+    );
 
 module.exports = {
-  getContent,
   addContent,
   editContent,
   deleteContent,
+  getFilters,
+  getUCTable,
+  addFilter,
+  removeFilter,
 };
