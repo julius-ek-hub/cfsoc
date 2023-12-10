@@ -92,7 +92,7 @@ export default function MainFilter() {
         width="100%"
         flexDirection="row"
       >
-        {`${total} use case${length === 1 ? "" : "s"}`}
+        {`${total} use case${total === 1 ? "" : "s"}`}
         <Divide />
         <EditUC />
       </Middle>

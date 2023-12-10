@@ -146,14 +146,20 @@ const Detailed = ({
                   const word = w.trim();
                   const tac = word.match(/TA[0-9]+/);
                   const stec = word.match(/T[0-9]+\/[0-9]+/);
+                  const stec2 = word.match(/T[0-9]+\.[0-9]+/);
                   const tec = word.match(/T[0-9]+/);
                   const url = isURL(word);
+
+                  if (stec2) {
+                    console.log(stec2);
+                  }
 
                   let h;
                   if (tac) h = `https://attack.mitre.org/tactics/${tac[0]}`;
                   else if (stec) h = tech_url + stec[0];
+                  else if (stec2) h = tech_url + stec2[0].split(".").join("/");
                   else if (tec) h = tech_url + tec[0];
-                  else if (word && url) h = url;
+                  else if (word && url) h = word;
 
                   if (h)
                     return (
