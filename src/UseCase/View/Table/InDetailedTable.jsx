@@ -21,6 +21,8 @@ const InDetailedTable = ({
 
   const handleClose = () => setShowFull(false);
 
+  let title = `${name} (${content.length})`;
+
   const _content =
     filter === "*"
       ? content
@@ -28,6 +30,8 @@ const InDetailedTable = ({
 
   const len = (key) =>
     content.filter((c) => (c[key]?.value || []).length > 0).length;
+
+  const is_uc = $key === "all_uc";
 
   const filters = useMemo(
     () => [
@@ -56,7 +60,8 @@ const InDetailedTable = ({
 
   let filter_buttons, which;
 
-  if ($key === "all_uc" && !$for.l4_uc_identifier) {
+  if (is_uc && !$for.l4_uc_identifier) {
+    title = name;
     if ($for.l1_uc_identifier) filter_buttons = getFilters();
     if ($for.l2_uc_identifier) filter_buttons = getFilters([1]);
     if ($for.l3_uc_identifier) filter_buttons = getFilters([1, 2]);
@@ -89,7 +94,7 @@ const InDetailedTable = ({
   return (
     <Box mt={2}>
       <Typography variant="h5" py={2}>
-        {name}
+        {title}
       </Typography>
 
       {which}
@@ -108,7 +113,7 @@ const InDetailedTable = ({
         />
       </Box>
       <Draw
-        title={name}
+        title={title}
         open={showFull}
         fullScreen
         onClose={handleClose}

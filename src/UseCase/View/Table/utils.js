@@ -1,21 +1,18 @@
 export const td = (v, search) => {
+  const noCode = (v) =>
+    v
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/___begin___/g, '<span style="background-color:yellow">')
+      .replace(/___end___/g, "</span>");
   let val = String(typeof v === "undefined" ? "" : v);
-  if (!search) return val;
+  if (!search) return noCode(val);
 
-  [
-    ...new Set(
-      val.match(
-        new RegExp(search.replace(/</g, "&lt;").replace(/>/g, "&gt;"), "ig")
-      ) || []
-    ),
-  ].map((s) => {
-    val = val.replace(
-      new RegExp(s, "g"),
-      `<span style="background-color:yellow">${s}</span>`
-    );
+  [...new Set(val.match(search) || [])].map((s) => {
+    val = val.replace(new RegExp(s, "g"), `___begin___${s}___end___`);
   });
 
-  return val;
+  return noCode(val);
 };
 
 export function descendingComparator(a, b, orderBy) {
