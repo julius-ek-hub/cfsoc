@@ -126,6 +126,7 @@ const Detailed = ({
         open={drawer}
         onXclose={closeDrawer}
         onClose={closeDrawer}
+        Okbutton={() => <EditUC edit={selected[0]} $for={$for} />}
         path={path}
         title={
           <>
@@ -149,11 +150,6 @@ const Detailed = ({
                   const stec2 = word.match(/T[0-9]+\.[0-9]+/);
                   const tec = word.match(/T[0-9]+/);
                   const url = isURL(word);
-
-                  if (stec2) {
-                    console.log(stec2);
-                  }
-
                   let h;
                   if (tac) h = `https://attack.mitre.org/tactics/${tac[0]}`;
                   else if (stec) h = tech_url + stec[0];

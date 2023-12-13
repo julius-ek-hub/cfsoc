@@ -20,8 +20,7 @@ import loading from "./common/store/loading";
 import toasts from "./common/store/toasts";
 import schedule_settings from "./Schedule/store/settings";
 import schedules from "./Schedule/store/schedules";
-import ucm from "./UCM/store/ucm";
-import expo_sentinel from "./ExpoSentinel/store/expo-sentinel";
+import ucm from "./UseCase/store/ucm";
 
 const common_store = configureStore({
   reducer: {
@@ -31,7 +30,6 @@ const common_store = configureStore({
     schedules,
     toasts,
     ucm,
-    expo_sentinel,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
