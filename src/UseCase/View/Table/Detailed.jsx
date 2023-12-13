@@ -20,6 +20,8 @@ import useSheet from "../../hooks/useSheet";
 
 import { _entr, _values, _l } from "../../utils/utils";
 
+import { td } from "./utils";
+
 const isURL = (url) =>
   Yup.object({ url: Yup.string().url() }).isValidSync({
     url,
@@ -34,6 +36,7 @@ const Detailed = ({
   TableView,
   selected,
   setSelected,
+  search,
 }) => {
   const { sheets } = useSheet();
   const [drawer, setDrawer] = useState(false);
@@ -112,10 +115,10 @@ const Detailed = ({
         underline="hover"
         sx={{ wordBreak: "break-word" }}
         color={(t) => `${t.palette.primary.main}!important`}
-      >
-        {text}
-        <LaunchIcon sx={{ fontSize: "15px", ml: 0.2 }} />
-      </Link>
+        dangerouslySetInnerHTML={{
+          __html: text,
+        }}
+      />
       {sep}
     </>
   );
@@ -135,7 +138,11 @@ const Detailed = ({
           </>
         }
       >
-        <Typography>{detail_selected.description?.value}</Typography>
+        <Typography
+          dangerouslySetInnerHTML={{
+            __html: td(detail_selected.description?.value, search),
+          }}
+        />
         <Box mt={2}>
           {detail_sc
             .filter(([k]) => !cols_not.includes(k))
@@ -162,14 +169,18 @@ const Detailed = ({
                       <L
                         key={i}
                         href={h}
-                        text={word}
+                        text={td(word, search)}
                         sep={i === a.length - 1 ? "" : ", "}
                       />
                     );
                   return (
-                    <Box key={i} component="span">
-                      {word || "N/A"}
-                    </Box>
+                    <Box
+                      key={i}
+                      component="span"
+                      dangerouslySetInnerHTML={{
+                        __html: td(word || "N/A", search),
+                      }}
+                    />
                   );
                 });
 

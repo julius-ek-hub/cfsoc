@@ -208,6 +208,7 @@ const TableView = ({ use, onScroll, useKey, $for = {}, dataEndTable }) => {
             TableView={TableView}
             selected={selected}
             setSelected={setSelected}
+            search={search}
           />
         </Box>
       </Box>
