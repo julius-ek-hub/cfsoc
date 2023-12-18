@@ -7,7 +7,7 @@ const path = require("path");
 const cors = require("./mware/cors");
 const db = require("./mware/db");
 const auth = require("./auth");
-const ucm = require("./ucm");
+const ucm = require("./uc");
 const expo_sentinel = require("./expo-sentinel");
 
 const schedules = require("./schedules");

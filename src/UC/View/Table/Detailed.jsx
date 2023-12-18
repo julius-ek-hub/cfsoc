@@ -129,7 +129,6 @@ const Detailed = ({
         open={drawer}
         onXclose={closeDrawer}
         onClose={closeDrawer}
-        Okbutton={() => <EditUC edit={selected[0]} $for={$for} />}
         path={path}
         title={
           <>
@@ -137,6 +136,9 @@ const Detailed = ({
             {detail_selected.name.value}
           </>
         }
+        {...(is_uc && {
+          Okbutton: () => <EditUC edit={selected[0]} $for={$for} />,
+        })}
       >
         <Typography
           dangerouslySetInnerHTML={{

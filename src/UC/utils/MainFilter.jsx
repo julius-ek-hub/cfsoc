@@ -46,12 +46,16 @@ export default function MainFilter() {
   );
 
   return (
-    <Middle overflow="auto" flexShrink={0}>
+    <Middle flexShrink={0} width="100%">
       <Middle
         flexDirection="row"
         borderBottom={(t) => `1px solid ${t.palette.divider}`}
         py={2}
         width="100%"
+        overflow="auto"
+        flexShrink={0}
+        flexWrap="wrap"
+        gap={2}
       >
         <TextField
           value={val}
@@ -77,7 +81,6 @@ export default function MainFilter() {
             }),
           }}
         />
-        <Divide />
         <Stack direction="row" spacing={1}>
           {["source", "customer", "technology"].map((col) => (
             <MainFilterDropdown column={col} key={col} />

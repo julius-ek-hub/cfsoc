@@ -20,7 +20,7 @@ import loading from "./common/store/loading";
 import toasts from "./common/store/toasts";
 import schedule_settings from "./Schedule/store/settings";
 import schedules from "./Schedule/store/schedules";
-import ucm from "./UseCase/store/ucm";
+import ucm from "./UC/store/ucm";
 
 const common_store = configureStore({
   reducer: {

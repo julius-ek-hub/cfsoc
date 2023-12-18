@@ -64,22 +64,20 @@ export default function Pagination({ page, rowsPerPage, onChange, content }) {
   if (content.length <= 30) return null;
 
   return (
-    <Box display="flex" ml="auto" flexShrink={0} alignItems="center">
-      <TablePagination
-        component="div"
-        sx={{ flexShrink: 0 }}
-        rowsPerPageOptions={[30, 60, 100]}
-        colSpan={3}
-        count={content.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        SelectProps={{
-          native: true,
-        }}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        ActionsComponent={TablePaginationActions}
-      />
-    </Box>
+    <TablePagination
+      component="div"
+      sx={{ flexShrink: 0, overflow: "auto", width: "100%" }}
+      rowsPerPageOptions={[30, 60, 100]}
+      colSpan={3}
+      count={content.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      SelectProps={{
+        native: true,
+      }}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+      ActionsComponent={TablePaginationActions}
+    />
   );
 }

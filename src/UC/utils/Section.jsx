@@ -27,7 +27,10 @@ const Sections = () => {
 
   const { key, num_rows } = active_sheet || {};
 
+  const handleClose = () => setOpen(false);
+
   const handleChange = (e, newSection) => {
+    handleClose();
     navigate("/use-case-management/" + newSection + search);
   };
 
@@ -36,8 +39,6 @@ const Sections = () => {
     if (up.md && num_rows <= 5000) return false;
     return true;
   }, [up]);
-
-  const handleClose = () => setOpen(false);
 
   const Sheets = ({ orientation = "horizontal" }) =>
     sheet_names.length > 0 && (

@@ -3,7 +3,7 @@ import { createBrowserRouter, redirect } from "react-router-dom";
 import Schedule from "./Schedule";
 import Apps from "./Apps";
 import Account from "./Account";
-import UseCase from "./UseCase";
+import UseCase from "./UC";
 import Err_404 from "./common/utils/404";
 import Err_500 from "./common/utils/500";
 
