@@ -161,15 +161,15 @@ const EditUC = ({ edit, $for = {} }) => {
         initialValues={ivs}
         onSubmit={(d) => {
           let $new = { ...d };
+          const _end = "_uc_identifiers";
 
-          $new.l1_uc_identifiers = $new.l1_uc_identifiers.map((l1) => l1.id);
-          $new.l2_uc_identifiers = $new.l2_uc_identifiers.map((l2) => l2.id);
-          $new.l3_uc_identifiers = $new.l3_uc_identifiers.map((l3) => l3.id);
-          $new.l4_uc_identifiers = $new.l4_uc_identifiers.map((l4) => l4.id);
+          [1, 2, 3, 4].map((i) => {
+            $new[`l${i + _end}`] = $new[`l${i + _end}`].map((l) => l.id);
+          });
 
-          $new.source = $new.source.name;
-          $new.technology = $new.technology.name;
-          $new.customer = $new.customer.name;
+          ["source", "technology", "customer"].map((i) => {
+            $new[i] = $new[i]?.name || "";
+          });
 
           if (all_except[d.identifier])
             return push({

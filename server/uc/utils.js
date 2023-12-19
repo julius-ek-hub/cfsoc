@@ -24,8 +24,13 @@ const objectOnly = (obj, keys) => {
   }
   return newObject;
 };
-const _l = (str) => String(str).toLowerCase().trim();
-const _entr = (ob) => Object.entries(ob);
+const _l = (str) =>
+  String(str || "")
+    .toLowerCase()
+    .trim();
+const _entr = (ob) => Object.entries(ob || {});
+
+const u_arr = (arr = []) => [...new Set(arr)];
 
 const fixObject = (value) => {
   if (typeof value !== "object" || !value) return value;
@@ -152,4 +157,5 @@ module.exports = {
   fixObject,
   _l,
   _entr,
+  u_arr,
 };

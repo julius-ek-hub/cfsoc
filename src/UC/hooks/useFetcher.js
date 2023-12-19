@@ -12,11 +12,12 @@ const useFetcher = () => {
   const { setUCTable, sp_filter, sheets, addSheet } = useSheet();
 
   const fetcUC = async () => {
-    const { json: sh } = await get(
+    const { json } = await get(
       `/uc_table?uc_filter=${JSON.stringify(sp_filter)}`
     );
 
-    if (!sh.error) setUCTable(sh);
+    if (!json.error) setUCTable(json);
+    else push({ message: json.error, severity: "error" });
   };
 
   const addUCFilter = async (body, cb) => {

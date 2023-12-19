@@ -152,6 +152,7 @@ const Detailed = ({
               const val = String(detail_selected[k]?.value || "")
                 .split(",")
                 .map((w, i, a) => {
+                  const sep = i === a.length - 1 ? "" : ", ";
                   const tech_url = "https://attack.mitre.org/techniques/";
                   const word = w.trim();
                   const tac = word.match(/TA[0-9]+/);
@@ -168,19 +169,14 @@ const Detailed = ({
 
                   if (h)
                     return (
-                      <L
-                        key={i}
-                        href={h}
-                        text={td(word, search)}
-                        sep={i === a.length - 1 ? "" : ", "}
-                      />
+                      <L key={i} href={h} text={td(word, search)} sep={sep} />
                     );
                   return (
                     <Box
                       key={i}
                       component="span"
                       dangerouslySetInnerHTML={{
-                        __html: td(word || "N/A", search),
+                        __html: td(word || "N/A", search) + sep,
                       }}
                     />
                   );

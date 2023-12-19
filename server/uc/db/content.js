@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { fixObject, structure, _l, _entr } = require("../utils");
+const { fixObject, structure, _l, _entr, u_arr } = require("../utils");
 
 const db = mongoose.connection.useDb("ucm");
 
@@ -12,10 +12,11 @@ const getDoc = async (key) => {
 };
 
 const getNames = (content, check) =>
-  content
-    .filter((l) => check.includes(l.identifier.value))
-    .map((l) => `${l.name.value} (${l.identifier.value})`)
-    .join(", ");
+  u_arr(
+    content
+      .filter((l) => check.includes(l.identifier.value))
+      .map((l) => `${l.name.value} (${l.identifier.value})`)
+  ).join(", ");
 
 const getUC = async (ucf) => {
   const all = await getDoc("all_uc");
@@ -46,58 +47,7 @@ const getUC = async (ucf) => {
   });
 };
 
-const getFilters = async () => {
-  // const auc = await db.collection("all_uc").find().toArray();
-  // const auc_ = auc.map((uc, i) => {
-  //   const zeros = 6 - String(i).length;
-  //   const d = new Date().toLocaleDateString("en-US").split("/");
-  //   const l1 = uc.l1_uc_identifiers.value;
-  //   const l2 = uc.l2_uc_identifiers.value;
-  //   const l3 = uc.l3_uc_identifiers.value;
-  //   const l4 = uc.l4_uc_identifiers.value;
-
-  //   return {
-  //     ...uc,
-  //     l1_uc_identifiers: {
-  //       value: uc.l1_uc_identifiers.value.filter((l1) => l1 !== "EN"),
-  //     },
-  //     technology: { value: "" },
-  //     customer: { value: "" },
-  //     ...((!uc.identifier.value ||
-  //       uc.identifier.value.split("-").length === 5) && {
-  //       identifier: {
-  //         value: `${(uc.source?.value || "").substring(0, 3).toUpperCase()}-${
-  //           d[2]
-  //         }-${d[0]}-${zeros < 0 ? i : "0".repeat(zeros) + i}`,
-  //       },
-  //     }),
-  //     ...(l1.length === 0 && {
-  //       l1_uc_identifiers: {
-  //         value: ["CO"],
-  //       },
-  //     }),
-  //   };
-  // });
-  // await db.collection("all_uc").drop();
-  // await db.collection("all_uc").insertMany(auc_);
-  return db.collection("uc_filter").find().toArray();
-};
-
-const getRelated = (l1, l) =>
-  [
-    ...new Set(
-      l
-        .filter(
-          (_l) =>
-            _l.uc.length > 0 &&
-            l1.l2_uc_identifiers.value.some((l2) =>
-              _l.l2_uc_identifiers.value.includes(l2)
-            )
-        )
-        .map((_l) => _l.uc.map((l2uc) => l2uc._id.value))
-        .flat()
-    ),
-  ].length;
+const getFilters = () => db.collection("uc_filter").find().toArray();
 
 const getUCTable = async (filter) => {
   const l1_uc = await getDoc("l1_uc");
@@ -119,13 +69,14 @@ const getUCTable = async (filter) => {
   );
 
   const all_uc = uc.map((auc) => {
+    const l1n = getNames(l1_uc, auc.l1_uc_identifiers.value);
     const l2n = getNames(l2_uc, auc.l2_uc_identifiers.value);
     const l3n = getNames(l3_uc, auc.l3_uc_identifiers.value);
     const l4n = getNames(l4_uc, auc.l4_uc_identifiers.value);
 
     return {
       ...auc,
-      l1_uc_names: { value: getNames(l1_uc, auc.l1_uc_identifiers.value) },
+      l1_uc_names: { value: l1n },
       l2_uc_names: { value: l2n },
       l3_uc_names: { value: l3n },
       l4_uc_names: { value: l4n },
@@ -141,7 +92,9 @@ const getUCTable = async (filter) => {
       uc,
       uc_count: { value: uc.length },
       l1_uc_names: {
-        value: l4.l2_uc_identifiers.value.map((v) => l1l2n[v]).join(", "),
+        value: u_arr(l4.l2_uc_identifiers.value.map((v) => l1l2n[v])).join(
+          ", "
+        ),
       },
       l2_uc_names: { value: getNames(l2_uc, l4.l2_uc_identifiers.value) },
       l3_uc_names: { value: getNames(l3_uc, l4.l3_uc_identifiers.value) },
@@ -171,7 +124,9 @@ const getUCTable = async (filter) => {
       l4_uc_related: { value: l4_uc_related },
       l2_uc_names: { value: getNames(l2_uc, l3.l2_uc_identifiers.value) },
       l1_uc_names: {
-        value: l3.l2_uc_identifiers.value.map((v) => l1l2n[v]).join(", "),
+        value: u_arr(l3.l2_uc_identifiers.value.map((v) => l1l2n[v])).join(
+          ", "
+        ),
       },
       uc_count: { value: uc.length },
       url: {

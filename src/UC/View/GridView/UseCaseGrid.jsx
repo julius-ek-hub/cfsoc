@@ -173,10 +173,12 @@ const UCGrid = () => {
                   })`}
                 </Typography>
               )}
-              <Box flexGrow={1} overflow="auto" mt={2}>
+              <Box flexGrow={1} overflow="auto">
                 {drawer.uc.length === 0 ? (
                   <Middle height="100%">
-                    <Typography variant="h4">No Use Case</Typography>
+                    <Typography variant="h4" mb={2}>
+                      No Use Case
+                    </Typography>
                     <EditUC $for={drawer.$for} />
                   </Middle>
                 ) : (

@@ -1,0 +1,33 @@
+// const auc = await db.collection("all_uc").find().toArray();
+// const auc_ = auc.map((uc, i) => {
+//   const zeros = 6 - String(i).length;
+//   const d = new Date().toLocaleDateString("en-US").split("/");
+//   const l1 = uc.l1_uc_identifiers.value;
+//   const l2 = uc.l2_uc_identifiers.value;
+//   const l3 = uc.l3_uc_identifiers.value;
+//   const l4 = uc.l4_uc_identifiers.value;
+
+//   return {
+//     ...uc,
+//     l1_uc_identifiers: {
+//       value: uc.l1_uc_identifiers.value.filter((l1) => l1 !== "EN"),
+//     },
+//     technology: { value: "" },
+//     customer: { value: "" },
+//     ...((!uc.identifier.value ||
+//       uc.identifier.value.split("-").length === 5) && {
+//       identifier: {
+//         value: `${(uc.source?.value || "").substring(0, 3).toUpperCase()}-${
+//           d[2]
+//         }-${d[0]}-${zeros < 0 ? i : "0".repeat(zeros) + i}`,
+//       },
+//     }),
+//     ...(l1.length === 0 && {
+//       l1_uc_identifiers: {
+//         value: ["CO"],
+//       },
+//     }),
+//   };
+// });
+// await db.collection("all_uc").drop();
+// await db.collection("all_uc").insertMany(auc_);
