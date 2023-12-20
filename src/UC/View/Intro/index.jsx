@@ -27,10 +27,10 @@ const Intro = () => {
             content: '""',
             position: "absolute",
             width: 22,
-            height: 52.5,
+            height: 51.5,
             bgcolor: "background.paper",
             right: 45,
-            top: 37,
+            top: 36.8,
           },
         }}
       >
