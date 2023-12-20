@@ -32,6 +32,13 @@ const _entr = (ob) => Object.entries(ob || {});
 
 const u_arr = (arr = []) => [...new Set(arr)];
 
+function escapeRegEx(string = "") {
+  if (typeof string !== "string") {
+    throw new TypeError("Expected a string");
+  }
+  return string.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&").replace(/-/g, "\\x2d");
+}
+
 const fixObject = (value) => {
   if (typeof value !== "object" || !value) return value;
   if (Array.isArray(value)) return value.map(fixObject);
@@ -158,4 +165,5 @@ module.exports = {
   _l,
   _entr,
   u_arr,
+  escapeRegEx,
 };

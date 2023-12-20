@@ -60,6 +60,7 @@ const Sections = () => {
       {shouldDraw ? (
         <>
           <IconButton Icon={MenuOpenIcon} onClick={() => setOpen(true)} />
+          <Box>{active_sheet.name}</Box>
           <Drawer
             sx={{ ".MuiPaper-root": { width: 300, maxWidth: "100%" } }}
             open={open}

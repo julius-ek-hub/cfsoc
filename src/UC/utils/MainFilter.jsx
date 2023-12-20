@@ -14,12 +14,14 @@ import IconButton from "../../common/utils/IconButton";
 import TextField from "../../common/utils/form/uncontrolled/TextField";
 
 import useSheet from "../hooks/useSheet";
+import useDimension from "../../common/hooks/useDimensions";
 
 import { _entr } from "../utils/utils";
 
 export default function MainFilter() {
   const { sheets, sp_filter, resetSP, contents } = useSheet();
   const [val, setVal] = useState("");
+  const { up } = useDimension();
 
   const { columns } = sheets.all_uc;
 
@@ -62,7 +64,11 @@ export default function MainFilter() {
           onEnterButtonPressed={(e) => updateSearch(e.target.value.trim())}
           onChange={(e) => setVal(e.target.value)}
           size="small"
-          sx={{ minWidth: "20%", flexShrink: 0 }}
+          sx={{
+            minWidth: "20%",
+            flexShrink: 0,
+            transform: `scale(${up.sm ? 1 : 0.9})`,
+          }}
           placeholder={`Search Use cases by ${[
             ...new Set(_entr(columns).map((sc) => sc[1].label)),
           ].join(", ")}`}
@@ -81,7 +87,11 @@ export default function MainFilter() {
             }),
           }}
         />
-        <Stack direction="row" spacing={1}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{ transform: `scale(${up.sm ? 1 : 0.9})` }}
+        >
           {["source", "customer", "technology"].map((col) => (
             <MainFilterDropdown column={col} key={col} />
           ))}
@@ -94,6 +104,7 @@ export default function MainFilter() {
         borderBottom={(t) => `1px solid ${t.palette.divider}`}
         width="100%"
         flexDirection="row"
+        sx={{ transform: `scale(${up.sm ? 1 : 0.9})` }}
       >
         {`${total} use case${total === 1 ? "" : "s"}`}
         <Divide />

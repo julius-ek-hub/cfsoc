@@ -13,6 +13,7 @@ export default function Confirm({
   close_on_ok = true,
   sx,
   title,
+  disabled = false,
   is_alert,
   ...rest
 }) {
@@ -48,6 +49,7 @@ export default function Confirm({
               </Button>
             )}
             <Button
+              disabled={disabled}
               onClick={handleAccpet}
               color={ok_color || "primary"}
               variant="contained"

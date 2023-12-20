@@ -2,28 +2,33 @@ import { useEffect, useRef, useState } from "react";
 
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
+import Typography from "@mui/material/Typography";
 
 import CloseIcon from "@mui/icons-material/Close";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import FullscreenIcon from "@mui/icons-material/OpenInFull";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 
 import Card from "./Card";
+import TableView from "../Table";
+import EditUC from "../Table/EditUC";
+import Middle from "../../../common/utils/Middle";
 import IconButton from "../../../common/utils/IconButton";
 
 import useSheet from "../../hooks/useSheet";
 import useSettings from "../../hooks/useSettings";
-import Middle from "../../../common/utils/Middle";
-import TableView from "../Table";
-import EditUC from "../Table/EditUC";
 
 const UCGrid = () => {
   const { contents } = useSheet();
   const [drawer, setDrawer] = useState();
   const [fullScreen, setFs] = useState(false);
+  const [hideD, setHideD] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { updateSettings } = useSettings();
+
   const boxRef = useRef();
 
   const { l2_uc, l1_uc } = contents;
@@ -34,6 +39,7 @@ const UCGrid = () => {
     updateSettings("rowsPerPage", 30);
     updateSettings("page", 0);
     setScrolled(false);
+    setHideD(false);
   };
 
   const handleScrollOpen = () => {
@@ -42,7 +48,7 @@ const UCGrid = () => {
     setFs(true);
   };
 
-  const handleScroll = ({ clientX, clientY }) => {
+  const handleClickForPossibleScroll = ({ clientX, clientY }) => {
     let x1 = clientX,
       y1 = clientY;
     const el = boxRef.current;
@@ -58,6 +64,8 @@ const UCGrid = () => {
     };
     el.addEventListener("mousemove", handleMove);
     el.onmouseup = () => el.removeEventListener("mousemove", handleMove);
+    el.onmouseleave = () => el.removeEventListener("mousemove", handleMove);
+    el.onmouseenter = () => el.removeEventListener("mousemove", handleMove);
   };
 
   useEffect(() => {
@@ -78,7 +86,7 @@ const UCGrid = () => {
         flexDirection="column"
         overflow="auto"
         height="100%"
-        onMouseDown={handleScroll}
+        onMouseDown={handleClickForPossibleScroll}
       >
         <Stack direction="row">
           {l2_uc.map((l2, l2i) => {
@@ -154,7 +162,7 @@ const UCGrid = () => {
         sx={{
           "& .MuiPaper-root": {
             height: `${fullScreen ? 100 : 50}vh !important`,
-            p: 2,
+            pb: 2,
             display: "flex",
             flexDirection: "column",
           },
@@ -162,7 +170,15 @@ const UCGrid = () => {
       >
         {drawer && (
           <>
-            <Box display="flex" justifyContent="space-between">
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              position="sticky"
+              top={0}
+              bgcolor="background.paper"
+              py={1}
+              px={1}
+            >
               <Typography
                 variant="h5"
                 whiteSpace="nowrap"
@@ -185,20 +201,32 @@ const UCGrid = () => {
                 />
               </Box>
             </Box>
-            <Box mt={2}>
-              <Typography>{drawer.description}</Typography>
+            <Box mt={2} px={2}>
+              <Typography>
+                {!hideD && drawer.description}
+                {drawer.description.length > 100 && (
+                  <Button
+                    size="small"
+                    sx={{ display: "inline-flex", p: 0, ml: 1 }}
+                    onClick={() => setHideD(!hideD)}
+                    endIcon={hideD ? <VisibilityIcon /> : <VisibilityOff />}
+                  >
+                    {hideD ? "Show description" : "Hide description"}
+                  </Button>
+                )}
+              </Typography>
             </Box>
             {drawer.uc.length > 0 && (
-              <Typography variant="h5" mt={1.5}>
+              <Typography variant="h5" my={1.5} px={2}>
                 {`Use case${drawer.uc.length > 1 ? "s" : ""} (${
                   drawer.uc.length
                 })`}
               </Typography>
             )}
-            <Box flexGrow={1} overflow="auto">
+            <Box flexGrow={1} overflow="auto" px={1}>
               {drawer.uc.length === 0 ? (
                 <Middle height="100%">
-                  <Typography variant="h4" mb={2}>
+                  <Typography variant="h4" my={2}>
                     No Use Case
                   </Typography>
                   <EditUC $for={drawer.$for} />

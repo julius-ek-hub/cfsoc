@@ -1,3 +1,19 @@
+function escapeRegEx(string = "") {
+  if (typeof string !== "string") {
+    throw new TypeError("Expected a string");
+  }
+  return string.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&").replace(/-/g, "\\x2d");
+}
+
+const replace = (text, find, replacer) => {
+  let val = text;
+
+  [...new Set(val.match(find) || [])].map((s) => {
+    val = val.replace(new RegExp(escapeRegEx(s), "g"), replacer(s));
+  });
+  return val;
+};
+
 export const td = (v, search, col) => {
   const noCode = (v) =>
     v
@@ -5,15 +21,21 @@ export const td = (v, search, col) => {
       .replace(/>/g, "&gt;")
       .replace(
         /___begin___/g,
-        `<span style="background-color:${col || yellow}">`
+        `<span style="background-color:${col || yellow};color:#fff">`
       )
       .replace(/___end___/g, "</span>");
+
   let val = String(typeof v === "undefined" ? "" : v);
+
   if (!search) return noCode(val);
 
-  [...new Set(val.match(search) || [])].map((s) => {
-    val = val.replace(new RegExp(s, "g"), `___begin___${s}___end___`);
-  });
+  val = replace(
+    val,
+    new RegExp(escapeRegEx(search), "gi"),
+    (s) => `___begin___${s}___end___`
+  );
+
+  val = replace(val, /&[a-z0-9]+;/gi, (s) => `&amp;${s.substring(1)}`);
 
   return noCode(val);
 };

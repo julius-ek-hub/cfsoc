@@ -1,5 +1,12 @@
 const mongoose = require("mongoose");
-const { fixObject, structure, _l, _entr, u_arr } = require("../utils");
+const {
+  fixObject,
+  structure,
+  _l,
+  _entr,
+  u_arr,
+  escapeRegEx,
+} = require("../utils");
 
 const db = mongoose.connection.useDb("ucm");
 
@@ -18,33 +25,49 @@ const getNames = (content, check) =>
       .map((l) => `${l.name.value} (${l.identifier.value})`)
   ).join(", ");
 
-const getUC = async (ucf) => {
+const getUC = async (ucf, l) => {
   const all = await getDoc("all_uc");
 
-  return all.filter((uc) => {
-    let c1, c2, c3, c4;
-    if (!ucf.source || ucf.source?.length === 0) c1 = true;
-    else c1 = ucf.source.some((ms) => _l(uc.source?.value || "") === _l(ms));
-    if (!ucf.customer || ucf.customer?.length === 0) c2 = true;
-    else
-      c2 = ucf.customer.some((mc) => _l(uc.customer?.value || "") === _l(mc));
-    if (!ucf.technology || ucf.technology?.length === 0) c4 = true;
-    else
-      c4 = ucf.technology.some(
-        (mt) => _l(uc.technology?.value || "") === _l(mt)
-      );
+  return all
+    .map((uc) => {
+      const l1n = getNames(l.l1_uc, uc.l1_uc_identifiers.value);
+      const l2n = getNames(l.l2_uc, uc.l2_uc_identifiers.value);
+      const l3n = getNames(l.l3_uc, uc.l3_uc_identifiers.value);
+      const l4n = getNames(l.l4_uc, uc.l4_uc_identifiers.value);
+      return {
+        ...uc,
+        l1_uc_names: { value: l1n },
+        l2_uc_names: { value: l2n },
+        l3_uc_names: { value: l3n },
+        l4_uc_names: { value: l4n },
+      };
+    })
+    .filter((uc) => {
+      let c1, c2, c3, c4;
+      if (!ucf.source || ucf.source?.length === 0) c1 = true;
+      else c1 = ucf.source.some((ms) => _l(uc.source?.value || "") === _l(ms));
+      if (!ucf.customer || ucf.customer?.length === 0) c2 = true;
+      else
+        c2 = ucf.customer.some((mc) => _l(uc.customer?.value || "") === _l(mc));
+      if (!ucf.technology || ucf.technology?.length === 0) c4 = true;
+      else
+        c4 = ucf.technology.some(
+          (mt) => _l(uc.technology?.value || "") === _l(mt)
+        );
 
-    if (!ucf.uc_search || ucf.uc_search?.length === 0) c3 = true;
-    else {
-      c3 = _entr(uc).some((_c) =>
-        new RegExp(ucf.uc_search.join("").replace(/[\[\]]/g, ""), "i").test(
-          String(_c[1].value).replace(/[\[\]]/g, "")
-        )
-      );
-    }
+      if (!ucf.uc_search || ucf.uc_search?.length === 0) c3 = true;
+      else {
+        c3 = _entr(uc)
+          .filter(([k]) => k !== "_id")
+          .some((_c) =>
+            new RegExp(escapeRegEx(ucf.uc_search.join("")), "i").test(
+              String(_c[1].value || "")
+            )
+          );
+      }
 
-    return c1 && c2 && c3 && c4;
-  });
+      return c1 && c2 && c3 && c4;
+    });
 };
 
 const getFilters = () => db.collection("uc_filter").find().toArray();
@@ -54,7 +77,7 @@ const getUCTable = async (filter) => {
   const l2_uc = await getDoc("l2_uc");
   const l3_uc = await getDoc("l3_uc");
   const l4_uc = await getDoc("l4_uc");
-  const uc = await getUC(filter);
+  const all_uc = await getUC(filter, { l1_uc, l2_uc, l3_uc, l4_uc });
 
   const l1l2n = Object.fromEntries(
     l2_uc.map(({ identifier }) => {
@@ -67,21 +90,6 @@ const getUCTable = async (filter) => {
       ];
     })
   );
-
-  const all_uc = uc.map((auc) => {
-    const l1n = getNames(l1_uc, auc.l1_uc_identifiers.value);
-    const l2n = getNames(l2_uc, auc.l2_uc_identifiers.value);
-    const l3n = getNames(l3_uc, auc.l3_uc_identifiers.value);
-    const l4n = getNames(l4_uc, auc.l4_uc_identifiers.value);
-
-    return {
-      ...auc,
-      l1_uc_names: { value: l1n },
-      l2_uc_names: { value: l2n },
-      l3_uc_names: { value: l3n },
-      l4_uc_names: { value: l4n },
-    };
-  });
 
   const l4s = l4_uc.map((l4) => {
     const uc = all_uc.filter((uc) =>
