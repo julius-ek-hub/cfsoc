@@ -8,7 +8,7 @@ const styleOverrides = (rootStyle) => ({
 
 const defaultProps = (props) => ({ defaultProps: props });
 
-const theme = (mode = "light") => {
+const theme = (mode = "light", col = "#1D6F42") => {
   mode = mode === "dark" ? "dark" : "light";
   return createTheme({
     palette: {
@@ -20,7 +20,7 @@ const theme = (mode = "light") => {
         },
       }),
       primary: {
-        main: "#1D6F42",
+        main: col,
       },
     },
     typography: {

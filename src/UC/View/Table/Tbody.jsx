@@ -1,3 +1,5 @@
+import { useTheme } from "@mui/material/styles";
+
 import Checkbox from "@mui/material/Checkbox";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
@@ -17,6 +19,8 @@ const Tbody = ({
   $key,
 }) => {
   const { page = 0, rowsPerPage = 30 } = pagination || {};
+
+  const t = useTheme();
 
   return (
     <TableBody>
@@ -50,7 +54,7 @@ const Tbody = ({
               <TableCell
                 key={k}
                 dangerouslySetInnerHTML={{
-                  __html: td(row[k]?.value, search),
+                  __html: td(row[k]?.value, search, t.palette.primary.main),
                 }}
                 sx={{
                   ...(k === "identifier" && { whiteSpace: "nowrap" }),

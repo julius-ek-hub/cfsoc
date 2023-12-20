@@ -23,12 +23,10 @@ const useSheet = () => {
     const f = {};
 
     [...sp.keys()].map((sk) => {
-      const vals = [...new Set([...sp.getAll(sk)])];
-      if (
-        ["uc_search", "view"].includes(sk) ||
-        all_f.find((af) => af.key === sk)
-      )
-        f[sk] = vals;
+      const vals = [...new Set([...sp.getAll(sk)])].map((v) =>
+        v.replace(/&/g, "")
+      );
+      if (sk === "uc_search" || all_f.find((af) => af.key === sk)) f[sk] = vals;
     });
     return f;
   }, [sp, Boolean(settings.uc_filter)]);

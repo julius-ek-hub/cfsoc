@@ -19,7 +19,7 @@ const Intro = () => {
             position: "absolute",
             width: 55,
             height: 15,
-            bgcolor: "rgb(255,71,19)",
+            bgcolor: "primary.main",
             right: -15,
             top: -8,
           },

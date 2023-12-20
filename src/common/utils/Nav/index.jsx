@@ -38,7 +38,7 @@ const Nav = ({ app = "All Apps", title }) => {
       <Box display="flex" alignItems="center">
         CFSOC
         <ArrowForwardIosIcon fontSize="x-small" sx={{ mx: 1 }} />
-        <Typography component="span" color="success.main" fontWeight="bold">
+        <Typography component="span" color="primary.main" fontWeight="bold">
           {app}
         </Typography>
         {app.toLocaleLowerCase() !== "all apps" && (

@@ -1,9 +1,12 @@
-export const td = (v, search) => {
+export const td = (v, search, col) => {
   const noCode = (v) =>
     v
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
-      .replace(/___begin___/g, '<span style="background-color:yellow">')
+      .replace(
+        /___begin___/g,
+        `<span style="background-color:${col || yellow}">`
+      )
       .replace(/___end___/g, "</span>");
   let val = String(typeof v === "undefined" ? "" : v);
   if (!search) return noCode(val);

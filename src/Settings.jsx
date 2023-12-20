@@ -18,14 +18,22 @@ import Toast from "./common/utils/Toast";
 import IconButton from "./common/utils/IconButton";
 
 export default function Settings({ children }) {
-  const { initializeCommonSettings, theme, hide_header, update } =
-    useSettings();
+  const {
+    initializeCommonSettings,
+    theme,
+    primary_color,
+    primary_colors,
+    hide_header,
+    update,
+  } = useSettings();
   const prefers_dark = useMediaQuery("(prefers-color-scheme: dark)");
   const timer = useRef();
   const boxRef = useRef();
 
   const is_theme = ["dark", "light"].includes(theme);
+  const is_col = primary_colors.includes(primary_color);
   const t = is_theme ? theme : prefers_dark ? "dark" : "light";
+  const col = is_col ? primary_color : primary_colors[0];
 
   const handleMouseMove = () => {
     const br = boxRef.current;
@@ -44,7 +52,7 @@ export default function Settings({ children }) {
   }, []);
 
   return (
-    <ThemeProvider theme={theme_conf(t)}>
+    <ThemeProvider theme={theme_conf(t, col)}>
       <CssBaseline enableColorScheme />
       <Box
         ref={boxRef}

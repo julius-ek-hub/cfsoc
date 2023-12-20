@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -24,6 +24,7 @@ const UCGrid = () => {
   const [fullScreen, setFs] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { updateSettings } = useSettings();
+  const boxRef = useRef();
 
   const { l2_uc, l1_uc } = contents;
 
@@ -41,6 +42,24 @@ const UCGrid = () => {
     setFs(true);
   };
 
+  const handleScroll = ({ clientX, clientY }) => {
+    let x1 = clientX,
+      y1 = clientY;
+    const el = boxRef.current;
+    const handleMove = (e) => {
+      e.preventDefault();
+      const x2 = e.clientX - x1;
+      const y2 = e.clientY - y1;
+      el.scroll({
+        top: el.scrollTop - y2,
+        left: el.scrollLeft - x2,
+        behavior: "smooth",
+      });
+    };
+    el.addEventListener("mousemove", handleMove);
+    el.onmouseup = () => el.removeEventListener("mousemove", handleMove);
+  };
+
   useEffect(() => {
     if (drawer) {
       setDrawer({
@@ -53,11 +72,13 @@ const UCGrid = () => {
   return (
     <>
       <Box
+        ref={boxRef}
         display="flex"
         flexGrow={1}
         flexDirection="column"
         overflow="auto"
         height="100%"
+        onMouseDown={handleScroll}
       >
         <Stack direction="row">
           {l2_uc.map((l2, l2i) => {
@@ -125,75 +146,75 @@ const UCGrid = () => {
             );
           })}
         </Stack>
-        <Drawer
-          open={Boolean(drawer)}
-          anchor="bottom"
-          onClose={closeDrawer}
-          sx={{
-            "& .MuiPaper-root": {
-              height: `${fullScreen ? 100 : 50}vh !important`,
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-            },
-          }}
-        >
-          {drawer && (
-            <>
-              <Box display="flex" justifyContent="space-between">
-                <Typography
-                  variant="h5"
-                  whiteSpace="nowrap"
-                  textOverflow="ellipsis"
-                  overflow="hidden"
-                >
-                  {drawer.identifier} &mdash; {drawer.name}{" "}
-                </Typography>
-                <Box display="flex" ml={2}>
-                  <IconButton
-                    title={fullScreen ? "Minimize" : "Maximize"}
-                    Icon={fullScreen ? CloseFullscreenIcon : FullscreenIcon}
-                    onClick={() => setFs(!fullScreen)}
-                  />
-
-                  <IconButton
-                    Icon={CloseIcon}
-                    onClick={closeDrawer}
-                    title="Close"
-                  />
-                </Box>
-              </Box>
-              <Box mt={2}>
-                <Typography>{drawer.description}</Typography>
-              </Box>
-              {drawer.uc.length > 0 && (
-                <Typography variant="h5" mt={1.5}>
-                  {`Use case${drawer.uc.length > 1 ? "s" : ""} (${
-                    drawer.uc.length
-                  })`}
-                </Typography>
-              )}
-              <Box flexGrow={1} overflow="auto">
-                {drawer.uc.length === 0 ? (
-                  <Middle height="100%">
-                    <Typography variant="h4" mb={2}>
-                      No Use Case
-                    </Typography>
-                    <EditUC $for={drawer.$for} />
-                  </Middle>
-                ) : (
-                  <TableView
-                    use={drawer.uc}
-                    onScroll={handleScrollOpen}
-                    useKey="all_uc"
-                    $for={drawer.$for}
-                  />
-                )}
-              </Box>
-            </>
-          )}
-        </Drawer>
       </Box>
+      <Drawer
+        open={Boolean(drawer)}
+        anchor="bottom"
+        onClose={closeDrawer}
+        sx={{
+          "& .MuiPaper-root": {
+            height: `${fullScreen ? 100 : 50}vh !important`,
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+          },
+        }}
+      >
+        {drawer && (
+          <>
+            <Box display="flex" justifyContent="space-between">
+              <Typography
+                variant="h5"
+                whiteSpace="nowrap"
+                textOverflow="ellipsis"
+                overflow="hidden"
+              >
+                {drawer.identifier} &mdash; {drawer.name}{" "}
+              </Typography>
+              <Box display="flex" ml={2}>
+                <IconButton
+                  title={fullScreen ? "Minimize" : "Maximize"}
+                  Icon={fullScreen ? CloseFullscreenIcon : FullscreenIcon}
+                  onClick={() => setFs(!fullScreen)}
+                />
+
+                <IconButton
+                  Icon={CloseIcon}
+                  onClick={closeDrawer}
+                  title="Close"
+                />
+              </Box>
+            </Box>
+            <Box mt={2}>
+              <Typography>{drawer.description}</Typography>
+            </Box>
+            {drawer.uc.length > 0 && (
+              <Typography variant="h5" mt={1.5}>
+                {`Use case${drawer.uc.length > 1 ? "s" : ""} (${
+                  drawer.uc.length
+                })`}
+              </Typography>
+            )}
+            <Box flexGrow={1} overflow="auto">
+              {drawer.uc.length === 0 ? (
+                <Middle height="100%">
+                  <Typography variant="h4" mb={2}>
+                    No Use Case
+                  </Typography>
+                  <EditUC $for={drawer.$for} />
+                </Middle>
+              ) : (
+                <TableView
+                  use={drawer.uc}
+                  onScroll={handleScrollOpen}
+                  useKey="all_uc"
+                  $for={drawer.$for}
+                />
+              )}
+            </Box>
+          </>
+        )}
+      </Drawer>
     </>
   );
 };

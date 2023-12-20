@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 
+import { useTheme } from "@mui/material/styles";
+
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import LaunchIcon from "@mui/icons-material/Launch";
 
 import * as Yup from "yup";
 
@@ -40,6 +41,8 @@ const Detailed = ({
 }) => {
   const { sheets } = useSheet();
   const [drawer, setDrawer] = useState(false);
+  const t = useTheme();
+  const color = t.palette.primary.main;
 
   const refs = [
     "l1_uc_identifier",
@@ -114,7 +117,7 @@ const Detailed = ({
         target="_blank"
         underline="hover"
         sx={{ wordBreak: "break-word" }}
-        color={(t) => `${t.palette.primary.main}!important`}
+        color={`${t.palette.primary.main}!important`}
         dangerouslySetInnerHTML={{
           __html: text,
         }}
@@ -142,7 +145,7 @@ const Detailed = ({
       >
         <Typography
           dangerouslySetInnerHTML={{
-            __html: td(detail_selected.description?.value, search),
+            __html: td(detail_selected.description?.value, search, color),
           }}
         />
         <Box mt={2}>
@@ -169,14 +172,19 @@ const Detailed = ({
 
                   if (h)
                     return (
-                      <L key={i} href={h} text={td(word, search)} sep={sep} />
+                      <L
+                        key={i}
+                        href={h}
+                        text={td(word, search, color)}
+                        sep={sep}
+                      />
                     );
                   return (
                     <Box
                       key={i}
                       component="span"
                       dangerouslySetInnerHTML={{
-                        __html: td(word || "N/A", search) + sep,
+                        __html: td(word || "N/A", search, color) + sep,
                       }}
                     />
                   );
