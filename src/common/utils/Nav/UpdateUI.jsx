@@ -35,7 +35,7 @@ const UpdateUI = ({ user }) => {
       )}
     >
       Go to the Desktop of the server machine, right-click on <b>cfsoc</b>{" "}
-      folder and choose <b>Open Git Batch Here</b>. Type the command{" "}
+      folder and choose <b>Open in Terminal</b>. Type the command{" "}
       <Box component="code" color="error.main">
         npm run pull
       </Box>{" "}
