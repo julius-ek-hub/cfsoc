@@ -14,20 +14,23 @@ const replace = (text, find, replacer) => {
   return val;
 };
 
-export const td = (v, search, col) => {
-  const noCode = (v) =>
-    v
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(
-        /___begin___/g,
-        `<span style="background-color:${col || yellow};color:#fff">`
-      )
-      .replace(/___end___/g, "</span>");
+const noSpecial = (v) =>
+  replace(v, /&[a-z0-9]+;/gi, (s) => `&amp;${s.substring(1)}`);
 
+const noCode = (v, col) =>
+  v
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(
+      /___begin___/g,
+      `<span style="background-color:${col || "#005b96"};color:#fff">`
+    )
+    .replace(/___end___/g, "</span>");
+
+export const td = (v, search, col) => {
   let val = String(typeof v === "undefined" ? "" : v);
 
-  if (!search) return noCode(val);
+  if (!search) return noCode(noSpecial(val), col);
 
   val = replace(
     val,
@@ -35,9 +38,9 @@ export const td = (v, search, col) => {
     (s) => `___begin___${s}___end___`
   );
 
-  val = replace(val, /&[a-z0-9]+;/gi, (s) => `&amp;${s.substring(1)}`);
+  val = noSpecial(val);
 
-  return noCode(val);
+  return noCode(val, col);
 };
 
 export function descendingComparator(a, b, orderBy) {
