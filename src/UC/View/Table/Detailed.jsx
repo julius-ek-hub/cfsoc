@@ -12,10 +12,12 @@ import * as Yup from "yup";
 
 import IconButton from "../../../common/utils/IconButton";
 import Middle from "../../../common/utils/Middle";
+import InDetailedTable from "./InDetailedTable";
 import Draw from "../../utils/Draw";
 import DeleteUC from "./Delete";
 import EditUC from "./EditUC";
-import InDetailedTable from "./InDetailedTable";
+import Paste from "./Paste";
+import Copy from "./Copy";
 
 import useSheet from "../../hooks/useSheet";
 
@@ -235,6 +237,8 @@ const Detailed = ({
         {is_uc && (
           <>
             {selected.length === 1 && <EditUC edit={selected[0]} $for={$for} />}
+            {selected.length === 1 && <Copy selected={selected[0]} />}
+            <Paste selected={selected} onPaste={() => setSelected([])} />
             <DeleteUC selected={selected} onDelete={() => setSelected([])} />
           </>
         )}

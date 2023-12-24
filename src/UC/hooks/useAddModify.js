@@ -121,6 +121,33 @@ const useAddModify = () => {
       }
     }
   };
+  const paste = async (selected, copied = {}, onPaste) => {
+    if (selected.length === 0 || _entr(copied).length === 0) return;
+    const fixed = fix_data(copied);
+
+    const done = await Promise.allSettled(
+      selected.map(async (sel) => {
+        const { json } = await patch(`/data?sheet=all_uc`, {
+          _id: sel,
+          update: fixed,
+        });
+        return json;
+      })
+    );
+
+    const errLen = done.filter(
+      (d) => d.status !== "fulfilled" || d.value?.error
+    ).length;
+
+    await fetcUC();
+    if (errLen > 0)
+      push({
+        message: `Failed to paste on ${errLen} row${errLen === 1 ? "" : "s"}`,
+        severity: "error",
+      });
+    else push({ message: `Done`, severity: "success" });
+    onPaste?.call();
+  };
 
   const for_edit = (_id) => active_content[for_edit_index(_id)] || {};
 
@@ -128,6 +155,7 @@ const useAddModify = () => {
     _delete,
     save,
     for_edit,
+    paste,
     all_uc_schema,
     cols,
     otherfields: entr_(

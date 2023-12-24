@@ -6,7 +6,6 @@ export const fix_data = (data) =>
       key,
       {
         value: value?.hasOwnProperty("value") ? value.value : value,
-        sx: value?.sx || {},
       },
     ])
   );
