@@ -3,7 +3,9 @@ const path = require("path");
 
 const getDBs = () =>
   new Promise((res, rej) => {
-    fs.readdir(path.join(__dirname, "db"), (err, files) => {
+    const p = path.join(__dirname, "db");
+    if (!fs.existsSync(p)) fs.mkdirSync(p);
+    fs.readdir(p, (err, files) => {
       if (err) return rej({ error: err.message });
       const dbs = [];
       files.forEach((file) => {
