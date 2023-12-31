@@ -1,4 +1,4 @@
-const { arr_to_obj } = require("../schedules/utils/common");
+const { arr_to_obj } = require("../utils/common");
 const Staff = require("./model");
 
 const getStaff = async (filter, select = "") => {

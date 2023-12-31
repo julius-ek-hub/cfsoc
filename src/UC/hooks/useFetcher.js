@@ -3,7 +3,7 @@ import useToasts from "../../common/hooks/useToast";
 import useSheet from "./useSheet";
 import useSettings from "./useSettings";
 
-import { _entr, _u, _l } from "../utils/utils";
+import { _entr, _u, _l } from "../../common/utils/utils";
 
 const useFetcher = () => {
   const { get, post, dlete } = useFetch("/ucm");

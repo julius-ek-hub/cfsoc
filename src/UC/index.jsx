@@ -10,14 +10,11 @@ import View from "./View";
 import MainFilter from "./utils/MainFilter";
 import Intro from "./View/Intro";
 
-import { _keys } from "./utils/utils";
-
-import useCommonSettings from "../common/hooks/useSettings";
+import { _keys } from "../common/utils/utils";
 
 const UseCaseManagement = () => {
   const { fetchAllFromDB, fetcUC } = useFetcher();
   const { active_sheet, sp_filter, contents } = useSheet();
-  const { hide_header } = useCommonSettings();
 
   let view = (sp_filter.view || []).join("");
   view = ["table", "grid"].includes(view) ? view : "grid";
@@ -47,7 +44,7 @@ const UseCaseManagement = () => {
             <Intro />
           ) : (
             <>
-              {!hide_header && <MainFilter />}
+              <MainFilter />
               <View location={key} />
             </>
           )}

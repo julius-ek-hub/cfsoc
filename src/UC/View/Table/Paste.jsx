@@ -10,7 +10,7 @@ import useAddModify from "../../hooks/useAddModify";
 import useSettings from "../../hooks/useSettings";
 import useSheet from "../../hooks/useSheet";
 
-import { _entr } from "../../utils/utils";
+import { _entr } from "../../../common/utils/utils";
 
 const Paste = ({ selected, onPaste }) => {
   const { paste } = useAddModify();
@@ -23,7 +23,7 @@ const Paste = ({ selected, onPaste }) => {
     <Confirm
       onConfirm={() => paste(selected, cb, onPaste)}
       ok_text="Paste"
-      Clickable={(props) => (
+      Initiator={(props) => (
         <IconButton
           Icon={ContentPasteIcon}
           title="Paste key-values in clipboard"

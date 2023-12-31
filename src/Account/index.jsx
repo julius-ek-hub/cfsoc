@@ -1,5 +1,3 @@
-import { useLayoutEffect } from "react";
-
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 
@@ -14,17 +12,11 @@ import useCommonSettings from "../common/hooks/useSettings";
 const Account = () => {
   const { user, getName } = useCommonSettings();
 
-  useLayoutEffect(() => {
-    document.querySelector(
-      "title"
-    ).textContent = `CFSOC Accounts - ${getName()}`;
-  });
-
   if (!user) return null;
 
   return (
     <Box display="flex" flexDirection="column" height="100vh">
-      <Nav app="Accounts" />
+      <Nav app="Accounts" title={`Accounts - ${getName()}`} />
       <Box
         flexGrow={1}
         display="flex"

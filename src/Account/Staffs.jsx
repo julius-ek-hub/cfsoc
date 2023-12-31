@@ -87,7 +87,7 @@ const Tr = ({ row }) => {
                   ok_text="Yes"
                   fullWidth
                   onConfirm={handleDelete}
-                  Clickable={(props) => (
+                  Initiator={(props) => (
                     <IconButton
                       title="Remove"
                       color="error"

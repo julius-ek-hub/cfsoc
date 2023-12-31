@@ -116,7 +116,7 @@ const Apps = () => {
 
   return (
     <Box display="flex" flexDirection="column" height="100vh">
-      <Nav />
+      <Nav title="All Apps" />
       <Box
         flexGrow={1}
         display="flex"

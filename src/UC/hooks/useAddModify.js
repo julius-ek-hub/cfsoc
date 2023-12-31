@@ -3,7 +3,8 @@ import useSheet from "./useSheet";
 
 import * as Yup from "yup";
 
-import { _entr, fix_data, entr_ } from "../utils/utils";
+import { fix_data } from "../utils/utils";
+import { _entr, entr_ } from "../../common/utils/utils";
 
 import useSettings from "./useSettings";
 import useToasts from "../../common/hooks/useToast";

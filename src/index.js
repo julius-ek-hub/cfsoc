@@ -18,18 +18,16 @@ import router from "./router";
 import common_settings from "./common/store/settings";
 import loading from "./common/store/loading";
 import toasts from "./common/store/toasts";
-import schedule_settings from "./Schedule/store/settings";
-import schedules from "./Schedule/store/schedules";
 import ucm from "./UC/store/ucm";
+import keepass from "./KeePass/store/kp";
 
 const common_store = configureStore({
   reducer: {
     common_settings,
     loading,
-    schedule_settings,
-    schedules,
     toasts,
     ucm,
+    keepass,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

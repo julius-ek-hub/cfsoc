@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { deepKey } from "../utils/utils";
+import { deepKey } from "../../common/utils/utils";
 
 const arr = (doubt) => (!Array.isArray(doubt) ? [doubt] : doubt);
 

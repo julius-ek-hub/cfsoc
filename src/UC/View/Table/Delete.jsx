@@ -20,7 +20,7 @@ const DeleteUC = ({ selected, onDelete }) => {
       ok_color="inherit"
       ok_text="Delete"
       disabled
-      Clickable={(props) => (
+      Initiator={(props) => (
         <IconButton Icon={DeleteIcon} title="Delete selected" {...props} />
       )}
     >

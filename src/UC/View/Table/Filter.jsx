@@ -15,7 +15,7 @@ import Menu from "../../../common/utils/Menu";
 
 import useDimension from "../../../common/hooks/useDimensions";
 
-import { entr_ } from "../../utils/utils";
+import { entr_ } from "../../../common/utils/utils";
 
 export default function Filter({ column, filterValues, onChange, columns }) {
   const [open, setOpen] = useState(false);
@@ -84,7 +84,7 @@ export default function Filter({ column, filterValues, onChange, columns }) {
       open={open}
       backdrop_color={alpha(t.palette.background.paper, 0.5)}
       onClose={handleClose}
-      Clickable={(props) => (
+      Initiator={(props) => (
         <IconButton
           Icon={FilterAltIcon}
           title="Filter"

@@ -3,13 +3,15 @@ import { useState } from "react";
 import MenuMUI from "@mui/material/Menu";
 
 import Dialog from "../Dialogue";
+import useDimension from "../../hooks/useDimensions";
 
 export default function Menu({
-  Clickable,
+  Initiator,
   onClose,
   open: op,
   dialog,
   backdrop_color,
+  alpha,
   no_tip,
   stateless,
   ...rest
@@ -17,20 +19,26 @@ export default function Menu({
   const [cords, setCords] = useState(null);
   const [_open, setOpen] = useState(false);
 
+  const { t } = useDimension();
+
   const open = stateless ? _open : op;
 
-  const handleClick = (event) => {
+  const handleClick = (e) => {
+    const touch = e.type.match(/touch/i);
     setCords({
-      top: event.clientY + 12,
-      left: event.clientX + 16,
+      top: (touch ? e.changedTouches[0].clientY : e.clientY) + 12,
+      left: (touch ? e.changedTouches[0].clientX : e.clientX) + 16,
     });
     stateless && setOpen(true);
   };
+
   const handleClose = stateless ? () => setOpen(false) : onClose;
+
+  const bgV = (t.palette.mode === "light" ? 255 : 0) + ", ";
 
   return (
     <>
-      <Clickable onClick={handleClick} />
+      <Initiator onClick={handleClick} />
       {dialog ? (
         <Dialog open={open} onClose={handleClose} {...rest} />
       ) : (
@@ -68,13 +76,14 @@ export default function Menu({
               },
             },
           }}
-          {...(backdrop_color && {
-            BackdropProps: {
-              sx: {
-                bgcolor: backdrop_color,
+          {...(backdrop_color ||
+            (typeof alpha === "number" && {
+              BackdropProps: {
+                sx: {
+                  bgcolor: backdrop_color || `rgba(${bgV.repeat(3)} ${alpha})`,
+                },
               },
-            },
-          })}
+            }))}
           transformOrigin={{ horizontal: "right", vertical: "top" }}
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           {...rest}

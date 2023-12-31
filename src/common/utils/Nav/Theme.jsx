@@ -45,14 +45,12 @@ const Theme = () => {
     />
   );
 
-  const bgV = (t.palette.mode === "light" ? 255 : 0) + ", ";
-
   return (
     <Menu
-      backdrop_color={`rgba(${bgV.repeat(3)} 0.5)`}
+      alpha={0.5}
       open={open}
       onClose={handleClose}
-      Clickable={(props) => (
+      Initiator={(props) => (
         <Tooltip title={"Theme - " + u(theme)}>
           <IconButton
             sx={{ fontWeight: "bold", mr: 2 }}

@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 
 import { addSheet as as, setUCTable as ac } from "../store/ucm";
 
-import { _entr, _l } from "../utils/utils";
+import { _entr, _l } from "../../common/utils/utils";
 
 import useSettings from "./useSettings";
 

@@ -14,7 +14,7 @@ import useToasts from "../../../common/hooks/useToast";
 import useSettings from "../../hooks/useSettings";
 import useSheet from "../../hooks/useSheet";
 
-import { _entr, entr_ } from "../../utils/utils";
+import { _entr, entr_ } from "../../../common/utils/utils";
 
 const Copy = ({ selected }) => {
   const [copied, setCopied] = useState({});
@@ -65,7 +65,7 @@ const Copy = ({ selected }) => {
       title="Copy Key-Values"
       ok_text="Copy"
       disabled={copied.length === 0}
-      Clickable={(props) => (
+      Initiator={(props) => (
         <IconButton Icon={ContentCopyIcon} title="Copy key-values" {...props} />
       )}
     >

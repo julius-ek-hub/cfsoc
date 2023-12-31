@@ -21,7 +21,7 @@ import Copy from "./Copy";
 
 import useSheet from "../../hooks/useSheet";
 
-import { _entr, _values, _l } from "../../utils/utils";
+import { _entr, _values, _l } from "../../../common/utils/utils";
 
 import { td } from "./utils";
 

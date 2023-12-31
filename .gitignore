@@ -12,6 +12,8 @@
 /build
 /server/view/*
 .env
+*.kdbx
+*.kdb
 
 # misc
 .DS_Store

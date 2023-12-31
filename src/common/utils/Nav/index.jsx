@@ -17,14 +17,14 @@ import useCommonSettings from "../../hooks/useSettings";
 import useDimension from "../../hooks/useDimensions";
 
 const Nav = ({ app = "All Apps", title }) => {
-  const { user, getName, hide_header } = useCommonSettings();
+  const { user, getName } = useCommonSettings();
   const { up } = useDimension();
 
   useEffect(() => {
     document.querySelector("title").textContent = title;
   }, [title]);
 
-  if (!user || hide_header) return null;
+  if (!user) return null;
 
   return (
     <Box

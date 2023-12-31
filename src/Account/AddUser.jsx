@@ -75,6 +75,7 @@ const AddUser = ({ ClickComponent, edit }) => {
           onClick={handleOpen}
           startIcon={<AddIcon />}
           variant="contained"
+          size="small"
         >
           {edit ? "Update" : "Add"}
         </Button>

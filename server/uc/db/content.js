@@ -1,12 +1,6 @@
 const mongoose = require("mongoose");
-const {
-  fixObject,
-  structure,
-  _l,
-  _entr,
-  u_arr,
-  escapeRegEx,
-} = require("../utils");
+const { fixObject, structure } = require("../utils");
+const { _l, _entr, u_arr, escapeRegEx } = require("../../utils/common");
 
 const db = mongoose.connection.useDb("ucm");
 

@@ -7,15 +7,8 @@ import useFetch from "../useFetch";
 import { u as uc } from "../../utils/utils";
 
 const useCommonSettings = () => {
-  const {
-    user,
-    theme,
-    primary_color,
-    staffs,
-    push_notification,
-    apps,
-    hide_header,
-  } = useSelector(({ common_settings }) => common_settings);
+  const { user, theme, primary_color, staffs, push_notification, apps } =
+    useSelector(({ common_settings }) => common_settings);
   const dispatch = useDispatch();
   const { get: lget, set, remove } = useLocalStorage();
   const { get } = useFetch("/auth");
@@ -58,12 +51,10 @@ const useCommonSettings = () => {
     const tc = lget("primary_color");
     const a = lget("alarm");
     const pn = lget("push_notification");
-    const hh = lget("hide_header");
     update("theme", t || "system");
     update("primary_color", tc || "#ff4713");
     update("alarm", a);
     update("push_notification", pn, false);
-    update("hide_header", Boolean(hh));
     await getUser();
     await getStaffs();
   };
@@ -74,7 +65,6 @@ const useCommonSettings = () => {
     user,
     primary_color,
     staffs,
-    hide_header,
     uname: user?.username,
     admin: Boolean(user?.admin),
     getName(username = user?.username) {

@@ -20,7 +20,7 @@ const UpdateUI = ({ user }) => {
       fullWidth
       is_alert
       title={`New version | ${new_version}`}
-      Clickable={(props) => (
+      Initiator={(props) => (
         <>
           <IconButton
             Icon={GitHubIcon}

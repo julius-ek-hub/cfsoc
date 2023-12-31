@@ -13,7 +13,7 @@ import Detailed from "./Detailed";
 
 import useSheet from "../../hooks/useSheet";
 
-import { _entr, entr_ } from "../../utils/utils";
+import { _entr, entr_ } from "../../../common/utils/utils";
 import { stableSort, getComparator } from "./utils";
 
 const TableView = ({ use, onScroll, useKey, $for = {}, dataEndTable }) => {

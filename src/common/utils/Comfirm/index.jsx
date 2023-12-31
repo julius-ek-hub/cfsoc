@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import Dialog from "../Dialogue";
 
 export default function Confirm({
-  Clickable,
+  Initiator,
   onClose,
   onConfirm,
   ok_color,
@@ -33,7 +33,7 @@ export default function Confirm({
 
   return (
     <>
-      <Clickable onClick={handleOpen} />
+      <Initiator onClick={handleOpen} />
       <Dialog
         open={open}
         onClose={handleClose}

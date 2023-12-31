@@ -17,7 +17,7 @@ import useFetcher from "../hooks/useFetcher";
 import useSheet from "../hooks/useSheet";
 
 import useSettings from "../hooks/useSettings";
-import { _l } from "./utils";
+import { _l } from "../../common/utils/utils";
 import TextField from "../../common/utils/form/uncontrolled/TextField";
 import IconButton from "../../common/utils/IconButton";
 import Confirm from "../../common/utils/Comfirm";
@@ -92,7 +92,7 @@ export default function MainFilterDropdown({ column }) {
       open={open}
       backdrop_color={alpha(t.palette.background.paper, 0.5)}
       onClose={handleClose}
-      Clickable={(props) => (
+      Initiator={(props) => (
         <Chip
           label={
             <>
@@ -164,7 +164,7 @@ export default function MainFilterDropdown({ column }) {
                 ok_color="error"
                 ok_text="Remove"
                 onConfirm={() => handleRemove(value)}
-                Clickable={(props) => (
+                Initiator={(props) => (
                   <IconButton
                     Icon={DeleteIcon}
                     size="small"

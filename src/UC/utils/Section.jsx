@@ -15,7 +15,7 @@ import IconButton from "../../common/utils/IconButton";
 import useSheet from "../hooks/useSheet";
 import useDimension from "../../common/hooks/useDimensions";
 
-import { _entr } from "./utils";
+import { _entr } from "../../common/utils/utils";
 
 const Sections = () => {
   const { sheet_names, active_sheet } = useSheet();

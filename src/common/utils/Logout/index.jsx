@@ -21,7 +21,7 @@ const Logout = (btnProps) => {
       ok_color="error"
       fullWidth
       onConfirm={logout}
-      Clickable={(props) => (
+      Initiator={(props) => (
         <Button
           startIcon={<LogoutIcon />}
           size="small"

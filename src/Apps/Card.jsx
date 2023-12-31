@@ -60,7 +60,7 @@ const Card = ({
           <Menu
             open={menu}
             onClose={() => setMenu(false)}
-            Clickable={(props) => (
+            Initiator={(props) => (
               <IconButton
                 Icon={MoreVertIcon}
                 onClick={(e) => {
@@ -87,7 +87,7 @@ const Card = ({
                 onConfirm={() => onDelete(_id)}
                 fullWidth
                 ok_text="Yes"
-                Clickable={(props) => (
+                Initiator={(props) => (
                   <Button
                     color="error"
                     fullWidth
@@ -121,7 +121,7 @@ const Card = ({
             title={`${title} | description`}
             is_alert
             expandable
-            Clickable={(props) => (
+            Initiator={(props) => (
               <Box
                 component="span"
                 {...props}
