@@ -30,13 +30,38 @@ import { th } from "./utils";
 
 const KeePass = () => {
   const [drawer, setDrawer] = useState(false);
-  const [fetched, setFetched] = useState(false);
   const { selectedDB, selectedGP, dbs } = useKeepass();
   const { fetchDBs, fetchContentForCache } = useFetcher();
   const { settings } = useSettings();
   const { up } = useDimension();
 
+  const testEmail = async () => {
+    const fd = new FormData();
+    fd.append(
+      "email",
+      JSON.stringify({
+        from: 'Maddison Foo Koch "<no-reply@247-dev.com>', // sender address
+        to: "julius.ek.dev@gmail.com", // list of receivers
+        subject: "Hello", // Subject line
+        text: "Hello world?", // plain text body
+        html: "<b>Hello world?</b>", // html body
+      })
+    );
+
+    const em = await fetch("https://www.247-dev.com/api/email/send", {
+      method: "POST",
+      body: fd,
+      headers: {
+        "x-auth-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1bGl1cyIsImV4dGVybmFsIjp0cnVlfQ.RYgMtpgW7_bYMCTN29xY6QJsNmNPE-QXssNc-eqGv6w",
+      },
+    });
+    const json = await em.json();
+    console.log(json);
+  };
+
   useEffect(() => {
+    // testEmail();
     if (dbs.length === 0) fetchDBs();
     else if (dbs.length > 0 && !selectedDB) {
       fetchContentForCache();
