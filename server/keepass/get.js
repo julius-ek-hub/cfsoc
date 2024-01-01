@@ -22,13 +22,21 @@ const getDBContent = async (req, res) => {
 
   const db = await kdbxweb.Kdbx.load(dbBuff, credentials);
 
+  const getPass = (entry) => {
+    try {
+      return entry.fields.get("Password").getText();
+    } catch (error) {
+      return "";
+    }
+  };
+
   const getGroupContent = (gp) => {
     const entries = [];
     gp.entries.forEach((entry) => {
       entries.push({
         title: entry.fields.get("Title"),
         username: entry.fields.get("UserName"),
-        password: entry.fields.get("Password").getText(),
+        password: getPass(entry),
         url: entry.fields.get("URL"),
         notes: entry.fields.get("Notes"),
         uuid: entry.uuid.toString(),
