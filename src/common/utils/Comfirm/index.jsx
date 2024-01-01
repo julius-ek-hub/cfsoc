@@ -10,6 +10,8 @@ export default function Confirm({
   onConfirm,
   ok_color,
   ok_text,
+  ok_button_props,
+  cancel_button_props,
   close_on_ok = true,
   sx,
   title,
@@ -44,11 +46,16 @@ export default function Confirm({
         action={
           <>
             {!is_alert && (
-              <Button onClick={handleClose} color="inherit">
+              <Button
+                {...cancel_button_props}
+                onClick={handleClose}
+                color="inherit"
+              >
                 Cancel
               </Button>
             )}
             <Button
+              {...ok_button_props}
               disabled={disabled}
               onClick={handleAccpet}
               color={ok_color || "primary"}

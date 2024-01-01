@@ -15,6 +15,7 @@ import useFetcher from "./hooks/useFetcher";
 import useLocalStorage from "../common/hooks/useLocalStorage";
 
 import { shortenFileName } from "./utils";
+import UploadDB from "./Upload";
 
 const Dbs = () => {
   const { dbs, updateDB } = useKeepass();
@@ -99,13 +100,7 @@ const Dbs = () => {
           </Box>
         ))}
       </Box>
-      <But
-        EndIcon={FileUploadIcon}
-        sx={{ justifyContent: "center", mb: 4 }}
-        onClick={uploadDB}
-      >
-        {dbs.length === 0 ? "Upload" : "Replace"} DB
-      </But>
+      <UploadDB />
     </Box>
   );
 };
