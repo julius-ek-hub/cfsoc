@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { alpha } from "@mui/material/styles";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,16 +10,15 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import Menu from "../../common/utils/Menu";
-
-import useDimension from "../../common/hooks/useDimensions";
-import useFetcher from "../hooks/useFetcher";
-import useSheet from "../hooks/useSheet";
-
-import useSettings from "../hooks/useSettings";
-import { _l } from "../../common/utils/utils";
 import TextField from "../../common/utils/form/uncontrolled/TextField";
 import IconButton from "../../common/utils/IconButton";
 import Confirm from "../../common/utils/Comfirm";
+
+import useFetcher from "../hooks/useFetcher";
+import useSheet from "../hooks/useSheet";
+import useSettings from "../hooks/useSettings";
+
+import { _l } from "../../common/utils/utils";
 
 export default function MainFilterDropdown({ column }) {
   const [open, setOpen] = useState(false);
@@ -43,8 +41,6 @@ export default function MainFilterDropdown({ column }) {
   const __input = options.filter((op) =>
     (sp_filter[column] || options).map((v) => _l(v)).includes(_l(op))
   );
-
-  const { t } = useDimension();
 
   const handleClose = () => setOpen(!open);
 
@@ -90,7 +86,7 @@ export default function MainFilterDropdown({ column }) {
   return (
     <Menu
       open={open}
-      backdrop_color={alpha(t.palette.background.paper, 0.5)}
+      alpha={0.5}
       onClose={handleClose}
       Initiator={(props) => (
         <Chip

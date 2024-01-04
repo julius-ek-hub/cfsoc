@@ -2,13 +2,14 @@ import useFetch from "../../common/hooks/useFetch";
 import useFile from "../../common/hooks/useFile";
 import useLocalStorage from "../../common/hooks/useLocalStorage";
 import useToasts from "../../common/hooks/useToast";
+import { _keys } from "../../common/utils/utils";
 import useKeepass from "./useKeepass";
 import useSettings from "./useSettings";
 
 const useFetcher = () => {
-  const { get, post } = useFetch("/keepass");
+  const { get, post, patch, dlete, serverURL } = useFetch("/keepass");
   const { push } = useToasts();
-  const { updateSettings } = useSettings();
+  const { updateSettings, settings } = useSettings();
   const { addDB, updateDB, selectedDB, exists, dbs } = useKeepass();
   const { get: gl, set, remove } = useLocalStorage();
   const { pickFile } = useFile();
@@ -75,6 +76,9 @@ const useFetcher = () => {
       updateDB("0.groups", []);
       updateDB("0.fetched", false);
       remove("pwd_tokens");
+      _keys(settings).map((k) => {
+        if (k.startsWith("expanded_")) updateSettings(k, undefined);
+      });
       await fetchDBs();
     } else
       push({
@@ -83,10 +87,156 @@ const useFetcher = () => {
       });
   };
 
+  const addEntry = async (entry, $location, edit) => {
+    const pwds = gl("pwd_tokens") || {};
+    const db = selectedDB.name;
+    const credentials = { pwd_token: pwds[db], db };
+    const { json } = await (edit ? patch : post)("/entry", {
+      entry,
+      $location,
+      credentials,
+    });
+
+    if (!json.error) {
+      updateDB(`${selectedDB.index}.groups`, json.groups);
+      updateSettings(
+        `expanded_${$location.split(".").join("_").split("_entries")[0]}`,
+        true
+      );
+    }
+  };
+
+  const addGroup = async (name, $location, edit, onDone) => {
+    const pwds = gl("pwd_tokens") || {};
+    const db = selectedDB.name;
+    const credentials = { pwd_token: pwds[db], db };
+    const { json } = await (edit ? patch : post)("/group", {
+      name,
+      $location,
+      credentials,
+    });
+
+    if (!json.error) {
+      updateDB(`${selectedDB.index}.groups`, json.groups);
+      updateSettings(`expanded_${$location.split(".").join("_")}`, true);
+      onDone?.call();
+    }
+  };
+
+  const deletEntryOrGroup = async ($location, path) => {
+    const pwds = gl("pwd_tokens") || {};
+    const db = selectedDB.name;
+    const { json } = await dlete(
+      `/${path}?pwd_token=${pwds[db]}&db=${db}&$location=${JSON.stringify(
+        $location
+      )}`
+    );
+    if (!json.error) {
+      updateDB(`${selectedDB.index}.groups`, json.groups);
+      $location.map(($l) => {
+        updateSettings(`expanded_${$l.split(".").join("_")}`, undefined);
+      });
+    }
+  };
+
+  const restoreEntryOrGroup = async ($location, path) => {
+    const pwds = gl("pwd_tokens") || {};
+    const db = selectedDB.name;
+    const credentials = { pwd_token: pwds[db], db };
+    const { json } = await patch(`/restore${path}`, {
+      $location,
+      credentials,
+    });
+    if (!json.error) {
+      updateDB(`${selectedDB.index}.groups`, json.groups);
+      $location.map(($l) => {
+        updateSettings(`expanded_${$l.split(".").join("_")}`, undefined);
+      });
+    }
+  };
+
+  const moveEntryOrGroup = async ($target, $to, onDone) => {
+    const pwds = gl("pwd_tokens") || {};
+    const db = selectedDB.name;
+    const credentials = { pwd_token: pwds[db], db };
+    const { json } = await patch(`/move`, {
+      $target,
+      $to,
+      credentials,
+    });
+    if (!json.error) {
+      updateDB(`${selectedDB.index}.groups`, json.groups);
+      updateSettings(`expanded_${$to.split(".").join("_")}`, true);
+      $target.map(($t) => {
+        updateSettings(`expanded_${$t.split(".").join("_")}`, undefined);
+      });
+      onDone?.call();
+    }
+  };
+
+  const emptyRB = async (onDone) => {
+    const pwds = gl("pwd_tokens") || {};
+    const db = selectedDB.name;
+    const { json } = await dlete(`/empty-rb?pwd_token=${pwds[db]}&db=${db}`);
+    if (!json.error) {
+      updateDB(`${selectedDB.index}.groups`, json.groups);
+      onDone?.call();
+    }
+  };
+
+  const restoreRB = async (onDone) => {
+    const pwds = gl("pwd_tokens") || {};
+    const db = selectedDB.name;
+    const credentials = { pwd_token: pwds[db], db };
+    const { json } = await patch(`/restore-rb`, {
+      credentials,
+    });
+    if (!json.error) {
+      updateDB(`${selectedDB.index}.groups`, json.groups);
+      onDone?.call();
+    }
+  };
+
+  const deleteDB = async (db, onDone) => {
+    const { json } = await dlete(`/db?db=${db.name}`);
+    if (!json.error) {
+      remove("pwd_tokens");
+      fetchDBs(onDone);
+      _keys(settings).map((k) => {
+        if (k.startsWith("expanded_")) updateSettings(k, undefined);
+      });
+    }
+  };
+
+  const downloadDB = async (db, onDone) => {
+    const res = await fetch(serverURL(`/keepass/download?db=${db.name}`));
+
+    const blob = await res.blob();
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = db.name;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    onDone?.call();
+  };
+
   return {
     fetchDBs,
     uploadDB,
+    addEntry,
+    addGroup,
+    emptyRB,
+    restoreRB,
+    deleteDB,
+    downloadDB,
+    deletEntryOrGroup,
     fetchContent,
+    moveEntryOrGroup,
+    restoreEntryOrGroup,
     fetchContentForCache,
   };
 };

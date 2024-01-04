@@ -25,7 +25,7 @@ const Apps = () => {
     to: { label: "Location", value: "" },
     status: { label: "Status", value: "" },
   };
-  const { user, uname, apps, update } = useCommonSettings();
+  const { uname, apps, update } = useCommonSettings();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({});
   const [error, setError] = useState(null);
@@ -176,7 +176,11 @@ const Apps = () => {
           <TextField
             key={key}
             name={key}
-            multiline
+            {...(key === "description" && {
+              multiline: true,
+              minRows: 10,
+              maxRows: 20,
+            })}
             margin="dense"
             label={value.label}
             fullWidth

@@ -9,7 +9,7 @@ export const sleep = (time = 1000) =>
   new Promise((res) => setTimeout(res, time));
 
 export const deepKey = (key, obj, update, fs = ".") => {
-  const keys = key.split(fs);
+  const keys = (key || "").split(fs);
   const lastKey = keys.at(-1);
   const object = keys
     .reverse()

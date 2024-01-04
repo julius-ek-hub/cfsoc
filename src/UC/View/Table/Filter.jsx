@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { alpha } from "@mui/material/styles";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -13,8 +12,6 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import IconButton from "../../../common/utils/IconButton";
 import Menu from "../../../common/utils/Menu";
 
-import useDimension from "../../../common/hooks/useDimensions";
-
 import { entr_ } from "../../../common/utils/utils";
 
 export default function Filter({ column, filterValues, onChange, columns }) {
@@ -23,8 +20,6 @@ export default function Filter({ column, filterValues, onChange, columns }) {
   const [selected, setSelected] = useState([]);
   const [max_scroll, setMaxScroll] = useState(50);
   const [values, setValues] = useState([]);
-
-  const { t } = useDimension();
 
   const handleClose = () => setOpen(!open);
 
@@ -82,7 +77,7 @@ export default function Filter({ column, filterValues, onChange, columns }) {
   return (
     <Menu
       open={open}
-      backdrop_color={alpha(t.palette.background.paper, 0.5)}
+      alpha={0.5}
       onClose={handleClose}
       Initiator={(props) => (
         <IconButton

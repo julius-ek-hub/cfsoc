@@ -15,7 +15,7 @@ const _values = (ob) => Object.values(ob);
 const u_arr = (arr = []) => [...new Set(arr)];
 
 const deepKey = (key, obj, update, fs = ".") => {
-  const keys = key.split(fs);
+  const keys = (key || "").split(fs);
   const lastKey = keys.at(-1);
   const object = keys
     .reverse()

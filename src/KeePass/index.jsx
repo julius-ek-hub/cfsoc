@@ -12,6 +12,7 @@ import Drawer from "@mui/material/Drawer";
 
 import StorageIcon from "@mui/icons-material/Storage";
 import CloseIcon from "@mui/icons-material/Close";
+import FolderOffIcon from "@mui/icons-material/FolderOff";
 
 import Dbs from "./Dbs";
 import Entries from "./Entries";
@@ -33,35 +34,10 @@ const KeePass = () => {
   const { selectedDB, selectedGP, dbs } = useKeepass();
   const { fetchDBs, fetchContentForCache } = useFetcher();
   const { settings } = useSettings();
+
   const { up } = useDimension();
 
-  const testEmail = async () => {
-    const fd = new FormData();
-    fd.append(
-      "email",
-      JSON.stringify({
-        from: 'Maddison Foo Koch "<no-reply@247-dev.com>', // sender address
-        to: "julius.ek.dev@gmail.com", // list of receivers
-        subject: "Hello", // Subject line
-        text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
-      })
-    );
-
-    const em = await fetch("https://www.247-dev.com/api/email/send", {
-      method: "POST",
-      body: fd,
-      headers: {
-        "x-auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1bGl1cyIsImV4dGVybmFsIjp0cnVlfQ.RYgMtpgW7_bYMCTN29xY6QJsNmNPE-QXssNc-eqGv6w",
-      },
-    });
-    const json = await em.json();
-    console.log(json);
-  };
-
   useEffect(() => {
-    // testEmail();
     if (dbs.length === 0) fetchDBs();
     else if (dbs.length > 0 && !selectedDB) {
       fetchContentForCache();
@@ -71,7 +47,13 @@ const KeePass = () => {
   const _th = Object.entries(th);
 
   const rightSx = {
-    ...(up.lg ? { width: 900 } : up.md ? { width: 500 } : { width: "100vw" }),
+    ...(up.xlg
+      ? { width: 1300 }
+      : up.lg
+      ? { width: 900 }
+      : up.md
+      ? { width: 500 }
+      : { width: "100vw" }),
   };
 
   return (
@@ -123,43 +105,42 @@ const KeePass = () => {
               ) : (
                 <Dbs />
               )}
-              {!selectedDB && (
-                <Middle width="80%" p={2} {...rightSx}>
-                  No Database selected
-                </Middle>
-              )}
-              {selectedDB && !selectedDB.fetched && (
-                <CollcetPass {...rightSx} />
-              )}
-              {selectedDB &&
-                selectedDB.fetched &&
-                selectedGP &&
-                selectedGP.entries.length == 0 && (
-                  <Middle width="80%" p={2} {...rightSx}>
-                    No Entries
-                  </Middle>
+              <Box display="flex" height="100%" {...rightSx}>
+                {!selectedDB && (
+                  <Middle flexGrow={1}>No Database selected</Middle>
                 )}
-              {selectedDB &&
-                selectedGP &&
-                selectedDB.fetched &&
-                selectedGP.entries.length > 0 && (
-                  <TableContainer sx={{ height: "100%", ...rightSx }}>
-                    {selectedGP && (
-                      <Table stickyHeader size="small">
-                        <TableHead>
-                          <TableRow>
-                            {_th.map(([k, v]) => (
-                              <TableCell key={k}>{v.label}</TableCell>
-                            ))}
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          <Entries />
-                        </TableBody>
-                      </Table>
-                    )}
-                  </TableContainer>
-                )}
+                {selectedDB && !selectedDB.fetched && <CollcetPass />}
+                {selectedDB &&
+                  selectedDB.fetched &&
+                  selectedGP &&
+                  selectedGP.entries.length == 0 && (
+                    <Middle p={2} flexGrow={1} sx={{ color: "text.secondary" }}>
+                      <FolderOffIcon sx={{ fontSize: 200 }} />
+                      No Entries
+                    </Middle>
+                  )}
+                {selectedDB &&
+                  selectedGP &&
+                  selectedDB.fetched &&
+                  selectedGP.entries.length > 0 && (
+                    <TableContainer sx={{ height: "100%" }}>
+                      {selectedGP && (
+                        <Table stickyHeader size="small">
+                          <TableHead>
+                            <TableRow>
+                              {_th.map(([k, v]) => (
+                                <TableCell key={k}>{v.label}</TableCell>
+                              ))}
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            <Entries />
+                          </TableBody>
+                        </Table>
+                      )}
+                    </TableContainer>
+                  )}
+              </Box>
             </Box>
           </Box>
           <BottomDetails {...rightSx} />

@@ -1,6 +1,13 @@
+import { useState } from "react";
+
 import { TextFieldProps } from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import OwnTextField from "../uncontrolled/TextField";
+import IconButton from "../../IconButton";
 
 import { useFormikContext } from "formik";
 
@@ -11,6 +18,7 @@ import { useFormikContext } from "formik";
 const TextField = (props) => {
   const { errors, touched, values, handleChange, submitForm } =
     useFormikContext();
+  const [visible, setVisible] = useState(false);
 
   const { name, helperText, type, enterButton, ...rest } = props;
 
@@ -30,7 +38,13 @@ const TextField = (props) => {
       value={value}
       name={name}
       autoComplete="off"
-      type={type === "number" ? "text" : type}
+      type={
+        type === "password" && visible
+          ? "text"
+          : type === "number"
+          ? "text"
+          : type
+      }
       onKeyDown={onlyNumbers}
       onChange={handleChange}
       placeholder={props.placeholder || props.label}
@@ -38,6 +52,19 @@ const TextField = (props) => {
       {...(enterButton && {
         onEnterButtonPressed: submitForm,
       })}
+      {...(value &&
+        type === "password" && {
+          InputProps: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setVisible(!visible)}
+                  Icon={visible ? VisibilityOffIcon : VisibilityIcon}
+                />
+              </InputAdornment>
+            ),
+          },
+        })}
       {...rest}
     />
   );

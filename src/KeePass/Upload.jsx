@@ -84,10 +84,10 @@ const UploadDB = () => {
         <Box my={1}>
           NB: The data from the database file and it's master key are not saved
           any where. They're being read and authenticated from the file by a
-          KeePass legit NodeJS module known as{" "}
-          <Link href="https://github.com/keeweb/kdbxweb" target="_blank">
+          KeePass legit NodeJS library known as{" "}
+          <a href="https://github.com/keeweb/kdbxweb" target="_blank">
             kdbxweb
-          </Link>
+          </a>
         </Box>
         <Box my={1}>
           <Checkbox checked={checked} onChange={() => setChecked(!checked)} />{" "}

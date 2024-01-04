@@ -1,10 +1,12 @@
-const useLocalStorage = () => {
+const useLocalStorage = (props) => {
+  const { sufix = "" } = props || {};
+
   const toJSON = (v) => JSON.stringify(v);
   const fromJSON = (v) => JSON.parse(v);
 
   return {
     get(key) {
-      const v = localStorage.getItem(key);
+      const v = localStorage.getItem(sufix + key);
       try {
         return fromJSON(v);
       } catch (error) {
@@ -12,10 +14,10 @@ const useLocalStorage = () => {
       }
     },
     set(key, value) {
-      localStorage.setItem(key, toJSON(value));
+      localStorage.setItem(sufix + key, toJSON(value));
     },
     remove(key) {
-      localStorage.removeItem(key);
+      localStorage.removeItem(sufix + key);
     },
   };
 };

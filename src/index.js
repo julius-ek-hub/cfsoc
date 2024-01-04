@@ -20,6 +20,7 @@ import loading from "./common/store/loading";
 import toasts from "./common/store/toasts";
 import ucm from "./UC/store/ucm";
 import keepass from "./KeePass/store/kp";
+import pkeepass from "./PrivateKeePass/store/kp";
 
 const common_store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ const common_store = configureStore({
     toasts,
     ucm,
     keepass,
+    pkeepass,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

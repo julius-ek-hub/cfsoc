@@ -177,6 +177,7 @@ const UCGrid = () => {
               top={0}
               bgcolor="background.paper"
               py={1}
+              pt={2}
               px={1}
             >
               <Typography

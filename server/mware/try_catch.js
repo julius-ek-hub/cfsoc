@@ -35,6 +35,10 @@ module.exports = (handler) => async (req, res) => {
             )
             .join("")}
           </div>
+          <div><strong>Raw</strong>:</div>
+          <div>
+          ${JSON.stringify(error)}
+          </div>
           `,
         });
       } catch (error) {}
@@ -42,8 +46,9 @@ module.exports = (handler) => async (req, res) => {
 
     res.json({
       error: error.message,
-      errorCode: 500,
+      errorCode: error.code || 500,
       stack: error.stack,
+      complete: error,
     });
   }
 };

@@ -26,6 +26,10 @@ const Nav = ({ app = "All Apps", title }) => {
 
   if (!user) return null;
 
+  let ap = app;
+
+  if (typeof ap === "object") ap = "";
+
   return (
     <Box
       p={1.5}
@@ -35,15 +39,19 @@ const Nav = ({ app = "All Apps", title }) => {
       justifyContent="space-between"
       borderBottom={(t) => `1px solid ${t.palette.divider}`}
       whiteSpace="nowrap"
-      sx={{ overflowX: "auto" }}
+      sx={{ overflowX: "auto", backdropFilter: "blur(10)" }}
     >
       <Box display="flex" alignItems="center">
         CFSOC
         <ArrowForwardIosIcon fontSize="x-small" sx={{ mx: 1 }} />
         <Typography component="span" color="primary.main" fontWeight="bold">
-          {up.sm ? app : app.substring(0, 4) + "..."}
+          {typeof app === "object"
+            ? app
+            : up.sm
+            ? app
+            : app.substring(0, 4) + "..."}
         </Typography>
-        {app.toLocaleLowerCase() !== "all apps" && (
+        {(typeof app === "object" || ap.toLocaleLowerCase() !== "all apps") && (
           <Link to="/" style={{ color: "inherit" }}>
             <IconButton Icon={AppsIcon} sx={{ ml: 2 }} title="All Apps" />
           </Link>
@@ -52,7 +60,7 @@ const Nav = ({ app = "All Apps", title }) => {
       </Box>
       <Box mr={2} display="flex" alignItems="center">
         <Theme />
-        {app.toLocaleLowerCase() !== "accounts" && (
+        {ap.toLocaleLowerCase() !== "accounts" && (
           <Link
             to="/account"
             style={{ textDecoration: "none" }}

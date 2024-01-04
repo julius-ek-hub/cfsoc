@@ -141,7 +141,7 @@ const Card = ({
         )}
       </Box>
       <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Link to={to}>
+        <Link to={to.replace(/<user>/gi, user)}>
           <Launch />
         </Link>
         {status && (

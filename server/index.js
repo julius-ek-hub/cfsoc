@@ -11,6 +11,7 @@ const ucm = require("./uc");
 
 const apps = require("./apps");
 const keepass = require("./keepass");
+const pkeepass = require("./pkeepass");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/auth", auth);
 app.use("/ucm", ucm);
 app.use("/apps", apps);
 app.use("/keepass", keepass);
+app.use("/pkeepass", pkeepass);
 
 app.get("/*", (req, res) =>
   res.sendFile(path.join(__dirname, "view", "index.html"))

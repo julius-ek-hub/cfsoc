@@ -20,11 +20,9 @@ const kpSlice = createSlice({
 
     addDB(state, { payload }) {
       const $new = [];
-      arrMust(payload)
-        .filter((pl) => !state.dbs.find((db) => db.name === pl.name))
-        .map((pl, index) => {
-          $new.push({ ...pl, index });
-        });
+      arrMust(payload).map((pl, index) => {
+        $new.push({ ...pl, index });
+      });
       state.dbs = $new;
     },
   },

@@ -36,7 +36,7 @@ const theme = (mode = "light", col = "#1D6F42") => {
       MuiLink: defaultProps({
         underline: "none",
         href: "#",
-        sx: { cursor: "pointer", color: "red" },
+        sx: { cursor: "pointer" },
       }),
       MuiList: defaultProps({
         sx: { a: { textDecoration: "none", color: "inherit" } },

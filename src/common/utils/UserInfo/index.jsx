@@ -1,6 +1,5 @@
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 
 import Chip from "@mui/material/Chip";
 

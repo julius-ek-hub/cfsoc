@@ -4,6 +4,7 @@ import Apps from "./Apps";
 import Account from "./Account";
 import UseCase from "./UC";
 import KeePass from "./KeePass";
+import PrivateKeePass from "./PrivateKeePass";
 import Err_404 from "./common/utils/404";
 import Err_500 from "./common/utils/500";
 
@@ -22,6 +23,11 @@ export default createBrowserRouter([
   {
     path: "/keepass",
     element: <KeePass />,
+    errorElement: <Err_500 />,
+  },
+  {
+    path: "/keepass/private",
+    element: <PrivateKeePass />,
     errorElement: <Err_500 />,
   },
   {
