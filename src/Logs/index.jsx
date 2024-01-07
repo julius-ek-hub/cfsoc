@@ -31,6 +31,7 @@ import {
   highlightSearch,
 } from "../common/utils/utils";
 import { th } from "./utils";
+import Middle from "../common/utils/Middle";
 
 const Logs = () => {
   const [logs, setLogs] = useState([]);
@@ -88,83 +89,91 @@ const Logs = () => {
       <Box>
         <Nav app="Server Logs" title={`Server Logs`} />
       </Box>
-      <Search />
-      <HiddenColumns
-        hidden={hiddenCols}
-        onDelete={(col) =>
-          setHiddenCol([...hiddenCols.filter((hc) => hc !== col)])
-        }
-      />
-      <Box flexGrow={1} overflow="auto">
-        <TableContainer sx={{ height: "100%" }}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                {columns.map(([k, v]) => (
-                  <TableCell
-                    key={k}
-                    sx={{
-                      whiteSpace: "nowrap",
-                      "&:hover button": { visibility: "visible" },
-                    }}
-                  >
-                    {v}
-                    {columns.length > 1 && (
-                      <Box display="inline">
-                        <IconButton
-                          Icon={RemoveIcon}
-                          sx={{ visibility: "hidden" }}
-                          onClick={() => setHiddenCol([...hiddenCols, k])}
-                          title="Hide column"
-                          iprop={{ sx: { fontSize: "20px" } }}
-                        />
-                        <Filter
-                          column={k}
-                          columns={columns}
-                          onChange={(key, val) => {
-                            setFilters({ ...filters, [key]: val });
-                            setPagination({ page: 0, rowsPerPage: 30 });
+      {da ? (
+        <Middle flexGrow={1} fontSize="x-large">
+          You need to be logged in to view logs
+        </Middle>
+      ) : (
+        <>
+          <Search />
+          <HiddenColumns
+            hidden={hiddenCols}
+            onDelete={(col) =>
+              setHiddenCol([...hiddenCols.filter((hc) => hc !== col)])
+            }
+          />
+          <Box flexGrow={1} overflow="auto">
+            <TableContainer sx={{ height: "100%" }}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    {columns.map(([k, v]) => (
+                      <TableCell
+                        key={k}
+                        sx={{
+                          whiteSpace: "nowrap",
+                          "&:hover button": { visibility: "visible" },
+                        }}
+                      >
+                        {v}
+                        {columns.length > 1 && (
+                          <Box display="inline">
+                            <IconButton
+                              Icon={RemoveIcon}
+                              sx={{ visibility: "hidden" }}
+                              onClick={() => setHiddenCol([...hiddenCols, k])}
+                              title="Hide column"
+                              iprop={{ sx: { fontSize: "20px" } }}
+                            />
+                            <Filter
+                              column={k}
+                              columns={columns}
+                              onChange={(key, val) => {
+                                setFilters({ ...filters, [key]: val });
+                                setPagination({ page: 0, rowsPerPage: 30 });
+                              }}
+                              filterValues={filterValues[k]}
+                            />
+                          </Box>
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows.map((log) => (
+                    <TableRow hover key={log._id}>
+                      {columns.map(([k]) => (
+                        <TableCell
+                          dangerouslySetInnerHTML={{
+                            __html: highlightSearch(
+                              log[k],
+                              sp.get("q"),
+                              t.palette.primary.main
+                            ),
                           }}
-                          filterValues={filterValues[k]}
+                          key={k}
+                          {...(k === "timestamp" && {
+                            sx: { whiteSpace: "nowrap" },
+                          })}
                         />
-                      </Box>
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((log) => (
-                <TableRow hover key={log._id}>
-                  {columns.map(([k]) => (
-                    <TableCell
-                      dangerouslySetInnerHTML={{
-                        __html: highlightSearch(
-                          log[k],
-                          sp.get("q"),
-                          t.palette.primary.main
-                        ),
-                      }}
-                      key={k}
-                      {...(k === "timestamp" && {
-                        sx: { whiteSpace: "nowrap" },
-                      })}
-                    />
+                      ))}
+                    </TableRow>
                   ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-      <Box display="flex" justifyContent="end">
-        <Pagination
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChange={setPagination}
-          content={filteredLogs}
-        />
-      </Box>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+          <Box display="flex" justifyContent="end">
+            <Pagination
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChange={setPagination}
+              content={filteredLogs}
+            />
+          </Box>
+        </>
+      )}
     </Box>
   );
 };
