@@ -86,7 +86,7 @@ export default function Filter({
             ...get(_key, uc.identifier.value),
           }))
           .map((row) => String(row[column].value || ""));
-        setValues(rows);
+        setValues([...new Set(rows)]);
       }
       setSelected(final);
       setMaxScroll(50);
