@@ -7,7 +7,7 @@ const verifyUser = async (req, res) => {
   const users = await getStaff({ username });
   let user = users[username];
   if (!user) return res.json({ error: "User not found", field: "username" });
-  res.json(user);
+  res.json({ ...user, emailToken: env("EMAIL_TOKEN") });
 };
 
 const verifyToken = async (req, res) => {

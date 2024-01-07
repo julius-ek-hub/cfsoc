@@ -23,7 +23,7 @@ const ResetPass = ({ onCancel, onresetConfirm }) => {
   const [otpVal, setOTPVal] = useState("");
   const [user, setUser] = useState(null);
 
-  const sendEmail = async (to) => {
+  const sendEmail = async (to, token) => {
     ul(true);
     try {
       const _opt = Math.random().toString(36).toUpperCase().slice(2, 6);
@@ -56,8 +56,7 @@ const ResetPass = ({ onCancel, onresetConfirm }) => {
         method: "POST",
         body: fd,
         headers: {
-          "x-auth-token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1bGl1cyIsImV4dGVybmFsIjp0cnVlfQ.RYgMtpgW7_bYMCTN29xY6QJsNmNPE-QXssNc-eqGv6w",
+          "x-auth-token": token,
         },
       });
       const res = await resp.json();
@@ -77,8 +76,9 @@ const ResetPass = ({ onCancel, onresetConfirm }) => {
       onSubmit={async (val, f) => {
         if (!val.otp) {
           const { json } = await get(`/verify-user?username=${val.username}`);
+          console.log(json);
           if (json.error) return f.setFieldError("username", json.error);
-          await sendEmail(json.email);
+          await sendEmail(json.email, json.emailToken);
           setUser(json);
         } else {
           if (val.otp === otpVal && user) onresetConfirm(user.username);
@@ -101,7 +101,9 @@ const ResetPass = ({ onCancel, onresetConfirm }) => {
 
       <Box>
         {otpVal && (
-          <Button onClick={() => sendEmail(user.email)}>Resend OTP</Button>
+          <Button onClick={() => sendEmail(user.email, user.emailToken)}>
+            Resend OTP
+          </Button>
         )}
         {user && <Button onClick={() => setOTPVal(null)}>Change Email</Button>}
       </Box>
