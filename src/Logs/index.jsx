@@ -48,7 +48,7 @@ const Logs = () => {
 
   const getLogs = async () => {
     const { json } = await get(
-      `?q=${sp.get("q") || ""}&t=${sp.get("t") || ""}`
+      `/logs?q=${sp.get("q") || ""}&t=${sp.get("t") || ""}`
     );
     setFilters({});
 

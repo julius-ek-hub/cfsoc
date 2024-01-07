@@ -14,7 +14,9 @@ module.exports = async (req, res) => {
     "1y": now - 365 * 24 * mili,
   };
 
-  const { t, q } = req.query;
+  let { t, q } = req.query;
+  t = t || "";
+  q = q || "";
 
   let $query = "";
 

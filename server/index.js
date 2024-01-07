@@ -28,7 +28,7 @@ app.use("/ucm", ucm);
 app.use("/apps", apps);
 app.use("/keepass", keepass);
 app.use("/pkeepass", pkeepass);
-app.get("/logs", try_catch(logs));
+app.get("/logs/logs", try_catch(logs));
 
 app.get("/*", (req, res) =>
   res.sendFile(path.join(__dirname, "view", "index.html"))

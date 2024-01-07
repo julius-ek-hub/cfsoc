@@ -1,15 +1,10 @@
 const mongoose = require("mongoose");
 const { fixObject, structure } = require("../utils");
-const { _l, u_arr, escapeRegEx, _keys } = require("../../utils/common");
-const { overRide } = require("./override");
-const { stats } = require("./stats");
+const { _l, escapeRegEx, _keys } = require("../../utils/common");
 
 const db = mongoose.connection.useDb("ucm");
 
 const getDoc = async (key, filter = {}) => {
-  // const count = await db.collection(key).countDocuments(filter);
-  // console.log(count);
-
   const docs = await db.collection(key).find(filter).limit(20000).toArray();
   return docs.map((doc) => ({
     ...doc,
@@ -59,18 +54,6 @@ const getUCTable = async (filter) => {
   const l4_uc = await getDoc("l4_uc");
   const all_uc = await getUC(filter, { l1_uc, l2_uc, l3_uc, l4_uc });
 
-  // await db
-  //   .collection("all_uc")
-  //   .deleteMany({ $where: `typeof this.identifier === "string"` });
-
-  // await db.collection("all_uc").insertMany(
-  //   all_uc.map((uc, i) => {
-  //     const _uc = { ...uc };
-  //     delete _uc._id;
-  //     return { ..._uc, identifier: { value: `${_uc.identifier}_${i}` } };
-  //   })
-  // );
-
   return {
     l1_uc,
     all_uc,
@@ -81,6 +64,7 @@ const getUCTable = async (filter) => {
 };
 
 const editContent = (collection, body) => {
+  throw new Error("Operation not allowed for now");
   return db
     .collection(collection)
     .updateOne(
@@ -90,6 +74,7 @@ const editContent = (collection, body) => {
 };
 
 const deleteContent = async (query) => {
+  throw new Error("Operation not allowed for now");
   const sheet = db.collection(query.sheet);
   const _id = new mongoose.Types.ObjectId(query._id);
 
@@ -97,6 +82,7 @@ const deleteContent = async (query) => {
 };
 
 const addContent = async (content) => {
+  throw new Error("Operation not allowed for now");
   const col = db.collection("all_uc");
   let data = fixObject(structure(content))[0];
   const id = data.identifier.value;
@@ -110,6 +96,7 @@ const addContent = async (content) => {
 };
 
 const addFilter = async (filter) => {
+  throw new Error("Operation not allowed for now");
   const col = db.collection("uc_filter");
 
   const exist = await col.findOne({
@@ -124,13 +111,15 @@ const addFilter = async (filter) => {
 
   return d;
 };
-const removeFilter = async (filter) =>
-  db
+const removeFilter = async (filter) => {
+  throw new Error("Operation not allowed for now");
+  return db
     .collection("uc_filter")
     .findOneAndUpdate(
       { key: filter.key },
       { $pull: { options: filter.value } }
     );
+};
 
 module.exports = {
   addContent,
