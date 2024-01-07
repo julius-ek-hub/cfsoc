@@ -43,7 +43,7 @@ const useCommonSettings = () => {
     ].map((k) => {
       update(k, k === "theme" ? "system" : undefined);
     });
-    was !== "guest" && window.location.reload();
+    was !== "default.account" && window.location.reload();
   };
 
   const initializeCommonSettings = async () => {
@@ -63,6 +63,7 @@ const useCommonSettings = () => {
     theme,
     apps,
     user,
+    guest: !user?.username || user?.username === "default.account",
     primary_color,
     staffs,
     uname: user?.username,

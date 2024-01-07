@@ -2,10 +2,12 @@ import { useState } from "react";
 
 import Typography from "@mui/material/Typography";
 import Checkbox from "@mui/material/Checkbox";
+import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import WarningIcon from "@mui/icons-material/Warning";
 
 import IconButton from "../../../common/utils/IconButton";
 import Confirm from "../../../common/utils/Comfirm";
@@ -19,8 +21,8 @@ import { _entr, entr_ } from "../../../common/utils/utils";
 const Copy = ({ selected }) => {
   const [copied, setCopied] = useState({});
   const { sheets, contents } = useSheet();
-  const { updateSettings } = useSettings();
-  const { push } = useToasts();
+  // const { updateSettings } = useSettings();
+  // const { push } = useToasts();
 
   const all_uc = sheets.all_uc;
 
@@ -53,18 +55,20 @@ const Copy = ({ selected }) => {
     }
     setCopied({ ...co, [k]: sel[k].value });
   };
-  const handleCopy = () => {
-    updateSettings("clipboard", copied);
-    push({ message: "Copied", severity: "success" });
-  };
+
+  // const handleCopy = () => {
+  //   updateSettings("clipboard", copied);
+  //   push({ message: "Copied", severity: "success" });
+  // };
 
   return (
     <Confirm
-      onConfirm={handleCopy}
+      // onConfirm={handleCopy}
       onClose={() => setCopied([])}
       title="Copy Key-Values"
       ok_text="Copy"
-      disabled={copied.length === 0}
+      disabled
+      // disabled={_entr(copied).length === 0} Just uncomment this when feature is enabled
       Initiator={(props) => (
         <IconButton Icon={ContentCopyIcon} title="Copy key-values" {...props} />
       )}
@@ -90,6 +94,11 @@ const Copy = ({ selected }) => {
           </Box>
         ))}
       </Stack>
+      <Divider sx={{ my: 2 }} />
+      <Box display="inline-flex" color="error.main">
+        <WarningIcon fontSize="small" /> This feature has been disabled for now,
+        you can request it if you want.
+      </Box>
     </Confirm>
   );
 };

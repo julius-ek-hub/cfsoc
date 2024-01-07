@@ -24,10 +24,10 @@ const getUser = async (req, res) => {
     res.json({ ...user[username], app_versions });
   } catch (error) {
     res.json({
-      name: "Guest",
+      name: "Default Acount",
       level: 0,
       admin: false,
-      username: "guest",
+      username: "default.account",
       position: "-",
       email: "",
       app_versions,

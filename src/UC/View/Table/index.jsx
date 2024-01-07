@@ -5,11 +5,11 @@ import Table from "@mui/material/Table";
 import TableContainer from "@mui/material/TableContainer";
 
 import Middle from "../../../common/utils/Middle";
-import Pagination from "../../utils/Pagination";
 import EditUC from "./EditUC";
 import EnhancedTableHead from "./Thead";
 import Tbody from "./Tbody";
 import Detailed from "./Detailed";
+import Pagination from "../../../common/utils/Pagination";
 
 import useSheet from "../../hooks/useSheet";
 
@@ -24,6 +24,7 @@ const TableView = ({ use, onScroll, useKey, $for = {}, dataEndTable }) => {
   const [selected, setSelected] = useState([]);
   const [pagination, setPagination] = useState({ page: 0, rowsPerPage: 30 });
   const [filters, setFilters] = useState({});
+  const [selectedData, setSelectedData] = useState(null);
 
   const { key, excluded_columns } = active_sheet || {};
 
@@ -94,7 +95,7 @@ const TableView = ({ use, onScroll, useKey, $for = {}, dataEndTable }) => {
     setSelected([]);
   };
 
-  const handleClick = (event, id) => {
+  const handleClick = (id, data) => {
     let newSelected = [];
     if (!is_uc) {
       if (selected.indexOf(id) !== -1) newSelected = [];
@@ -117,6 +118,7 @@ const TableView = ({ use, onScroll, useKey, $for = {}, dataEndTable }) => {
     }
 
     setSelected(newSelected);
+    setSelectedData(data);
   };
 
   const minWidths = useMemo(() => {
@@ -146,7 +148,12 @@ const TableView = ({ use, onScroll, useKey, $for = {}, dataEndTable }) => {
 
   return (
     <Box display="flex" flexGrow={1} height="100%" flexDirection="column">
-      <Box flexGrow={1} overflow="auto">
+      <Box
+        {...(_key !== "l1_uc" && {
+          flexGrow: 1,
+          overflow: "auto",
+        })}
+      >
         <Box display="flex" height="100%">
           <TableContainer
             sx={{
@@ -162,6 +169,7 @@ const TableView = ({ use, onScroll, useKey, $for = {}, dataEndTable }) => {
           >
             <Table stickyHeader>
               <EnhancedTableHead
+                _key={_key}
                 numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
@@ -203,11 +211,12 @@ const TableView = ({ use, onScroll, useKey, $for = {}, dataEndTable }) => {
             detail_sc={detail_sc}
             _key={_key}
             detail_selected={detail_selected}
+            single_selected_data={selectedData}
             is_uc={is_uc}
             $for={$for}
             TableView={TableView}
             selected={selected}
-            setSelected={setSelected}
+            onResetSelect={() => setSelected([])}
             search={search}
           />
         </Box>

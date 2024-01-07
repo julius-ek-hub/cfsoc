@@ -10,7 +10,7 @@ const NotLoggedIn = () => {
       <UserInfo />
       <Logout />
       <Typography m={2} textAlign="center">
-        You need to Logout from the Guest Account and login to your Private
+        You need to Logout from the Default Account and login to your Private
         Account
       </Typography>
     </Middle>

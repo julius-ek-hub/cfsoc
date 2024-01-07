@@ -6,7 +6,7 @@ import useSettings from "./useSettings";
 import { _entr, _u, _l } from "../../common/utils/utils";
 
 const useFetcher = () => {
-  const { get, post, dlete } = useFetch("/ucm");
+  const { get, post, dlete, serverURL } = useFetch("/ucm");
   const { push } = useToasts();
   const { updateSettings, settings } = useSettings();
   const { setUCTable, sp_filter, sheets, addSheet } = useSheet();
@@ -32,6 +32,7 @@ const useFetcher = () => {
     push({ message: "Done", severity: "success" });
     cb?.call();
   };
+
   const removeUCFilter = async (body, cb) => {
     const { json } = await dlete(
       `/filters?key=${body.key}&value=${body.value}`
@@ -47,11 +48,13 @@ const useFetcher = () => {
     cb?.call();
   };
 
-  const fetchAllFromDB = async () => {
+  const fetchFilters = async () => {
     const { json: filters } = await get("/filters", "all_mitre");
 
     !filters.error && updateSettings("uc_filter", filters);
+  };
 
+  const fetchAllFromDB = async () => {
     if (Object.keys(sheets).length === 0) {
       const { json: sh } = await get("/sheets", "all_mitre");
 
@@ -73,10 +76,40 @@ const useFetcher = () => {
     }
   };
 
+  const downloadUC = async (rows, name = "Use_Cases") => {
+    const resp = await fetch(serverURL(`/ucm/download`), {
+      method: "POST",
+      body: JSON.stringify({ rows, columns: sheets.all_uc.columns }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const blob = await resp.blob();
+    const d = new Date();
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = `${
+      name.split(" ").join("_") +
+      "_Use_Cases_" +
+      [(d.getMonth() + 1).toString(), d.getDate().toString()]
+        .map((i) => (i.length === 1 ? 0 + i : i))
+        .join("_")
+    }.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return {
     fetchAllFromDB,
+    downloadUC,
     fetcUC,
     addUCFilter,
+    fetchFilters,
     removeUCFilter,
   };
 };

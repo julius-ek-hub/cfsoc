@@ -1,6 +1,6 @@
 const { ProtectedValue } = require("kdbxweb");
 const { deepKey, _entr } = require("../utils/common");
-const { getDbObject, fields, save, getGroupContent } = require("./utils");
+const { getDbObject, fields, save, getGroupContent, log } = require("./utils");
 
 const addEntry = async (req, resp) => {
   const bd = req.body;
@@ -27,8 +27,11 @@ const addEntry = async (req, resp) => {
 
   const content = await getGroupContent(cred);
 
+  await log("Entry added", req);
+
   resp.json(content);
 };
+
 const addGroup = async (req, resp) => {
   const bd = req.body;
   const cred = bd.credentials;
@@ -46,6 +49,8 @@ const addGroup = async (req, resp) => {
   save(cred.db, Buffer.from(ab));
 
   const content = await getGroupContent(cred);
+
+  await log("Group added", req);
 
   resp.json(content);
 };

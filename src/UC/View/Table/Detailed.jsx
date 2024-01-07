@@ -21,9 +21,12 @@ import Copy from "./Copy";
 
 import useSheet from "../../hooks/useSheet";
 
-import { _entr, _values, _l } from "../../../common/utils/utils";
-
-import { td } from "./utils";
+import {
+  _entr,
+  _values,
+  _l,
+  highlightSearch,
+} from "../../../common/utils/utils";
 
 const isURL = (url) =>
   Yup.object({ url: Yup.string().url() }).isValidSync({
@@ -32,13 +35,13 @@ const isURL = (url) =>
 
 const Detailed = ({
   $for = {},
-  detail_selected,
+  single_selected_data,
   is_uc,
   _key,
   detail_sc,
   TableView,
   selected,
-  setSelected,
+  onResetSelect,
   search,
 }) => {
   const { sheets } = useSheet();
@@ -63,7 +66,7 @@ const Detailed = ({
     "l4_uc_identifiers",
   ];
 
-  const id = detail_selected?.identifier?.value;
+  const id = single_selected_data?.identifier?.value;
 
   const path = [...refs.filter((r) => $for[r]).map((r) => $for[r]), id].join(
     " / "
@@ -71,9 +74,9 @@ const Detailed = ({
 
   const details_selected_sections = useMemo(() => {
     let sections = [];
-    if (!detail_selected) return sections;
+    if (!single_selected_data) return sections;
 
-    _entr(detail_selected).map(([k, v]) => {
+    _entr(single_selected_data).map(([k, v]) => {
       if (!Array.isArray(v)) return;
       let keys = {
         l2s: sheets.l2_uc,
@@ -106,11 +109,11 @@ const Detailed = ({
     });
 
     return sections;
-  }, [detail_selected]);
+  }, [single_selected_data]);
 
   const closeDrawer = () => setDrawer(false);
 
-  if (!detail_selected) return null;
+  if (!single_selected_data || selected.length === 0) return null;
 
   const L = ({ href, text, sep }) => (
     <>
@@ -137,8 +140,8 @@ const Detailed = ({
         path={path}
         title={
           <>
-            {detail_selected.identifier.value || "N/A"} &mdash;{" "}
-            {detail_selected.name.value}
+            {single_selected_data.identifier.value || "N/A"} &mdash;{" "}
+            {single_selected_data.name.value}
           </>
         }
         {...(is_uc && {
@@ -147,14 +150,18 @@ const Detailed = ({
       >
         <Typography
           dangerouslySetInnerHTML={{
-            __html: td(detail_selected.description?.value, search, color),
+            __html: highlightSearch(
+              single_selected_data.description?.value,
+              search,
+              color
+            ),
           }}
         />
         <Box mt={2}>
           {detail_sc
             .filter(([k]) => !cols_not.includes(k))
             .map(([k, v]) => {
-              const val = String(detail_selected[k]?.value || "")
+              const val = String(single_selected_data[k]?.value || "")
                 .split(",")
                 .map((w, i, a) => {
                   const sep = i === a.length - 1 ? "" : ", ";
@@ -177,7 +184,7 @@ const Detailed = ({
                       <L
                         key={i}
                         href={h}
-                        text={td(word, search, color)}
+                        text={highlightSearch(word, search, color)}
                         sep={sep}
                       />
                     );
@@ -186,7 +193,8 @@ const Detailed = ({
                       key={i}
                       component="span"
                       dangerouslySetInnerHTML={{
-                        __html: td(word || "N/A", search, color) + sep,
+                        __html:
+                          highlightSearch(word || "N/A", search, color) + sep,
                       }}
                     />
                   );
@@ -238,8 +246,8 @@ const Detailed = ({
           <>
             {selected.length === 1 && <EditUC edit={selected[0]} $for={$for} />}
             {selected.length === 1 && <Copy selected={selected[0]} />}
-            <Paste selected={selected} onPaste={() => setSelected([])} />
-            <DeleteUC selected={selected} onDelete={() => setSelected([])} />
+            <Paste selected={selected} onPaste={onResetSelect} />
+            <DeleteUC selected={selected} onDelete={onResetSelect} />
           </>
         )}
       </Middle>

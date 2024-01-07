@@ -17,7 +17,7 @@ const { update } = require("../utils/update");
 const Router = express.Router();
 
 Router.post("/login", try_catch(login));
-Router.post("/verify-user", try_catch(verifyUser));
+Router.get("/verify-user", try_catch(verifyUser));
 Router.post("/create-pass", try_catch(createPass));
 Router.patch("/reset-pass", try_catch(reset));
 Router.get("/verify-token", try_catch(verifyToken));

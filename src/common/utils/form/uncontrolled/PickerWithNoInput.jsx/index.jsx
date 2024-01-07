@@ -16,20 +16,29 @@ import {
   StaticTimePicker,
   StaticTimePickerProps,
 } from "@mui/x-date-pickers/StaticTimePicker";
+import {
+  StaticDateTimePicker,
+  StaticDateTimePickerProps,
+} from "@mui/x-date-pickers/StaticDateTimePicker";
 
 /**
- * @param {StaticDatePickerProps | StaticTimePickerProps &  {title: String, type: 'date' | 'time'}} param0
+ * @param {StaticDatePickerProps | StaticTimePickerProps | StaticDateTimePickerProps  &  {title: String, type: 'date' | 'time' | 'datetime' | 'range'}} param0
  */
 
 const PickerWithNoInput = ({ title, type = "date", ...rest }) => {
-  const Picker = type === "date" ? StaticDatePicker : StaticTimePicker;
+  const Picker =
+    type === "date"
+      ? StaticDatePicker
+      : type === "time"
+      ? StaticTimePicker
+      : StaticDateTimePicker;
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Picker
         {...(title && {
           slots: {
             toolbar: () => (
-              <Box gridColumn={2} px={3} pt={2}>
+              <Box gridColumn={2} pt={2}>
                 <Typography
                   textTransform="uppercase"
                   color="text.secondary"

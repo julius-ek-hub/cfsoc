@@ -1,10 +1,11 @@
 import { useLayoutEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 
 import Dialog from "../Dialogue";
 
-import ResetPass from "./ResetPass";
+import Create from "./CreatePass";
 import Form from "../form/controlled/Form";
 import TextField from "../form/controlled/TextField";
 import SubmitButton from "../form/controlled/SubmitButton";
@@ -25,7 +26,7 @@ const schema = Yup.object({
 });
 
 const Login = () => {
-  const [username, setUsername] = useState(null);
+  const [reset, setReset] = useState(null);
   const { uname, update } = useCommonSettings();
   const [open, setOpen] = useState(false);
   const { loading } = useLoading();
@@ -39,8 +40,8 @@ const Login = () => {
 
   return (
     <Dialog open={open} transition={false} fullWidth>
-      {username ? (
-        <ResetPass username={username} onCancel={() => setUsername(null)} />
+      {reset ? (
+        <Create onCancel={() => setReset(null)} username={reset} />
       ) : (
         <Form
           description="Login"
@@ -59,11 +60,11 @@ const Login = () => {
                   json.errorCode === 500 ? "Internal Server Error." : json.error
                 );
               }
-              if (json.user.reset) return setUsername(uname);
+              if (json.user.reset) return setReset(uname);
 
               update("user", json.user);
               update("x-auth-token", json.jwt);
-              setUsername(null);
+              setReset(null);
             } catch (error) {
               form.setFieldError("username", error.message);
             }
@@ -85,6 +86,10 @@ const Login = () => {
             fullWidth
             sx={{ mt: 2 }}
           />
+          <Box my={1}>
+            Forgot password?{" "}
+            <Button onClick={() => setReset(true)}>Reset</Button>
+          </Box>
 
           <Box mt={2} display="flex" gap={2}>
             <SubmitButton variant="contained">Login</SubmitButton>

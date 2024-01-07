@@ -13,11 +13,8 @@ import Intro from "./View/Intro";
 import { _keys } from "../common/utils/utils";
 
 const UseCaseManagement = () => {
-  const { fetchAllFromDB, fetcUC } = useFetcher();
+  const { fetchAllFromDB, fetcUC, fetchFilters } = useFetcher();
   const { active_sheet, sp_filter, contents } = useSheet();
-
-  let view = (sp_filter.view || []).join("");
-  view = ["table", "grid"].includes(view) ? view : "grid";
 
   const key = active_sheet?.key;
 
@@ -27,7 +24,8 @@ const UseCaseManagement = () => {
   };
 
   useEffect(() => {
-    initialize();
+    if (sp_filter) initialize();
+    else fetchFilters();
   }, [sp_filter]);
 
   return (

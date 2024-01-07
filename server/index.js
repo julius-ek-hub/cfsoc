@@ -12,6 +12,8 @@ const ucm = require("./uc");
 const apps = require("./apps");
 const keepass = require("./keepass");
 const pkeepass = require("./pkeepass");
+const logs = require("./logs/get");
+const try_catch = require("./mware/try_catch");
 
 const app = express();
 
@@ -26,6 +28,7 @@ app.use("/ucm", ucm);
 app.use("/apps", apps);
 app.use("/keepass", keepass);
 app.use("/pkeepass", pkeepass);
+app.get("/logs", try_catch(logs));
 
 app.get("/*", (req, res) =>
   res.sendFile(path.join(__dirname, "view", "index.html"))

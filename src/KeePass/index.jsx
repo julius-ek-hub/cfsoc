@@ -24,6 +24,7 @@ import BottomDetails from "./BottomDetails";
 import Middle from "../common/utils/Middle";
 import IconButton from "../common/utils/IconButton";
 
+import useCommonSettings from "../common/hooks/useSettings";
 import useDimension from "../common/hooks/useDimensions";
 import useSettings from "./hooks/useSettings";
 
@@ -34,15 +35,18 @@ const KeePass = () => {
   const { selectedDB, selectedGP, dbs } = useKeepass();
   const { fetchDBs, fetchContentForCache } = useFetcher();
   const { settings } = useSettings();
+  const { uname } = useCommonSettings();
 
   const { up } = useDimension();
 
   useEffect(() => {
-    if (dbs.length === 0) fetchDBs();
-    else if (dbs.length > 0 && !selectedDB) {
-      fetchContentForCache();
+    if (uname) {
+      if (dbs.length === 0) fetchDBs();
+      else if (dbs.length > 0 && !selectedDB) {
+        fetchContentForCache();
+      }
     }
-  }, [dbs.length]);
+  }, [dbs.length, uname]);
 
   const _th = Object.entries(th);
 

@@ -148,30 +148,10 @@ export default function MainFilterDropdown({ column }) {
               key={j}
               whiteSpace="nowrap"
               sx={{
-                "&:hover > span button": {
-                  visibility: "visible",
-                  width: "unset",
-                },
                 width: "100%",
                 overflow: "hidden",
               }}
             >
-              <Confirm
-                ok_color="error"
-                ok_text="Remove"
-                onConfirm={() => handleRemove(value)}
-                Initiator={(props) => (
-                  <IconButton
-                    Icon={DeleteIcon}
-                    size="small"
-                    color="text.secondary"
-                    sx={{ visibility: "hidden", width: "0px" }}
-                    {...props}
-                  />
-                )}
-              >
-                Remove {value || "blanc"} from {label}
-              </Confirm>
               <Button
                 onClick={() => handleSelect(value)}
                 startIcon={

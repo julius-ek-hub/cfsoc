@@ -1,7 +1,7 @@
 import useLoading from "../useLoading";
 import useLocalStorage from "../useLocalStorage";
 
-const useFetch = (baseURL = "/api/schedules") => {
+const useFetch = (baseURL = "/") => {
   const { update } = useLoading();
   const { get: gl } = useLocalStorage();
 
@@ -25,9 +25,14 @@ const useFetch = (baseURL = "/api/schedules") => {
           "x-auth-token": authToken,
         },
       });
-      const json = await raw.json();
-      return { json, raw };
+      try {
+        const json = await raw.json();
+        return { json, raw };
+      } catch (error) {
+        return { raw };
+      }
     } catch (error) {
+      console.log(error);
       return {
         json: {
           error: "Something went wrong",

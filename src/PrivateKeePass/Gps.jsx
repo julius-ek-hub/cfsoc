@@ -187,7 +187,7 @@ const Gps = ({ groups = [], db, expanded, ...props }) => {
                     Wrapper={(props) => (
                       <DeleteEntryOrgroup
                         {...props}
-                        $location={group.$location}
+                        $location={[group.$location]}
                         name="Group"
                         path="/group"
                         permanent={option.permanent}
@@ -212,7 +212,7 @@ const Gps = ({ groups = [], db, expanded, ...props }) => {
                     Wrapper={(props) => (
                       <MoveEntryOrGroup
                         {...props}
-                        $location={group.$location}
+                        $location={[group.$location]}
                         name="Group"
                         path="/group"
                         onDone={onClose}

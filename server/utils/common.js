@@ -6,6 +6,14 @@ const objectExcept = (obj = {}, except) => {
   );
 };
 
+const objectOnly = (obj = {}, only) => {
+  const _new = { ...obj };
+  only = Array.isArray(only) ? only : [only];
+  return Object.fromEntries(
+    Object.entries(_new).filter(([k]) => only.includes(k))
+  );
+};
+
 const _entr = (ob) => Object.entries(ob);
 const entr_ = (arr) => Object.fromEntries(arr);
 const _l = (str) => String(str).toLowerCase().trim();
@@ -46,15 +54,15 @@ const arr_to_obj = (arr, key) => {
 };
 
 function escapeRegEx(string = "") {
-  if (typeof string !== "string") {
-    throw new TypeError("Expected a string");
-  }
-  return string.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&").replace(/-/g, "\\x2d");
+  return String(string || "")
+    .replace(/[|\\{}()[\]^$+*?.]/g, "\\$&")
+    .replace(/-/g, "\\x2d");
 }
 
 module.exports = {
   arr_to_obj,
   objectExcept,
+  objectOnly,
   escapeRegEx,
   u,
   env,

@@ -19,6 +19,7 @@ export default function EnhancedTableHead(props) {
     mw,
     filterValues,
     is_uc,
+    _key,
   } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -61,6 +62,7 @@ export default function EnhancedTableHead(props) {
               {val.label}
             </TableSortLabel>
             <Filter
+              _key={_key}
               column={key}
               filterValues={filterValues[key]}
               columns={columns}

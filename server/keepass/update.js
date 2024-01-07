@@ -1,6 +1,6 @@
 const { ProtectedValue, KdbxEntry, KdbxGroup } = require("kdbxweb");
 const { deepKey, _entr } = require("../utils/common");
-const { getDbObject, getGroupContent, fields, save } = require("./utils");
+const { getDbObject, getGroupContent, fields, save, log } = require("./utils");
 
 const updateEntry = async (req, resp) => {
   const bd = req.body;
@@ -25,6 +25,8 @@ const updateEntry = async (req, resp) => {
 
   const content = await getGroupContent(cred);
 
+  await log("Entry updated", req);
+
   resp.json(content);
 };
 
@@ -45,6 +47,8 @@ const updateGroup = async (req, resp) => {
   save(cred.db, Buffer.from(ab));
 
   const content = await getGroupContent(cred);
+
+  await log("Group updated", req);
 
   resp.json(content);
 };
@@ -79,6 +83,8 @@ const restoreGroup = async (req, resp) => {
 
   const content = await getGroupContent(cred);
 
+  await log("Group restored", req);
+
   resp.json(content);
 };
 
@@ -112,6 +118,8 @@ const restoreEntry = async (req, resp) => {
   save(cred.db, Buffer.from(ab));
 
   const content = await getGroupContent(cred);
+
+  await log("Entry restored", req);
 
   resp.json(content);
 };
@@ -160,6 +168,8 @@ const restoreRB = async (req, resp) => {
 
   const content = await getGroupContent(cred);
 
+  await log("All Items in recycle Bin restored", req);
+
   resp.json(content);
 };
 
@@ -186,6 +196,8 @@ const move = async (req, resp) => {
   save(cred.db, Buffer.from(ab));
 
   const content = await getGroupContent(cred);
+
+  await log("Entry or Group moved", req);
 
   resp.json(content);
 };

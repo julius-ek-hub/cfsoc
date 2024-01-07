@@ -55,7 +55,7 @@ const Card = ({
         },
       }}
     >
-      {user !== "guest" && (
+      {user !== "default.account" && (
         <Box position="absolute" top={0} right={0} visibility="hidden">
           <Menu
             open={menu}

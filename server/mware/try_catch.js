@@ -1,3 +1,4 @@
+const log = require("../logs");
 const { env } = require("../utils/common");
 
 const mail = require("../utils/mail");
@@ -43,6 +44,15 @@ module.exports = (handler) => async (req, res) => {
         });
       } catch (error) {}
     }
+
+    log(
+      {
+        message: error.message,
+        status: error.code || "error",
+        severity: "error",
+      },
+      req
+    );
 
     res.json({
       error: error.message,

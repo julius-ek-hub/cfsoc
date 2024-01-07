@@ -1,27 +1,13 @@
 const jwt = require("jsonwebtoken");
-const sendMail = require("../utils/mail");
 const { env } = require("../utils/common");
 const { getStaff } = require("./db");
 
 const verifyUser = async (req, res) => {
-  const { username } = req.body;
+  const { username } = req.query;
   const users = await getStaff({ username });
   let user = users[username];
   if (!user) return res.json({ error: "User not found", field: "username" });
-  try {
-    const otp = Math.random().toString(36).toUpperCase().slice(2, 6);
-    await sendMail({
-      subject: "OTP - CFSOC",
-      text: otp,
-      to: user.email,
-    });
-    return res.json({ otp });
-  } catch (error) {
-    return res.json({
-      error: error.message,
-      field: "username",
-    });
-  }
+  res.json(user);
 };
 
 const verifyToken = async (req, res) => {

@@ -1,6 +1,6 @@
 const { KdbxGroup, KdbxEntry } = require("kdbxweb");
 const { deepKey } = require("../utils/common");
-const { getDbObject, save, getGroupContent } = require("./utils");
+const { getDbObject, save, getGroupContent, log } = require("./utils");
 
 const removeEntry = async (req, resp) => {
   const qr = req.query;
@@ -43,6 +43,8 @@ const removeEntry = async (req, resp) => {
   save(cred, Buffer.from(ab));
 
   const content = await getGroupContent(cred);
+
+  await log("Entry removed", req);
 
   resp.json(content);
 };
@@ -87,6 +89,8 @@ const removeGroup = async (req, resp) => {
 
   const content = await getGroupContent(cred);
 
+  await log("Group removed", req);
+
   resp.json(content);
 };
 
@@ -109,6 +113,8 @@ const emptyRB = async (req, resp) => {
   save(cred, Buffer.from(ab));
 
   const content = await getGroupContent(cred);
+
+  await log("Recycle Bin emptied", req);
 
   resp.json(content);
 };

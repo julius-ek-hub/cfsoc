@@ -45,18 +45,18 @@ const PrivateKeePass = () => {
   const { loading } = useLoading();
   const { remove } = useLocalStorage({ sufix: "private_" });
 
-  const guest = uname === "guest" || !uname;
+  const da = uname === "default.account" || !uname;
 
   useEffect(() => {
-    if (!guest) {
+    if (!da) {
       if (dbs.length === 0) fetchDBs();
       else if (dbs.length > 0 && !selectedDB) {
         fetchContentForCache();
       }
     }
 
-    if (uname === "guest") remove("pwd_tokens");
-  }, [dbs.length, guest]);
+    if (uname === "default.account") remove("pwd_tokens");
+  }, [dbs.length, da]);
 
   const _th = Object.entries(th);
 
@@ -95,7 +95,7 @@ const PrivateKeePass = () => {
         overflow="auto"
         alignItems="center"
       >
-        {guest ? (
+        {da ? (
           <NotLoggedIn />
         ) : (
           <Box display="flex" height="100%" flexDirection="column">

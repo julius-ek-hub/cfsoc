@@ -7,6 +7,7 @@ import KeePass from "./KeePass";
 import PrivateKeePass from "./PrivateKeePass";
 import Err_404 from "./common/utils/404";
 import Err_500 from "./common/utils/500";
+import Logs from "./Logs";
 
 export default createBrowserRouter([
   {
@@ -23,6 +24,11 @@ export default createBrowserRouter([
   {
     path: "/keepass",
     element: <KeePass />,
+    errorElement: <Err_500 />,
+  },
+  {
+    path: "/logs",
+    element: <Logs />,
     errorElement: <Err_500 />,
   },
   {

@@ -1,3 +1,5 @@
+import { memo, useEffect, useState } from "react";
+
 import { useTheme } from "@mui/material/styles";
 
 import Checkbox from "@mui/material/Checkbox";
@@ -5,71 +7,92 @@ import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 
-import { td } from "./utils";
+import Loading from "./Loading";
 
-const Tbody = ({
-  visibleRows,
+import useSheet from "../../hooks/useSheet";
+import useStats from "../../hooks/useStats";
+
+import { _entr, highlightSearch } from "../../../common/utils/utils";
+
+const Row = ({
   handleClick,
   sc,
   isSelected,
+  row,
   is_uc,
   search,
-  pagination,
   selected,
+  index,
   $key,
 }) => {
-  const { page = 0, rowsPerPage = 30 } = pagination || {};
-
+  const [data, setData] = useState({});
+  const { contents } = useSheet();
+  const { get } = useStats();
   const t = useTheme();
+
+  const isItemSelected = isSelected(row._id.value);
+
+  useEffect(() => {
+    const stats = get($key, row.identifier.value);
+    setData({ ...row, ...stats });
+  }, [contents]);
+
+  if (_entr(data).length === 0) return <Loading cols={sc} />;
+
+  return (
+    <TableRow
+      hover
+      onClick={() => handleClick(row._id.value, data)}
+      role="checkbox"
+      selected={isItemSelected}
+      sx={{ cursor: "pointer" }}
+    >
+      {selected.length > 0 && is_uc && (
+        <TableCell padding="checkbox">
+          <Checkbox color="primary" checked={isItemSelected} />
+        </TableCell>
+      )}
+      <TableCell>{index}</TableCell>
+      {sc.map(([k]) => (
+        <TableCell
+          key={k}
+          dangerouslySetInnerHTML={{
+            __html: highlightSearch(
+              data[k]?.value,
+              search,
+              t.palette.primary.main
+            ),
+          }}
+          sx={{
+            ...(k === "identifier" && { whiteSpace: "nowrap" }),
+          }}
+        />
+      ))}
+    </TableRow>
+  );
+};
+
+const Tbody = (props) => {
+  const { pagination, visibleRows, ...rest } = props;
+
+  const { page = 0, rowsPerPage = 30 } = pagination || {};
 
   return (
     <TableBody>
       {visibleRows.map((row, index) => {
-        const isItemSelected = isSelected(row._id.value);
-        const labelId = `enhanced-table-checkbox-${index}`;
         return (
-          <TableRow
+          <Row
+            row={row}
             hover
-            onClick={(event) => handleClick(event, row._id.value)}
-            role="checkbox"
-            aria-checked={isItemSelected}
-            tabIndex={-1}
             key={row._id.value}
-            selected={isItemSelected}
             sx={{ cursor: "pointer" }}
-          >
-            {selected.length > 0 && is_uc && (
-              <TableCell padding="checkbox">
-                <Checkbox
-                  color="primary"
-                  checked={isItemSelected}
-                  inputProps={{
-                    "aria-labelledby": labelId,
-                  }}
-                />
-              </TableCell>
-            )}
-            <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-            {sc.map(([k], i) => (
-              <TableCell
-                key={k}
-                dangerouslySetInnerHTML={{
-                  __html: td(row[k]?.value, search, t.palette.primary.main),
-                }}
-                sx={{
-                  ...(k === "identifier" && { whiteSpace: "nowrap" }),
-                  ...($key === "l1_uc" &&
-                    row.identifier.value === "CO" &&
-                    i > 1 &&
-                    i < sc.length && { borderRight: "none!important" }),
-                }}
-              />
-            ))}
-          </TableRow>
+            index={page * rowsPerPage + index + 1}
+            {...rest}
+          />
         );
       })}
     </TableBody>
   );
 };
 
-export default Tbody;
+export default memo(Tbody);

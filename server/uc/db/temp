@@ -1,33 +1,54 @@
-// const auc = await db.collection("all_uc").find().toArray();
-// const auc_ = auc.map((uc, i) => {
-//   const zeros = 6 - String(i).length;
-//   const d = new Date().toLocaleDateString("en-US").split("/");
-//   const l1 = uc.l1_uc_identifiers.value;
-//   const l2 = uc.l2_uc_identifiers.value;
-//   const l3 = uc.l3_uc_identifiers.value;
-//   const l4 = uc.l4_uc_identifiers.value;
+const mongoose = require("mongoose");
+const { _keys, arrMust, u_arr } = require("../../utils/common");
 
-//   return {
-//     ...uc,
-//     l1_uc_identifiers: {
-//       value: uc.l1_uc_identifiers.value.filter((l1) => l1 !== "EN"),
-//     },
-//     technology: { value: "" },
-//     customer: { value: "" },
-//     ...((!uc.identifier.value ||
-//       uc.identifier.value.split("-").length === 5) && {
-//       identifier: {
-//         value: `${(uc.source?.value || "").substring(0, 3).toUpperCase()}-${
-//           d[2]
-//         }-${d[0]}-${zeros < 0 ? i : "0".repeat(zeros) + i}`,
-//       },
-//     }),
-//     ...(l1.length === 0 && {
-//       l1_uc_identifiers: {
-//         value: ["CO"],
-//       },
-//     }),
-//   };
-// });
-// await db.collection("all_uc").drop();
-// await db.collection("all_uc").insertMany(auc_);
+const db = mongoose.connection.useDb("ucm");
+
+const getDoc = async (key, filter = {}) => {
+  const docs = await db.collection(key).find(filter).toArray();
+  return docs.map((doc) => ({
+    ...doc,
+    _id: { value: doc._id },
+  }));
+};
+
+const getNames = (content, check) =>
+  u_arr(
+    content
+      .filter((l) => check.includes(l.identifier.value))
+      .map((l) => `${l.name.value} (${l.identifier.value})`)
+  ).join(", ");
+
+const overRide = async (body) => {
+  const l1_uc = await getDoc("l1_uc");
+  const l2_uc = await getDoc("l2_uc");
+  const l3_uc = await getDoc("l3_uc");
+  const l4_uc = await getDoc("l4_uc");
+
+  const auc = await getDoc("all_uc");
+
+  const auc_ = auc.map((uc, i) => {
+    const l1_ids = arrMust(uc.l1_uc_identifiers?.value || []);
+    const l2_ids = arrMust(uc.l2_uc_identifiers?.value || []);
+    const l3_ids = arrMust(uc.l3_uc_identifiers?.value || []);
+    const l4_ids = arrMust(uc.l4_uc_identifiers?.value || []);
+
+    const l1_names = getNames(l1_uc, l1_ids);
+    const l2_names = getNames(l2_uc, l2_ids);
+    const l3_names = getNames(l3_uc, l3_ids);
+    const l4_names = getNames(l4_uc, l4_ids);
+
+    return {
+      ...uc,
+      l1_uc_names: { value: l1_names },
+      l2_uc_names: { value: l2_names },
+      l3_uc_names: { value: l3_names },
+      l4_uc_names: { value: l4_names },
+    };
+  });
+  await db.collection("all_uc").drop();
+  await db.collection("all_uc").insertMany(auc_);
+};
+
+module.exports = {
+  overRide,
+};

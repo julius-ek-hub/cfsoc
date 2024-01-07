@@ -20,6 +20,7 @@ const {
 } = require("./routes/content");
 const { overRide } = require("./routes/override");
 const fetch_site = require("./routes/fetch_site");
+const download = require("./routes/download");
 
 const Router = express.Router();
 
@@ -29,6 +30,7 @@ Router.get("/filters", try_catch(getFilters));
 Router.post("/filters", try_catch(addFilter));
 Router.delete("/filters", try_catch(removeFilter));
 Router.post("/data", try_catch(addContent));
+Router.post("/download", try_catch(download));
 Router.patch("/data", try_catch(editContent));
 Router.delete("/data", try_catch(deleteContent));
 

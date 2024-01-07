@@ -1,6 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-const { getDBs } = require("./utils");
+const { getDBs, log } = require("./utils");
 
 module.exports = async (req, res) => {
   const $new = req.files.file;
@@ -12,5 +12,6 @@ module.exports = async (req, res) => {
   const name = req.body.name;
 
   await $new.mv(path.join(__dirname, "db", name));
+  await log("DB uploaded", req);
   res.json({ name, groups: [] });
 };

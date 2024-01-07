@@ -22,6 +22,8 @@ const useSheet = () => {
     const all_f = settings.uc_filter || [];
     const f = {};
 
+    if (!settings.uc_filter) return undefined;
+
     [...sp.keys()].map((sk) => {
       const vals = [...new Set([...sp.getAll(sk)])].map((v) =>
         v.replace(/&/g, "")
@@ -46,12 +48,12 @@ const useSheet = () => {
   };
 
   const sheet_names = Object.values(sheets)
-    .map(({ key, name, location }) => ({
+    .map(({ key, name, position }) => ({
       key,
       name,
-      location,
+      position,
     }))
-    .sort((a, b) => a.location - b.location);
+    .sort((a, b) => a.position - b.position);
 
   const addSheet = (sheet) => dispatch(as(sheet));
   const setUCTable = (payload) => dispatch(ac(payload));

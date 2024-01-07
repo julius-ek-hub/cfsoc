@@ -1,7 +1,8 @@
 import Box from "@mui/material/Box";
 
 import TableView from "./Table";
-import UseCaseGrid from "./GridView/UseCaseGrid";
+import UseCaseGrid from "./GridView";
+import Graphs from "./Table/Graphs";
 
 const View = ({ location }) => {
   return (
@@ -12,7 +13,13 @@ const View = ({ location }) => {
           overflow: "auto",
         }}
       >
-        {location === "all_uc" ? <UseCaseGrid /> : <TableView />}
+        {location === "all_uc" ? (
+          <UseCaseGrid />
+        ) : location === "summary" ? (
+          <Graphs />
+        ) : (
+          <TableView />
+        )}
       </Box>
     </Box>
   );

@@ -14,12 +14,23 @@ import Menu from "../../../common/utils/Menu";
 
 import { entr_ } from "../../../common/utils/utils";
 
-export default function Filter({ column, filterValues, onChange, columns }) {
+import useStats from "../../hooks/useStats";
+import useSheet from "../../hooks/useSheet";
+
+export default function Filter({
+  column,
+  filterValues,
+  onChange,
+  columns,
+  _key,
+}) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [selected, setSelected] = useState([]);
   const [max_scroll, setMaxScroll] = useState(50);
   const [values, setValues] = useState([]);
+  const { get } = useStats();
+  const { contents } = useSheet();
 
   const handleClose = () => setOpen(!open);
 
@@ -68,7 +79,15 @@ export default function Filter({ column, filterValues, onChange, columns }) {
 
   useEffect(() => {
     if (open) {
-      setValues(filterValues.map((v) => String(v)));
+      if (values.length === 0) {
+        const rows = (contents[_key] || [])
+          .map((uc) => ({
+            ...uc,
+            ...get(_key, uc.identifier.value),
+          }))
+          .map((row) => String(row[column].value || ""));
+        setValues(rows);
+      }
       setSelected(final);
       setMaxScroll(50);
     }

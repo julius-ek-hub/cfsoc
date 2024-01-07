@@ -1,27 +1,34 @@
-import useFetch from "../../common/hooks/useFetch";
-import useFile from "../../common/hooks/useFile";
-import useLocalStorage from "../../common/hooks/useLocalStorage";
-import useToasts from "../../common/hooks/useToast";
-import { _keys } from "../../common/utils/utils";
 import useKeepass from "./useKeepass";
 import useSettings from "./useSettings";
+import useFile from "../../common/hooks/useFile";
+import useFetch from "../../common/hooks/useFetch";
+import useToasts from "../../common/hooks/useToast";
+import useCommonSettings from "../../common/hooks/useSettings";
+import useLocalStorage from "../../common/hooks/useLocalStorage";
+
+import { _keys } from "../../common/utils/utils";
 
 const useFetcher = () => {
   const { get, post, patch, dlete, serverURL } = useFetch("/keepass");
   const { push } = useToasts();
+  const { uname, guest } = useCommonSettings();
   const { updateSettings, settings } = useSettings();
   const { addDB, updateDB, selectedDB, exists, dbs } = useKeepass();
   const { get: gl, set, remove } = useLocalStorage();
   const { pickFile } = useFile();
 
   const fetchDBs = async (then) => {
-    const { json } = await get("/dbs");
+    const { json } = await get(`/dbs?uname=${uname}`);
     if (!json.error) addDB(json);
     then?.call();
   };
 
   const fetchContent = async (pass) => {
-    const { json } = await post("/content", { pass, db: selectedDB.name });
+    const { json } = await post("/content", {
+      pass,
+      db: selectedDB.name,
+      uname,
+    });
 
     if (json.error) return push({ message: json.error, severity: "error" });
 
@@ -47,7 +54,7 @@ const useFetcher = () => {
       ent.map(async ([k, pwd_token]) => {
         const db = exists(k);
         if (db.groups.length > 0) return;
-        const { json } = await post("/content", { pwd_token, db: k });
+        const { json } = await post("/content", { pwd_token, db: k, uname });
         if (json.error) return json;
         updateDB(`${db.index}.groups`, json.groups);
         updateDB(`${db.index}.fetched`, true);
@@ -70,6 +77,7 @@ const useFetcher = () => {
     const fd = new FormData();
     fd.append("file", new Blob(files, { type: f.type }));
     fd.append("name", f.name);
+    fd.append("uname", uname);
     const res = await fetch("/keepass/new-db", { method: "post", body: fd });
     const json = await res.json();
     if (!json.error) {
@@ -90,7 +98,7 @@ const useFetcher = () => {
   const addEntry = async (entry, $location, edit) => {
     const pwds = gl("pwd_tokens") || {};
     const db = selectedDB.name;
-    const credentials = { pwd_token: pwds[db], db };
+    const credentials = { pwd_token: pwds[db], db, uname };
     const { json } = await (edit ? patch : post)("/entry", {
       entry,
       $location,
@@ -109,7 +117,7 @@ const useFetcher = () => {
   const addGroup = async (name, $location, edit, onDone) => {
     const pwds = gl("pwd_tokens") || {};
     const db = selectedDB.name;
-    const credentials = { pwd_token: pwds[db], db };
+    const credentials = { pwd_token: pwds[db], db, uname };
     const { json } = await (edit ? patch : post)("/group", {
       name,
       $location,
@@ -124,12 +132,17 @@ const useFetcher = () => {
   };
 
   const deletEntryOrGroup = async ($location, path) => {
+    if (guest)
+      return push({
+        message: "You must be logged in to perform this operation",
+        severity: "error",
+      });
     const pwds = gl("pwd_tokens") || {};
     const db = selectedDB.name;
     const { json } = await dlete(
       `/${path}?pwd_token=${pwds[db]}&db=${db}&$location=${JSON.stringify(
         $location
-      )}`
+      )}&uname=${uname}`
     );
     if (!json.error) {
       updateDB(`${selectedDB.index}.groups`, json.groups);
@@ -142,7 +155,7 @@ const useFetcher = () => {
   const restoreEntryOrGroup = async ($location, path) => {
     const pwds = gl("pwd_tokens") || {};
     const db = selectedDB.name;
-    const credentials = { pwd_token: pwds[db], db };
+    const credentials = { pwd_token: pwds[db], db, uname };
     const { json } = await patch(`/restore${path}`, {
       $location,
       credentials,
@@ -158,7 +171,7 @@ const useFetcher = () => {
   const moveEntryOrGroup = async ($target, $to, onDone) => {
     const pwds = gl("pwd_tokens") || {};
     const db = selectedDB.name;
-    const credentials = { pwd_token: pwds[db], db };
+    const credentials = { pwd_token: pwds[db], db, uname };
     const { json } = await patch(`/move`, {
       $target,
       $to,
@@ -175,9 +188,16 @@ const useFetcher = () => {
   };
 
   const emptyRB = async (onDone) => {
+    if (guest)
+      return push({
+        message: "You must be logged in to perform this operation",
+        severity: "error",
+      });
     const pwds = gl("pwd_tokens") || {};
     const db = selectedDB.name;
-    const { json } = await dlete(`/empty-rb?pwd_token=${pwds[db]}&db=${db}`);
+    const { json } = await dlete(
+      `/empty-rb?pwd_token=${pwds[db]}&db=${db}&uname=${uname}`
+    );
     if (!json.error) {
       updateDB(`${selectedDB.index}.groups`, json.groups);
       onDone?.call();
@@ -187,7 +207,7 @@ const useFetcher = () => {
   const restoreRB = async (onDone) => {
     const pwds = gl("pwd_tokens") || {};
     const db = selectedDB.name;
-    const credentials = { pwd_token: pwds[db], db };
+    const credentials = { pwd_token: pwds[db], db, uname };
     const { json } = await patch(`/restore-rb`, {
       credentials,
     });
@@ -198,7 +218,12 @@ const useFetcher = () => {
   };
 
   const deleteDB = async (db, onDone) => {
-    const { json } = await dlete(`/db?db=${db.name}`);
+    if (guest)
+      return push({
+        message: "You must be logged in to perform this operation",
+        severity: "error",
+      });
+    const { json } = await dlete(`/db?db=${db.name}&uname=${uname}`);
     if (!json.error) {
       remove("pwd_tokens");
       fetchDBs(onDone);
@@ -209,7 +234,9 @@ const useFetcher = () => {
   };
 
   const downloadDB = async (db, onDone) => {
-    const res = await fetch(serverURL(`/keepass/download?db=${db.name}`));
+    const res = await fetch(
+      serverURL(`/keepass/download?db=${db.name}&uname=${uname}`)
+    );
 
     const blob = await res.blob();
 

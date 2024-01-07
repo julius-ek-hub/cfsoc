@@ -1,8 +1,19 @@
 const fs = require("fs");
 const path = require("path");
 const kdbxweb = require("kdbxweb");
-const { env, _l, _keys } = require("../utils/common");
 const jwt = require("jsonwebtoken");
+const logg = require("../logs");
+const { env, _l, _keys } = require("../utils/common");
+
+const log = (message, req) =>
+  logg(
+    {
+      message,
+      status: "success",
+      severity: "info",
+    },
+    req
+  );
 
 const fields = {
   title: { label: "Title" },
@@ -125,6 +136,7 @@ const save = (cred, $new) => {
 
 module.exports = {
   save,
+  log,
   getDBs,
   getDbObject,
   getGroupContent,
